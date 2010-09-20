@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SimpleCQRS.Events;
+using SimpleCQRS.EventStore.Exceptions;
 
-namespace SimpleCQRS
+namespace SimpleCQRS.EventStore
 {
-    public interface IEventStore
-    {
-        void SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion);
-        List<Event> GetEventsForAggregate(Guid aggregateId);
-    }
-
     public class EventStore : IEventStore
     {
         private readonly IEventPublisher _publisher;
@@ -67,13 +63,5 @@ namespace SimpleCQRS
             }
             return eventDescriptors.Select(desc => desc.EventData).ToList();
         }
-    }
-
-    public class AggregateNotFoundException : Exception
-    {
-    }
-
-    public class ConcurrencyException : Exception
-    {
     }
 }

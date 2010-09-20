@@ -61,16 +61,31 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandHandlers.cs" />
-    <Compile Include="Domain.cs" />
-    <Compile Include="EventStore.cs" />
+    <Compile Include="CommandHandlers\InventoryCommandHandlers.cs" />
+    <Compile Include="Commands\CheckInItemsToInventory.cs" />
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\CreateInventoryItem.cs" />
+    <Compile Include="Commands\DeactivateInventoryItem.cs" />
+    <Compile Include="Commands\RenameInventoryItem.cs" />
+    <Compile Include="Domain\Domain.cs" />
+    <Compile Include="Domain\InventoryItem.cs" />
+    <Compile Include="EventStore\Exceptions\AggregateNotFoundException.cs" />
+    <Compile Include="EventStore\Exceptions\ConcurrencyException.cs" />
+    <Compile Include="EventStore\EventStore.cs" />
+    <Compile Include="EventStore\IEventStore.cs" />
+    <Compile Include="Events\InventoryItemCreated.cs" />
+    <Compile Include="Events\InventoryItemDeactivated.cs" />
+    <Compile Include="Events\InventoryItemRenamed.cs" />
+    <Compile Include="Events\ItemsCheckedInToInventory.cs" />
+    <Compile Include="Events\ItemsRemovedFromInventory.cs" />
     <Compile Include="FakeBus.cs" />
     <Compile Include="InfrastructureCrap.DontBotherReadingItsNotImportant.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="Events.cs" />
+    <Compile Include="Commands\RemoveItemsFromInventory.cs" />
+    <Compile Include="Events\Event.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="ReadModel.cs" />
+    <Compile Include="ReadModel\BullShitDatabase.cs" />
+    <Compile Include="ReadModel\ReadModel.cs" />
+    <Compile Include="ReadModel\ReadModelFacade.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -89,8 +104,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using SimpleCQRS.Commands;
+using SimpleCQRS.Domain;
 
-namespace SimpleCQRS
+namespace SimpleCQRS.CommandHandlers
 {
     public class InventoryCommandHandlers
     {
