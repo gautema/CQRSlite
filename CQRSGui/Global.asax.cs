@@ -1,5 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
+using CQRSGui.Tools;
+using Microsoft.Practices.ServiceLocation;
 using SimpleCQRS;
 using SimpleCQRS.CommandHandlers;
 using SimpleCQRS.Commands;
@@ -7,6 +9,7 @@ using SimpleCQRS.Domain;
 using SimpleCQRS.Events;
 using SimpleCQRS.EventStore;
 using SimpleCQRS.ReadModel;
+using StructureMap;
 
 namespace CQRSGui
 {
@@ -33,7 +36,14 @@ namespace CQRSGui
 
             RegisterRoutes(RouteTable.Routes);
 
-            var bus = new FakeBus();
+            var registry = new StructureMapRegistry();
+            var container = new Container(registry);
+            var structureMapServiceLocator = new StructureMapServiceLocator(container);
+            ServiceLocator.SetLocatorProvider(() => structureMapServiceLocator);
+            var locator = new StructureMapServiceLocatorControllerFactory();
+            ControllerBuilder.Current.SetControllerFactory(locator);
+
+            var bus = container.GetInstance<ICommandSender>() as FakeBus;
 
             var storage = new EventStore(bus);
             var rep = new Repository<InventoryItem>(storage);
@@ -53,7 +63,6 @@ namespace CQRSGui
             bus.RegisterHandler<InventoryItemCreated>(list.Handle);
             bus.RegisterHandler<InventoryItemRenamed>(list.Handle);
             bus.RegisterHandler<InventoryItemDeactivated>(list.Handle);
-            ServiceLocator.Bus = bus;
         }
     }
 }

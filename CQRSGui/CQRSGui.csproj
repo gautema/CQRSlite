@@ -34,6 +34,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\Lib\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\Lib\StructureMap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -70,7 +76,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Tools\StructureMapRegistry.cs" />
+    <Compile Include="Tools\StructureMapServiceLocator.cs" />
+    <Compile Include="Tools\StructureMapServiceLocatorControllerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
