@@ -10,12 +10,13 @@ namespace CQRSGui.Tools
     {
         public StructureMapRegistry()
         {
-            For<IReadModelFacade>().Use<ReadModelFacade>();
-            For<ICommandSender>().Singleton().Use<FakeBus>();
-            For<IEventPublisher>().Use(x => x.GetInstance<ICommandSender>() as FakeBus);
+            For<FakeBus>().Singleton().Use<FakeBus>();
+            For<ICommandSender>().Use(x => x.GetInstance<FakeBus>());
+            For<IEventPublisher>().Use(x => x.GetInstance<FakeBus>());
+            For<IHandleRegister>().Use(x => x.GetInstance<FakeBus>());
             For<IEventStore>().Use<EventStore>();
+            For<IReadModelFacade>().Use<ReadModelFacade>();
             For(typeof(IRepository<>)).Use(typeof(Repository<>));
-
         }
     }
 }

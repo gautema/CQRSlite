@@ -6,7 +6,7 @@ using SimpleCQRS.Events;
 
 namespace SimpleCQRS
 {
-    public class FakeBus : ICommandSender, IEventPublisher
+    public class FakeBus : ICommandSender, IEventPublisher, IHandleRegister
     {
         private readonly Dictionary<Type, List<Action<Message>>> _routes = new Dictionary<Type, List<Action<Message>>>();
 
@@ -46,6 +46,11 @@ namespace SimpleCQRS
                 ThreadPool.QueueUserWorkItem(x => handler1(@event));
             }
         }
+    }
+
+    public interface IHandleRegister
+    {
+        void RegisterHandler<T>(Action<T> handler) where T : Message;
     }
 
     public interface Handles<T>
