@@ -13,9 +13,6 @@ using StructureMap;
 
 namespace CQRSGui
 {
-    // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
-    // visit http://go.microsoft.com/?LinkId=9394801
-
     public class MvcApplication : System.Web.HttpApplication
     {
         public static void RegisterRoutes(RouteCollection routes)
@@ -43,10 +40,10 @@ namespace CQRSGui
             var locator = new StructureMapServiceLocatorControllerFactory();
             ControllerBuilder.Current.SetControllerFactory(locator);
 
-            var bus = container.GetInstance<ICommandSender>() as FakeBus;
+            var bus = (FakeBus)container.GetInstance<ICommandSender>();
 
-            var storage = new EventStore(bus);
-            var rep = new Repository<InventoryItem>(storage);
+            var rep = container.GetInstance<IRepository<InventoryItem>>();
+
             var commands = new InventoryCommandHandlers(rep);
             bus.RegisterHandler<CheckInItemsToInventory>(commands.Handle);
             bus.RegisterHandler<CreateInventoryItem>(commands.Handle);
