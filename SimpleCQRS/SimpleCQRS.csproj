@@ -79,12 +79,16 @@
     <Compile Include="Events\ItemsCheckedInToInventory.cs" />
     <Compile Include="Events\ItemsRemovedFromInventory.cs" />
     <Compile Include="FakeBus.cs" />
-    <Compile Include="InfrastructureCrap.DontBotherReadingItsNotImportant.cs" />
+    <Compile Include="Infrastructure\InfrastructureCrap.DontBotherReadingItsNotImportant.cs" />
     <Compile Include="Commands\RemoveItemsFromInventory.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="ReadModel\BullShitDatabase.cs" />
-    <Compile Include="ReadModel\ReadModel.cs" />
+    <Compile Include="Infrastructure\BullShitDatabase.cs" />
+    <Compile Include="ReadModel\Dtos\InventoryItemDetailsDto.cs" />
+    <Compile Include="ReadModel\Dtos\InventoryItemListDto.cs" />
+    <Compile Include="ReadModel\InventoryListView.cs" />
+    <Compile Include="ReadModel\IReadModelFacade.cs" />
+    <Compile Include="ReadModel\InvenotryItemDetailView.cs" />
     <Compile Include="ReadModel\ReadModelFacade.cs" />
   </ItemGroup>
   <ItemGroup>

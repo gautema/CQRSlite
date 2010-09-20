@@ -1,5 +1,7 @@
 ﻿using System;
 using SimpleCQRS.Events;
+using SimpleCQRS.Infrastructure;
+using SimpleCQRS.ReadModel.Dtos;
 
 namespace SimpleCQRS.ReadModel
 {
@@ -7,7 +9,7 @@ namespace SimpleCQRS.ReadModel
     {
         public void Handle(InventoryItemCreated message)
         {
-            BullShitDatabase.details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0,0));
+            BullShitDatabase.Details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0,0));
         }
 
         public void Handle(InventoryItemRenamed message)
@@ -20,7 +22,7 @@ namespace SimpleCQRS.ReadModel
         private InventoryItemDetailsDto GetDetailsItem(Guid id)
         {
             InventoryItemDetailsDto d;
-            if(!BullShitDatabase.details.TryGetValue(id, out d))
+            if(!BullShitDatabase.Details.TryGetValue(id, out d))
             {
                 throw new InvalidOperationException("did not find the original inventory this shouldnt happen");
             }
@@ -43,7 +45,7 @@ namespace SimpleCQRS.ReadModel
 
         public void Handle(InventoryItemDeactivated message)
         {
-            BullShitDatabase.details.Remove(message.Id);
+            BullShitDatabase.Details.Remove(message.Id);
         }
     }
 }

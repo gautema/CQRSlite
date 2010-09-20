@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SimpleCQRS.ReadModel;
+using SimpleCQRS.ReadModel.Dtos;
 
 namespace SimpleCQRS.Infrastructure
 {

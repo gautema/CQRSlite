@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleCQRS.Infrastructure;
+using SimpleCQRS.ReadModel.Dtos;
 
 namespace SimpleCQRS.ReadModel
 {
@@ -7,12 +9,12 @@ namespace SimpleCQRS.ReadModel
     {
         public IEnumerable<InventoryItemListDto> GetInventoryItems()
         {
-            return BullShitDatabase.list;
+            return BullShitDatabase.List;
         }
 
         public InventoryItemDetailsDto GetInventoryItemDetails(Guid id)
         {
-            return BullShitDatabase.details[id];
+            return BullShitDatabase.Details[id];
         }
     }
 }

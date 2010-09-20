@@ -1,4 +1,6 @@
 ﻿using SimpleCQRS.Events;
+using SimpleCQRS.Infrastructure;
+using SimpleCQRS.ReadModel.Dtos;
 
 namespace SimpleCQRS.ReadModel
 {
@@ -6,18 +8,18 @@ namespace SimpleCQRS.ReadModel
     {
         public void Handle(InventoryItemCreated message)
         {
-            BullShitDatabase.list.Add(new InventoryItemListDto(message.Id, message.Name));
+            BullShitDatabase.List.Add(new InventoryItemListDto(message.Id, message.Name));
         }
 
         public void Handle(InventoryItemRenamed message)
         {
-            var item = BullShitDatabase.list.Find(x => x.Id == message.Id);
+            var item = BullShitDatabase.List.Find(x => x.Id == message.Id);
             item.Name = message.NewName;
         }
 
         public void Handle(InventoryItemDeactivated message)
         {
-            BullShitDatabase.list.RemoveAll(x => x.Id == message.Id);
+            BullShitDatabase.List.RemoveAll(x => x.Id == message.Id);
         }
     }
 }
