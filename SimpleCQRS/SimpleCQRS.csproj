@@ -58,6 +58,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\Lib\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +81,7 @@
     <Compile Include="Events\InventoryItemRenamed.cs" />
     <Compile Include="Events\ItemsCheckedInToInventory.cs" />
     <Compile Include="Events\ItemsRemovedFromInventory.cs" />
-    <Compile Include="FakeBus.cs" />
+    <Compile Include="InProcessBus.cs" />
     <Compile Include="Infrastructure\InfrastructureCrap.DontBotherReadingItsNotImportant.cs" />
     <Compile Include="Commands\RemoveItemsFromInventory.cs" />
     <Compile Include="Events\Event.cs" />
@@ -90,6 +93,7 @@
     <Compile Include="ReadModel\IReadModelFacade.cs" />
     <Compile Include="ReadModel\InvenotryItemDetailView.cs" />
     <Compile Include="ReadModel\ReadModelFacade.cs" />
+    <Compile Include="Setup\BusRegisterer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

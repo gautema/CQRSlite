@@ -5,7 +5,8 @@ using SimpleCQRS.ReadModel.Dtos;
 
 namespace SimpleCQRS.ReadModel
 {
-    public class InvenotryItemDetailView : Handles<InventoryItemCreated>, Handles<InventoryItemDeactivated>, Handles<InventoryItemRenamed>, Handles<ItemsRemovedFromInventory>, Handles<ItemsCheckedInToInventory>
+    public class InvenotryItemDetailView : Handles<InventoryItemCreated>, Handles<InventoryItemDeactivated>, 
+        Handles<InventoryItemRenamed>, Handles<ItemsRemovedFromInventory>, Handles<ItemsCheckedInToInventory>
     {
         public void Handle(InventoryItemCreated message)
         {

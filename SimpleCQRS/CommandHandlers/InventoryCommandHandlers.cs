@@ -3,7 +3,8 @@ using SimpleCQRS.Domain;
 
 namespace SimpleCQRS.CommandHandlers
 {
-    public class InventoryCommandHandlers
+    public class InventoryCommandHandlers : Handles<CreateInventoryItem>, Handles<DeactivateInventoryItem>, Handles<RemoveItemsFromInventory>,
+        Handles<CheckInItemsToInventory>, Handles<RenameInventoryItem>
     {
         private readonly IRepository<InventoryItem> _repository;
         public InventoryCommandHandlers(IRepository<InventoryItem> repository)
@@ -45,5 +46,4 @@ namespace SimpleCQRS.CommandHandlers
             _repository.Save(item, message.OriginalVersion);
         }
     }
-
 }

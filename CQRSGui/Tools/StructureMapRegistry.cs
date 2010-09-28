@@ -1,8 +1,7 @@
 ﻿using SimpleCQRS;
 using SimpleCQRS.Domain;
-using SimpleCQRS.EventStore;
-using SimpleCQRS.ReadModel;
 using StructureMap.Configuration.DSL;
+using StructureMap.Graph;
 
 namespace CQRSGui.Tools
 {
@@ -10,13 +9,18 @@ namespace CQRSGui.Tools
     {
         public StructureMapRegistry()
         {
-            For<FakeBus>().Singleton().Use<FakeBus>();
-            For<ICommandSender>().Use(x => x.GetInstance<FakeBus>());
-            For<IEventPublisher>().Use(x => x.GetInstance<FakeBus>());
-            For<IHandleRegister>().Use(x => x.GetInstance<FakeBus>());
-            For<IEventStore>().Use<EventStore>();
-            For<IReadModelFacade>().Use<ReadModelFacade>();
+            For<InProcessBus>().Singleton().Use<InProcessBus>();
+            For<ICommandSender>().Use(x => x.GetInstance<InProcessBus>());
+            For<IEventPublisher>().Use(x => x.GetInstance<InProcessBus>());
+            For<IHandleRegister>().Use(x => x.GetInstance<InProcessBus>());
             For(typeof(IRepository<>)).Use(typeof(Repository<>));
+
+            Scan(s =>
+                     {
+                         s.TheCallingAssembly();
+                         s.AssemblyContainingType<InProcessBus>();
+                         s.Convention<FirstInterfaceConvention>();
+                     });
         }
     }
 }

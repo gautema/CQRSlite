@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using SimpleCQRS.Commands;
 using SimpleCQRS.Events;
 
 namespace SimpleCQRS
 {
-    public class FakeBus : ICommandSender, IEventPublisher, IHandleRegister
+    public class InProcessBus : ICommandSender, IEventPublisher, IHandleRegister
     {
         private readonly Dictionary<Type, List<Action<Message>>> _routes = new Dictionary<Type, List<Action<Message>>>();
 
@@ -41,9 +40,7 @@ namespace SimpleCQRS
             if (!_routes.TryGetValue(@event.GetType(), out handlers)) return;
             foreach(var handler in handlers)
             {
-                //dispatch on thread pool for added awesomeness
-                var handler1 = handler;
-                ThreadPool.QueueUserWorkItem(x => handler1(@event));
+                handler(@event);
             }
         }
     }
