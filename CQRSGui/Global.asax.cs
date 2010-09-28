@@ -3,7 +3,6 @@ using System.Web.Routing;
 using CQRSGui.Tools;
 using Microsoft.Practices.ServiceLocation;
 using SimpleCQRS;
-using SimpleCQRS.Setup;
 using StructureMap;
 
 namespace CQRSGui

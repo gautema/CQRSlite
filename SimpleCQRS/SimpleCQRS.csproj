@@ -64,36 +64,19 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandHandlers\InventoryCommandHandlers.cs" />
-    <Compile Include="Commands\CheckInItemsToInventory.cs" />
-    <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\CreateInventoryItem.cs" />
-    <Compile Include="Commands\DeactivateInventoryItem.cs" />
-    <Compile Include="Commands\RenameInventoryItem.cs" />
-    <Compile Include="Domain\Domain.cs" />
-    <Compile Include="Domain\InventoryItem.cs" />
-    <Compile Include="EventStore\Exceptions\AggregateNotFoundException.cs" />
-    <Compile Include="EventStore\Exceptions\ConcurrencyException.cs" />
-    <Compile Include="EventStore\EventStore.cs" />
-    <Compile Include="EventStore\IEventStore.cs" />
-    <Compile Include="Events\InventoryItemCreated.cs" />
-    <Compile Include="Events\InventoryItemDeactivated.cs" />
-    <Compile Include="Events\InventoryItemRenamed.cs" />
-    <Compile Include="Events\ItemsCheckedInToInventory.cs" />
-    <Compile Include="Events\ItemsRemovedFromInventory.cs" />
+    <Compile Include="AggregateRoot.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="Repository.cs" />
+    <Compile Include="Exceptions\AggregateNotFoundException.cs" />
+    <Compile Include="Exceptions\ConcurrencyException.cs" />
+    <Compile Include="EventStore.cs" />
+    <Compile Include="IEventStore.cs" />
     <Compile Include="InProcessBus.cs" />
-    <Compile Include="Infrastructure\InfrastructureCrap.DontBotherReadingItsNotImportant.cs" />
-    <Compile Include="Commands\RemoveItemsFromInventory.cs" />
-    <Compile Include="Events\Event.cs" />
+    <Compile Include="InfrastructureCrap.DontBotherReadingItsNotImportant.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="IRepository.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="Infrastructure\BullShitDatabase.cs" />
-    <Compile Include="ReadModel\Dtos\InventoryItemDetailsDto.cs" />
-    <Compile Include="ReadModel\Dtos\InventoryItemListDto.cs" />
-    <Compile Include="ReadModel\InventoryListView.cs" />
-    <Compile Include="ReadModel\IReadModelFacade.cs" />
-    <Compile Include="ReadModel\InvenotryItemDetailView.cs" />
-    <Compile Include="ReadModel\ReadModelFacade.cs" />
-    <Compile Include="Setup\BusRegisterer.cs" />
+    <Compile Include="BusRegisterer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
