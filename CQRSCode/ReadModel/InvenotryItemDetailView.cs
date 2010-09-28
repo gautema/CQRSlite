@@ -3,11 +3,12 @@ using CQRSCode.Events;
 using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
 using SimpleCQRS;
+using SimpleCQRS.Interfaces;
 
 namespace CQRSCode.ReadModel
 {
-    public class InvenotryItemDetailView : Handles<InventoryItemCreated>, Handles<InventoryItemDeactivated>, 
-        Handles<InventoryItemRenamed>, Handles<ItemsRemovedFromInventory>, Handles<ItemsCheckedInToInventory>
+    public class InvenotryItemDetailView : IHandles<InventoryItemCreated>, IHandles<InventoryItemDeactivated>, 
+        IHandles<InventoryItemRenamed>, IHandles<ItemsRemovedFromInventory>, IHandles<ItemsCheckedInToInventory>
     {
         public void Handle(InventoryItemCreated message)
         {

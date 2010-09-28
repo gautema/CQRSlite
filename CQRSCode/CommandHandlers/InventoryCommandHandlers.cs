@@ -1,11 +1,12 @@
 ﻿using CQRSCode.Commands;
 using CQRSCode.Domain;
 using SimpleCQRS;
+using SimpleCQRS.Interfaces;
 
 namespace CQRSCode.CommandHandlers
 {
-    public class InventoryCommandHandlers : Handles<CreateInventoryItem>, Handles<DeactivateInventoryItem>, Handles<RemoveItemsFromInventory>,
-        Handles<CheckInItemsToInventory>, Handles<RenameInventoryItem>
+    public class InventoryCommandHandlers : IHandles<CreateInventoryItem>, IHandles<DeactivateInventoryItem>, IHandles<RemoveItemsFromInventory>,
+        IHandles<CheckInItemsToInventory>, IHandles<RenameInventoryItem>
     {
         private readonly IRepository<InventoryItem> _repository;
         public InventoryCommandHandlers(IRepository<InventoryItem> repository)

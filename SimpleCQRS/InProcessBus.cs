@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleCQRS.Interfaces;
 
 namespace SimpleCQRS
 {
@@ -41,25 +42,5 @@ namespace SimpleCQRS
                 handler(@event);
             }
         }
-    }
-
-    public interface IHandleRegister
-    {
-        void RegisterHandler<T>(Action<T> handler) where T : Message;
-    }
-
-    public interface Handles<T>
-    {
-        void Handle(T message);
-    }
-
-    public interface ICommandSender
-    {
-        void Send<T>(T command) where T : Command;
-
-    }
-    public interface IEventPublisher
-    {
-        void Publish<T>(T @event) where T : Event;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SimpleCQRS;
+using SimpleCQRS.Interfaces;
 using StructureMap.Configuration.DSL;
 using StructureMap.Graph;
 

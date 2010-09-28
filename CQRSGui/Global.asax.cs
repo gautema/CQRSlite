@@ -3,6 +3,7 @@ using System.Web.Routing;
 using CQRSGui.Tools;
 using Microsoft.Practices.ServiceLocation;
 using SimpleCQRS;
+using SimpleCQRS.Interfaces;
 using StructureMap;
 
 namespace CQRSGui
@@ -44,7 +45,7 @@ namespace CQRSGui
         private void RegisterHandlers(IServiceLocator serviceLocator)
         {
             var registerer = new BusRegisterer();
-            registerer.Register(serviceLocator,typeof(Handles<>));
+            registerer.Register(serviceLocator,typeof(IHandles<>));
         }
 
     }

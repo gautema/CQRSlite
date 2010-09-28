@@ -2,10 +2,11 @@
 using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
 using SimpleCQRS;
+using SimpleCQRS.Interfaces;
 
 namespace CQRSCode.ReadModel
 {
-    public class InventoryListView : Handles<InventoryItemCreated>, Handles<InventoryItemRenamed>, Handles<InventoryItemDeactivated>
+    public class InventoryListView : IHandles<InventoryItemCreated>, IHandles<InventoryItemRenamed>, IHandles<InventoryItemDeactivated>
     {
         public void Handle(InventoryItemCreated message)
         {

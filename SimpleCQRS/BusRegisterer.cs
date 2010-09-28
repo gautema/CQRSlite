@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
+using SimpleCQRS.Interfaces;
 
 namespace SimpleCQRS
 {
@@ -64,7 +65,7 @@ namespace SimpleCQRS
         {
             return type
                 .GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(Handles<>));
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandles<>));
         }
 
     }

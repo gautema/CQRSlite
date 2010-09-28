@@ -66,15 +66,19 @@
   <ItemGroup>
     <Compile Include="AggregateRoot.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="Interfaces\ICommandSender.cs" />
+    <Compile Include="Interfaces\IEventPublisher.cs" />
+    <Compile Include="Interfaces\IHandleRegister.cs" />
+    <Compile Include="Interfaces\IHandles.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="Exceptions\AggregateNotFoundException.cs" />
     <Compile Include="Exceptions\ConcurrencyException.cs" />
     <Compile Include="EventStore.cs" />
-    <Compile Include="IEventStore.cs" />
+    <Compile Include="Interfaces\IEventStore.cs" />
     <Compile Include="InProcessBus.cs" />
-    <Compile Include="InfrastructureCrap.DontBotherReadingItsNotImportant.cs" />
+    <Compile Include="Infrastructure.cs" />
     <Compile Include="Event.cs" />
-    <Compile Include="IRepository.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="BusRegisterer.cs" />
   </ItemGroup>

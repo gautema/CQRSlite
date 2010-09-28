@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleCQRS
+namespace SimpleCQRS.Interfaces
 {
     public interface IRepository<T> where T : AggregateRoot, new()
     {

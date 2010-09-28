@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using CQRSCode.Commands;
 using CQRSCode.ReadModel;
 using SimpleCQRS;
+using SimpleCQRS.Interfaces;
 
 namespace CQRSGui.Controllers
 {
