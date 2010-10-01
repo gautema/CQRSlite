@@ -5,12 +5,12 @@ using Xunit;
 
 namespace SimpleCQRS.Tests.ConfigTests
 {
-    public class WhenRegestering
+    public class WhenRegistering
     {
         private BusRegisterer _register;
         private TestServiceLocator _locator;
 
-        public WhenRegestering()
+        public WhenRegistering()
         {
             _register = new BusRegisterer();
             _locator = new TestServiceLocator();
