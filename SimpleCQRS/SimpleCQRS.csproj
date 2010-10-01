@@ -66,6 +66,7 @@
     <Compile Include="Commanding\Command.cs" />
     <Compile Include="Commanding\ICommandSender.cs" />
     <Compile Include="Eventing\IEventPublisher.cs" />
+    <Compile Include="Eventing\IEventRepository.cs" />
     <Compile Include="IHandleRegister.cs" />
     <Compile Include="IHandles.cs" />
     <Compile Include="Domain\Repository.cs" />

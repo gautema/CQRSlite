@@ -7,9 +7,16 @@ namespace SimpleCQRS.Eventing
 {
     public class EventStore : IEventStore
     {
+        private readonly IEventRepository _eventRepository;
+        
+        public EventStore(IEventRepository eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
+
         private readonly IEventPublisher _publisher;
 
-        private struct EventDescriptor
+        public struct EventDescriptor
         {
             
             public readonly Event EventData;
@@ -29,15 +36,14 @@ namespace SimpleCQRS.Eventing
             _publisher = publisher;
         }
 
-        private readonly Dictionary<Guid, List<EventDescriptor>> _current = new Dictionary<Guid, List<EventDescriptor>>(); 
         
         public void SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
         {
             List<EventDescriptor> eventDescriptors;
-            if(!_current.TryGetValue(aggregateId, out eventDescriptors))
+            if (!_eventRepository.TryGetEvents(aggregateId, out eventDescriptors))
             {
                 eventDescriptors = new List<EventDescriptor>();
-                _current.Add(aggregateId,eventDescriptors);
+                _eventRepository.Add(aggregateId, eventDescriptors);
             }
             else if(eventDescriptors[eventDescriptors.Count - 1].Version != expectedVersion && expectedVersion != -1)
             {
@@ -56,7 +62,7 @@ namespace SimpleCQRS.Eventing
         public  IEnumerable<Event> GetEventsForAggregate(Guid aggregateId)
         {
             List<EventDescriptor> eventDescriptors;
-            if (!_current.TryGetValue(aggregateId, out eventDescriptors))
+            if (!_eventRepository.TryGetEvents(aggregateId, out eventDescriptors))
             {
                 throw new AggregateNotFoundException();
             }

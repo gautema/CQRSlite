@@ -26,12 +26,7 @@ namespace SimpleCQRS.Domain
             foreach (var e in history) ApplyChange(e, false);
         }
 
-        protected void ApplyChange(Event @event)
-        {
-            ApplyChange(@event, true);
-        }
-
-        private void ApplyChange(Event @event, bool isNew)
+        protected void ApplyChange(Event @event, bool isNew = true)
         {
             this.AsDynamic().Apply(@event);
             if(isNew) _changes.Add(@event);
