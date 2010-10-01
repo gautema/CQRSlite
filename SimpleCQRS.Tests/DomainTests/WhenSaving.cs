@@ -3,12 +3,12 @@ using SimpleCQRS.Domain;
 using SimpleCQRS.Tests.TestSubstitutes;
 using Xunit;
 
-namespace SimpleCQRS.Tests.RepositoryTests
+namespace SimpleCQRS.Tests.DomainTests
 {
     public class WhenSaving
     {
-        private TestEventStore _eventStore;
-        private TestAggregate _aggregate;
+        private readonly TestEventStore _eventStore;
+        private readonly TestAggregate _aggregate;
 
         public WhenSaving()
         {

@@ -3,7 +3,7 @@ using SimpleCQRS.Domain;
 using SimpleCQRS.Tests.TestSubstitutes;
 using Xunit;
 
-namespace SimpleCQRS.Tests.RepositoryTests
+namespace SimpleCQRS.Tests.DomainTests
 {
     public class WhenGettingNotValidAggregate
     {

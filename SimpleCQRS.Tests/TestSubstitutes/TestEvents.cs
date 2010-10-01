@@ -2,12 +2,12 @@
 
 namespace SimpleCQRS.Tests.TestSubstitutes
 {
-    public class TestAggregateCreated : Event
-    {
-
-    }
     public class TestAggregateDidSomeething : Event
     {
         
+    }
+    public class TestAggregateDidSomeethingElse : Event
+    {
+
     }
 }

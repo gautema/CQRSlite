@@ -44,10 +44,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DomainTests\WhenReplayingEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RepositoryTests\WhenSaving.cs" />
-    <Compile Include="RepositoryTests\WhenGettingAnAggregate.cs" />
-    <Compile Include="RepositoryTests\WhenGettingNotValidAggregate.cs" />
+    <Compile Include="DomainTests\WhenSaving.cs" />
+    <Compile Include="DomainTests\WhenGettingAnAggregate.cs" />
+    <Compile Include="DomainTests\WhenGettingNotValidAggregate.cs" />
     <Compile Include="TestSubstitutes\TestAggregate.cs" />
     <Compile Include="TestSubstitutes\TestEvents.cs" />
     <Compile Include="TestSubstitutes\TestEventStore.cs" />
