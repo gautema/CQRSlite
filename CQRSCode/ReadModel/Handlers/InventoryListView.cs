@@ -2,9 +2,8 @@
 using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
 using SimpleCQRS;
-using SimpleCQRS.Interfaces;
 
-namespace CQRSCode.ReadModel
+namespace CQRSCode.ReadModel.Handlers
 {
     public class InventoryListView : IHandles<InventoryItemCreated>, IHandles<InventoryItemRenamed>, IHandles<InventoryItemDeactivated>
     {

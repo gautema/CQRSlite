@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using SimpleCQRS.Interfaces;
+using SimpleCQRS.Commanding;
+using SimpleCQRS.Eventing;
 
 namespace SimpleCQRS
 {

@@ -1,5 +1,6 @@
 using System;
 using SimpleCQRS;
+using SimpleCQRS.Commanding;
 
 namespace CQRSCode.Commands
 {

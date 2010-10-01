@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleCQRS.Exceptions
+namespace SimpleCQRS.Domain
 {
     public class AggregateNotFoundException : Exception
     {

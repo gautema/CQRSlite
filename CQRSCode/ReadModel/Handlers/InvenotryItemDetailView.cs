@@ -3,7 +3,6 @@ using CQRSCode.Events;
 using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
 using SimpleCQRS;
-using SimpleCQRS.Interfaces;
 
 namespace CQRSCode.ReadModel
 {

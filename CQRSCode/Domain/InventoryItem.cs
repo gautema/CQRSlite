@@ -1,6 +1,7 @@
 ﻿using System;
 using CQRSCode.Events;
 using SimpleCQRS;
+using SimpleCQRS.Domain;
 
 namespace CQRSCode.Domain
 {

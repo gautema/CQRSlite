@@ -6,7 +6,7 @@ using StructureMap;
 
 namespace CQRSGui.Tools
 {
-    public class StructureMapServiceLocator : ServiceLocatorImplBase
+    public class StructureMapServiceLocator : ServiceLocatorImplBase, SimpleCQRS.Config.IServiceLocator
     {
         private readonly IContainer _container;
 

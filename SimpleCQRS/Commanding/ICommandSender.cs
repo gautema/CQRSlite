@@ -1,4 +1,4 @@
-﻿namespace SimpleCQRS.Interfaces
+﻿namespace SimpleCQRS.Commanding
 {
     public interface ICommandSender
     {

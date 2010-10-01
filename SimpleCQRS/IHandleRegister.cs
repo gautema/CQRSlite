@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleCQRS.Interfaces
+namespace SimpleCQRS
 {
     public interface IHandleRegister
     {

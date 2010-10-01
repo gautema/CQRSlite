@@ -1,7 +1,7 @@
 ﻿using CQRSCode.Commands;
 using CQRSCode.Domain;
 using SimpleCQRS;
-using SimpleCQRS.Interfaces;
+using SimpleCQRS.Domain;
 
 namespace CQRSCode.CommandHandlers
 {

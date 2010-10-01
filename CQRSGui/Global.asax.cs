@@ -3,8 +3,9 @@ using System.Web.Routing;
 using CQRSGui.Tools;
 using Microsoft.Practices.ServiceLocation;
 using SimpleCQRS;
-using SimpleCQRS.Interfaces;
+using SimpleCQRS.Config;
 using StructureMap;
+using IServiceLocator = Microsoft.Practices.ServiceLocation.IServiceLocator;
 
 namespace CQRSGui
 {
@@ -29,7 +30,7 @@ namespace CQRSGui
             RegisterRoutes(RouteTable.Routes);
 
             SetupStructureMap();
-            RegisterHandlers(ServiceLocator.Current);
+            RegisterHandlers((SimpleCQRS.Config.IServiceLocator) ServiceLocator.Current);
 
         }
 
@@ -42,7 +43,7 @@ namespace CQRSGui
             ControllerBuilder.Current.SetControllerFactory(locator);
         }
 
-        private void RegisterHandlers(IServiceLocator serviceLocator)
+        private void RegisterHandlers(SimpleCQRS.Config.IServiceLocator serviceLocator)
         {
             var registerer = new BusRegisterer();
             registerer.Register(serviceLocator,typeof(IHandles<>));

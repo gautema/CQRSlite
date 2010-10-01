@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleCQRS.Exceptions;
-using SimpleCQRS.Interfaces;
+using SimpleCQRS.Domain;
 
-namespace SimpleCQRS
+namespace SimpleCQRS.Eventing
 {
     public class EventStore : IEventStore
     {
@@ -54,7 +53,7 @@ namespace SimpleCQRS
             }
         }
 
-        public  List<Event> GetEventsForAggregate(Guid aggregateId)
+        public  IEnumerable<Event> GetEventsForAggregate(Guid aggregateId)
         {
             List<EventDescriptor> eventDescriptors;
             if (!_current.TryGetValue(aggregateId, out eventDescriptors))

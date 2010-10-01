@@ -1,4 +1,4 @@
-namespace SimpleCQRS
+namespace SimpleCQRS.Eventing
 {
 	public class Event : Message
 	{

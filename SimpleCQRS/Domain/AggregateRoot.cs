@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleCQRS.Eventing;
 
-namespace SimpleCQRS
+namespace SimpleCQRS.Domain
 {
     public abstract class AggregateRoot
     {

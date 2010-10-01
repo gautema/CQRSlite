@@ -58,29 +58,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\Lib\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AggregateRoot.cs" />
-    <Compile Include="Command.cs" />
-    <Compile Include="Interfaces\ICommandSender.cs" />
-    <Compile Include="Interfaces\IEventPublisher.cs" />
-    <Compile Include="Interfaces\IHandleRegister.cs" />
-    <Compile Include="Interfaces\IHandles.cs" />
-    <Compile Include="Repository.cs" />
-    <Compile Include="Exceptions\AggregateNotFoundException.cs" />
-    <Compile Include="Exceptions\ConcurrencyException.cs" />
-    <Compile Include="EventStore.cs" />
-    <Compile Include="Interfaces\IEventStore.cs" />
+    <Compile Include="Config\IServiceLocator.cs" />
+    <Compile Include="Domain\AggregateRoot.cs" />
+    <Compile Include="Commanding\Command.cs" />
+    <Compile Include="Commanding\ICommandSender.cs" />
+    <Compile Include="Eventing\IEventPublisher.cs" />
+    <Compile Include="IHandleRegister.cs" />
+    <Compile Include="IHandles.cs" />
+    <Compile Include="Domain\Repository.cs" />
+    <Compile Include="Domain\AggregateNotFoundException.cs" />
+    <Compile Include="Domain\ConcurrencyException.cs" />
+    <Compile Include="Eventing\EventStore.cs" />
+    <Compile Include="Eventing\IEventStore.cs" />
     <Compile Include="InProcessBus.cs" />
     <Compile Include="Infrastructure.cs" />
-    <Compile Include="Event.cs" />
-    <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Eventing\Event.cs" />
+    <Compile Include="Domain\IRepository.cs" />
     <Compile Include="Message.cs" />
-    <Compile Include="BusRegisterer.cs" />
+    <Compile Include="Config\BusRegisterer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

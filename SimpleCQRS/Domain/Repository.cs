@@ -1,7 +1,7 @@
 ﻿using System;
-using SimpleCQRS.Interfaces;
+using SimpleCQRS.Eventing;
 
-namespace SimpleCQRS
+namespace SimpleCQRS.Domain
 {
     public class Repository<T> : IRepository<T> where T: AggregateRoot, new() //shortcut you can do as you see fit with new()
     {

@@ -56,8 +56,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadModel\Dtos\InventoryItemDetailsDto.cs" />
     <Compile Include="ReadModel\Dtos\InventoryItemListDto.cs" />
-    <Compile Include="ReadModel\InvenotryItemDetailView.cs" />
-    <Compile Include="ReadModel\InventoryListView.cs" />
+    <Compile Include="ReadModel\Handlers\InvenotryItemDetailView.cs" />
+    <Compile Include="ReadModel\Handlers\InventoryListView.cs" />
     <Compile Include="ReadModel\IReadModelFacade.cs" />
     <Compile Include="ReadModel\ReadModelFacade.cs" />
   </ItemGroup>

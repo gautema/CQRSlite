@@ -5,14 +5,13 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace SimpleCQRS
 {
 
     //FROM http://blogs.msdn.com/b/davidebb/archive/2010/01/18/use-c-4-0-dynamic-to-drastically-simplify-your-private-reflection-code.aspx
     //doesnt count to line counts :)
-    class PrivateReflectionDynamicObject : DynamicObject
+    internal class PrivateReflectionDynamicObject : DynamicObject
     {
 
         private static IDictionary<Type, IDictionary<string, IProperty>> _propertiesOnType = new ConcurrentDictionary<Type, IDictionary<string, IProperty>>();
@@ -248,7 +247,7 @@ namespace SimpleCQRS
     }
 
 
-    public static class PrivateReflectionDynamicObjectExtensions
+    internal static class PrivateReflectionDynamicObjectExtensions
     {
         public static dynamic AsDynamic(this object o)
         {
@@ -256,7 +255,7 @@ namespace SimpleCQRS
         }
     }
 
-    public static class DelegateAdjuster
+    internal static class DelegateAdjuster
     {
         public static Action<BaseT> CastArgument<BaseT, DerivedT>(Expression<Action<DerivedT>> source) where DerivedT : BaseT
         {
