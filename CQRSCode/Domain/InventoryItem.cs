@@ -51,7 +51,7 @@ namespace CQRSCode.Domain
             get { return _id; }
         }
 
-        private InventoryItem(){}
+       // private InventoryItem(){}
         public InventoryItem(Guid id, string name)
         {
             ApplyChange(new InventoryItemCreated(id, name));

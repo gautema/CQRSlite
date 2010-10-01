@@ -20,12 +20,19 @@ namespace SimpleCQRS.Domain
 
         public T GetById(Guid id)
         {
-            var obj = (T)Activator.CreateInstance(typeof (T), true);
+            T obj;
+            try
+            {
+                obj = (T) Activator.CreateInstance(typeof (T), true);
+            }
+            catch(MissingMethodException)
+            {
+                throw new AggreagateMissingParameterlessConstructorException();
+            }
             var e = _storage.GetEventsForAggregate(id);
             obj.LoadsFromHistory(e);
             return obj;
         }
     }
-
 }
 
