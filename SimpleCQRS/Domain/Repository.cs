@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Reflection;
 using SimpleCQRS.Eventing;
 
 namespace SimpleCQRS.Domain
 {
-    public class Repository<T> : IRepository<T> where T: AggregateRoot, new() //shortcut you can do as you see fit with new()
+    public class Repository<T> : IRepository<T> where T: AggregateRoot, new()
     {
         private readonly IEventStore _storage;
 
@@ -19,7 +20,7 @@ namespace SimpleCQRS.Domain
 
         public T GetById(Guid id)
         {
-            var obj = new T();//lots of ways to do this
+            var obj = new T();
             var e = _storage.GetEventsForAggregate(id);
             obj.LoadsFromHistory(e);
             return obj;

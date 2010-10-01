@@ -8,13 +8,14 @@ namespace SimpleCQRS.Eventing
     public class EventStore : IEventStore
     {
         private readonly IEventRepository _eventRepository;
-        
-        public EventStore(IEventRepository eventRepository)
+        private readonly IEventPublisher _publisher;
+
+        public EventStore(IEventRepository eventRepository, IEventPublisher publisher)
         {
             _eventRepository = eventRepository;
+            _publisher = publisher;
         }
 
-        private readonly IEventPublisher _publisher;
 
         public struct EventDescriptor
         {
@@ -31,12 +32,6 @@ namespace SimpleCQRS.Eventing
             }
         }
 
-        public EventStore(IEventPublisher publisher)
-        {
-            _publisher = publisher;
-        }
-
-        
         public void SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
         {
             List<EventDescriptor> eventDescriptors;

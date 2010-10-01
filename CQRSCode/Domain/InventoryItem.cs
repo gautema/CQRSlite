@@ -53,7 +53,6 @@ namespace CQRSCode.Domain
 
         public InventoryItem()
         {
-            // used to create in repository ... many ways to avoid this, eg making private constructor
         }
 
         public InventoryItem(Guid id, string name)

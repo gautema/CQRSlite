@@ -1,4 +1,5 @@
-﻿using SimpleCQRS;
+﻿using CQRSCode.ReadModel;
+using SimpleCQRS;
 using SimpleCQRS.Commanding;
 using SimpleCQRS.Domain;
 using SimpleCQRS.Eventing;
@@ -21,6 +22,7 @@ namespace CQRSGui.Tools
                      {
                          s.TheCallingAssembly();
                          s.AssemblyContainingType<InProcessBus>();
+                         s.AssemblyContainingType<ReadModelFacade>();
                          s.Convention<FirstInterfaceConvention>();
                      });
         }

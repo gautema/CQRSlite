@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
+using CQRSCode.ReadModel;
 using CQRSGui.Tools;
 using Microsoft.Practices.ServiceLocation;
 using SimpleCQRS;
@@ -46,7 +47,7 @@ namespace CQRSGui
         private void RegisterHandlers(SimpleCQRS.Config.IServiceLocator serviceLocator)
         {
             var registerer = new BusRegisterer();
-            registerer.Register(serviceLocator,typeof(IHandles<>));
+            registerer.Register(serviceLocator,typeof(IHandles<>),typeof(ReadModelFacade));
         }
 
     }
