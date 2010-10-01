@@ -6,7 +6,6 @@ using Microsoft.Practices.ServiceLocation;
 using SimpleCQRS;
 using SimpleCQRS.Config;
 using StructureMap;
-using IServiceLocator = Microsoft.Practices.ServiceLocation.IServiceLocator;
 
 namespace CQRSGui
 {
