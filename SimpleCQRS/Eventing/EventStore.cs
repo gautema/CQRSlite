@@ -15,8 +15,7 @@ namespace SimpleCQRS.Eventing
             _eventRepository = eventRepository;
             _publisher = publisher;
         }
-
-
+        
         public struct EventDescriptor
         {
             
