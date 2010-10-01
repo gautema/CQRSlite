@@ -1,0 +1,3 @@
+In this small project I have tried to make a small CQRS-framework out of the CQRS example I made together with Greg Young some time ago. The original code is located at http://github.com/gregoryyoung/m-r
+
+License: This code is licensed under the Apache 2.0 license.
