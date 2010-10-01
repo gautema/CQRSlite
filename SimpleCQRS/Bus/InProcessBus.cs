@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using SimpleCQRS.Commanding;
 using SimpleCQRS.Eventing;
 
-namespace SimpleCQRS
+namespace SimpleCQRS.Bus
 {
-    public class InProcessBus : ICommandSender, IEventPublisher, IHandleRegister
+    public abstract class InProcessBus : ICommandSender, IEventPublisher, IHandleRegister
     {
         private readonly Dictionary<Type, List<Action<Message>>> _routes = new Dictionary<Type, List<Action<Message>>>();
 

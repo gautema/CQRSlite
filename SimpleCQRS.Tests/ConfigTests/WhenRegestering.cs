@@ -1,4 +1,5 @@
-﻿using SimpleCQRS.Config;
+﻿using System;
+using SimpleCQRS.Config;
 using SimpleCQRS.Tests.TestSubstitutes;
 using Xunit;
 
@@ -19,7 +20,16 @@ namespace SimpleCQRS.Tests.ConfigTests
         [Fact]
         public void ShouldRegisterAllHandlers()
         {
-            Assert.Equal(2, TestHandleRegistrer.RegisteredHandlers);
+            Assert.Equal(2, TestHandleRegistrer.HandlerList.Count);
+        }
+
+        [Fact]
+        public void ShouldRegisterHandlerMethod()
+        {
+            foreach (var handler in TestHandleRegistrer.HandlerList)
+            {
+                Assert.Equal("Handle",((Action<TestAggregateDoSomething>)handler).Method.Name);
+            }
         }
     }
 }

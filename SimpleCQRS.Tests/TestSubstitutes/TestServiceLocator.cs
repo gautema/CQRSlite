@@ -1,4 +1,5 @@
 ﻿using System;
+using SimpleCQRS.Bus;
 using SimpleCQRS.Config;
 
 namespace SimpleCQRS.Tests.TestSubstitutes
