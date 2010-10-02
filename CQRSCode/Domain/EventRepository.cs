@@ -17,5 +17,12 @@ namespace CQRSCode.Domain
         {
             db.Add(aggregateId, eventDescriptors);
         }
+
+        public void Save(Guid aggregateId, EventStore.EventDescriptor eventDescriptors)
+        {
+            List<EventStore.EventDescriptor> list;
+            db.TryGetValue(aggregateId, out list);
+            list.Add(eventDescriptors);
+        }
     }
 }

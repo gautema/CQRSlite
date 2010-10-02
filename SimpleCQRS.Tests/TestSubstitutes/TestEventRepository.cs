@@ -25,7 +25,15 @@ namespace SimpleCQRS.Tests.TestSubstitutes
 
         public void Add(Guid aggregateId, List<EventStore.EventDescriptor> eventDescriptors)
         {
-            
+            AddedEvents++;
         }
+
+        public void Save(Guid aggregateId, EventStore.EventDescriptor eventDescriptors)
+        {
+            SavedEvents++;
+        }
+
+        public int AddedEvents { get; set; }
+        public int SavedEvents { get; set; }
     }
 }

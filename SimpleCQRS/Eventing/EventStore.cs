@@ -18,7 +18,6 @@ namespace SimpleCQRS.Eventing
         
         public struct EventDescriptor
         {
-            
             public readonly Event EventData;
             public readonly Guid Id;
             public readonly int Version;
@@ -48,7 +47,7 @@ namespace SimpleCQRS.Eventing
             {
                 i++;
                 @event.Version = i;
-                eventDescriptors.Add(new EventDescriptor(aggregateId,@event,i));
+                _eventRepository.Save(aggregateId, new EventDescriptor(aggregateId,@event,i));
                 _publisher.Publish(@event);
             }
         }
