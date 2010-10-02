@@ -17,7 +17,7 @@ namespace SimpleCQRS.Tests.TestSubstitutes
 
             eventDescriptors = new List<EventStore.EventDescriptor>
                                    {
-                                       new EventStore.EventDescriptor(aggregateId, new TestAggregateDidSomeething(), 1),
+                                       new EventStore.EventDescriptor(aggregateId, new TestAggregateDidSomething(), 1),
                                        new EventStore.EventDescriptor(aggregateId, new TestAggregateDidSomeethingElse(), 2)
                                    };
             return true;

@@ -13,7 +13,7 @@ namespace SimpleCQRS.Tests.TestSubstitutes
 
         public void DoSomething()
         {
-            ApplyChange(new TestAggregateDidSomeething());
+            ApplyChange(new TestAggregateDidSomething());
         }
 
         public void DoSomethingElse()
@@ -21,7 +21,7 @@ namespace SimpleCQRS.Tests.TestSubstitutes
             ApplyChange(new TestAggregateDidSomeethingElse());
         }
 
-        public void Apply(TestAggregateDidSomeething e)
+        public void Apply(TestAggregateDidSomething e)
         {
             I++;
         }

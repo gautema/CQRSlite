@@ -14,7 +14,7 @@ namespace SimpleCQRS.Tests.TestSubstitutes
 
         public IEnumerable<Event> GetEventsForAggregate(Guid aggregateId)
         {
-            return new List<Event> {new TestAggregateDidSomeething(), new TestAggregateDidSomeething(), new TestAggregateDidSomeethingElse()};
+            return new List<Event> {new TestAggregateDidSomething(), new TestAggregateDidSomething(), new TestAggregateDidSomeethingElse()};
         }
 
         public int SavedEvents { get; set; }

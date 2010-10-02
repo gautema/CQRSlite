@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusTests\WhenPublishingEvents.cs" />
-    <Compile Include="BusTests\WhenRegistering.cs" />
     <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
     <Compile Include="EventingTests\WhenGettingFromEventStore.cs" />
     <Compile Include="EventingTests\WhenSavingToEventStore.cs" />

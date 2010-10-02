@@ -29,27 +29,27 @@ namespace SimpleCQRS.Tests.EventingTests
         [Fact]
         public void ShouldSaveToEventStore()
         {
-            _eventstore.SaveEvents(Guid.NewGuid(), new List<Event> { new TestAggregateDidSomeething() }, 2);
+            _eventstore.SaveEvents(Guid.NewGuid(), new List<Event> { new TestAggregateDidSomething() }, 2);
             Assert.Equal(1,_testEventRepository.SavedEvents);
         }
 
         [Fact]
         public void ShouldPublishEvents()
         {
-            _eventstore.SaveEvents(Guid.NewGuid(), new List<Event> { new TestAggregateDidSomeething() }, 2);
+            _eventstore.SaveEvents(Guid.NewGuid(), new List<Event> { new TestAggregateDidSomething() }, 2);
             Assert.Equal(1, _testEventPublisher.Published);
         }
 
         [Fact]
         public void ShouldAddNewAggregate()
         {
-            _eventstore.SaveEvents(Guid.Empty,new List<Event>{new TestAggregateDidSomeething()},0);
+            _eventstore.SaveEvents(Guid.Empty,new List<Event>{new TestAggregateDidSomething()},0);
             Assert.Equal(1,_testEventRepository.AddedEvents);
         }
         [Fact]
         public void ShouldSaveNewAggregate()
         {
-            _eventstore.SaveEvents(Guid.Empty, new List<Event> { new TestAggregateDidSomeething() }, 0);
+            _eventstore.SaveEvents(Guid.Empty, new List<Event> { new TestAggregateDidSomething() }, 0);
             Assert.Equal(1, _testEventRepository.SavedEvents);
         }
     }

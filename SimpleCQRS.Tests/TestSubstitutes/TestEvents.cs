@@ -2,12 +2,22 @@
 
 namespace SimpleCQRS.Tests.TestSubstitutes
 {
-    public class TestAggregateDidSomeething : Event
+    public class TestAggregateDidSomething : Event
     {
         
     }
     public class TestAggregateDidSomeethingElse : Event
     {
 
+    }
+
+    public class TestAggregateDidSomethingHandler : IHandles<TestAggregateDidSomething>
+    {
+        public void Handle(TestAggregateDidSomething message)
+        {
+            TimesRun++;
+        }
+
+        public int TimesRun { get; set; }
     }
 }
