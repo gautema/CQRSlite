@@ -46,9 +46,11 @@
   <ItemGroup>
     <Compile Include="BusTests\WhenPublishingEvents.cs" />
     <Compile Include="BusTests\WhenRegistering.cs" />
+    <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
     <Compile Include="EventingTests\WhenGettingFromEventStore.cs" />
     <Compile Include="EventingTests\WhenSavingToEventStore.cs" />
     <Compile Include="BusTests\WhenSendingCommand.cs" />
+    <Compile Include="TestSubstitutes\TestEventRepository.cs" />
     <Compile Include="TestSubstitutes\TestHandleRegistrer.cs" />
     <Compile Include="TestSubstitutes\TestCommands.cs" />
     <Compile Include="TestSubstitutes\TestServiceLocator.cs" />
