@@ -20,7 +20,8 @@ namespace SimpleCQRS.Tests.TestSubstitutes
     {
         public void Handle(TestAggregateDoSomething message)
         {
-            throw new NotImplementedException();
+            TimesRun++;
         }
+        public int TimesRun { get; set; }
     }
 }

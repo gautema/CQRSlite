@@ -20,7 +20,7 @@ namespace SimpleCQRS.Tests.ConfigTests
         [Fact]
         public void ShouldRegisterAllHandlers()
         {
-            Assert.Equal(2, TestHandleRegistrer.HandlerList.Count);
+            Assert.Equal(3, TestHandleRegistrer.HandlerList.Count);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace SimpleCQRS.Tests.ConfigTests
         {
             foreach (var handler in TestHandleRegistrer.HandlerList)
             {
-                Assert.Equal("Handle",((Action<TestAggregateDoSomething>)handler).Method.Name);
+                Assert.Equal("Handle",((dynamic)handler).Method.Name);
             }
         }
     }

@@ -14,6 +14,8 @@ namespace SimpleCQRS.Tests.TestSubstitutes
         {
             if(type == typeof(IHandleRegister))
                 return new TestHandleRegistrer();
+            if (type == typeof(TestAggregateDidSomethingHandler))
+                return new TestAggregateDidSomethingHandler();
             return new TestAggregateDoSomethingHandler();
         }
 
