@@ -14,7 +14,8 @@ namespace SimpleCQRS.Tests.ConfigTests
         {
             _register = new BusRegisterer();
             _locator = new TestServiceLocator();
-            _register.Register(_locator, GetType());
+            if (TestHandleRegistrer.HandlerList.Count == 0)
+                _register.Register(_locator, GetType());
         }
 
         [Fact]

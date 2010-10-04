@@ -18,7 +18,5 @@ namespace SimpleCQRS.Tests.TestSubstitutes
                 return new TestAggregateDidSomethingHandler();
             return new TestAggregateDoSomethingHandler();
         }
-
-        public int HandleCount { get; set; }
     }
 }
