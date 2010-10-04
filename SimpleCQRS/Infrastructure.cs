@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -13,17 +12,6 @@ namespace SimpleCQRS
     //doesnt count to line counts :)
     internal class PrivateReflectionDynamicObject : DynamicObject
     {
-
-        private static IDictionary<Type, IDictionary<string, IProperty>> _propertiesOnType = new ConcurrentDictionary<Type, IDictionary<string, IProperty>>();
-
-        // Simple abstraction to make field and property access consistent
-        interface IProperty
-        {
-            string Name { get; }
-            object GetValue(object obj, object[] index);
-            void SetValue(object obj, object val, object[] index);
-        }
-
         private object RealObject { get; set; }
         private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
@@ -66,13 +54,12 @@ namespace SimpleCQRS
                 {
                     return InvokeMemberOnType(type.BaseType, target, name, args);
                 }
-                //quick greg hack to allow methods to not exist!
+                //Don't care if the method don't exist.
                 return null;
             }
         }
     }
-
-
+    
     internal static class PrivateReflectionDynamicObjectExtensions
     {
         public static dynamic AsDynamic(this object o)
@@ -83,18 +70,18 @@ namespace SimpleCQRS
 
     internal static class DelegateAdjuster
     {
-        public static Action<BaseT> CastArgument<BaseT, DerivedT>(Expression<Action<DerivedT>> source) where DerivedT : BaseT
+        public static Action<TBase> CastArgument<TBase, TDerived>(Expression<Action<TDerived>> source) where TDerived : TBase
         {
-            if (typeof(DerivedT) == typeof(BaseT))
+            if (typeof(TDerived) == typeof(TBase))
             {
-                return (Action<BaseT>)((Delegate)source.Compile());
+                return (Action<TBase>)((Delegate)source.Compile());
             }
 
-            ParameterExpression sourceParameter = Expression.Parameter(typeof(BaseT), "source");
-            var result = Expression.Lambda<Action<BaseT>>(
+            ParameterExpression sourceParameter = Expression.Parameter(typeof(TBase), "source");
+            var result = Expression.Lambda<Action<TBase>>(
                 Expression.Invoke(
                     source,
-                    Expression.Convert(sourceParameter, typeof(DerivedT))),
+                    Expression.Convert(sourceParameter, typeof(TDerived))),
                 sourceParameter);
             return result.Compile();
         }
