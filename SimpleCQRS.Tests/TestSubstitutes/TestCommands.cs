@@ -20,8 +20,7 @@ namespace SimpleCQRS.Tests.TestSubstitutes
     {
         public void Handle(TestAggregateDoSomething message)
         {
-            TimesRun++;
+
         }
-        public int TimesRun { get; set; }
     }
 }
