@@ -46,14 +46,14 @@ namespace CQRSlite.Eventing
             }
         }
 
-        public  IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int version)
+        public  IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion)
         {
             List<EventDescriptor> eventDescriptors;
-            if (!_eventRepository.TryGetEvents(aggregateId, version, out eventDescriptors))
+            if (!_eventRepository.TryGetEvents(aggregateId, fromVersion, out eventDescriptors))
             {
                 throw new AggregateNotFoundException();
             }
-            return eventDescriptors.Select(desc => desc.EventData).ToList();
+            return eventDescriptors.Where(desc => desc.Version > fromVersion).Select(desc => desc.EventData).ToList();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace CQRSlite.Tests.TestSubstitutes
             SavedEvents = events.Count();
         }
 
-        public IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int version)
+        public IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion)
         {
             return new List<Event> {new TestAggregateDidSomething(), new TestAggregateDidSomething(), new TestAggregateDidSomeethingElse()};
         }
