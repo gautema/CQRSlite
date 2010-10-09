@@ -7,7 +7,7 @@ namespace CQRSlite.Domain
     public abstract class AggregateRoot
     {
         private readonly List<Event> _changes = new List<Event>();
-       
+
         public abstract Guid Id { get; }
         public int Version { get; internal set; }
 

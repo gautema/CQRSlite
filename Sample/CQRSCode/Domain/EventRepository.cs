@@ -8,9 +8,14 @@ namespace CQRSCode.Domain
     {
         private Dictionary<Guid, List<EventStore.EventDescriptor>> db = new Dictionary<Guid, List<EventStore.EventDescriptor>>();
 
-        public bool TryGetEvents(Guid aggregateId, out List<EventStore.EventDescriptor> eventDescriptors)
+        public bool TryGetEvents(Guid aggregateId, int version, out List<EventStore.EventDescriptor> eventDescriptors)
         {
             return db.TryGetValue(aggregateId, out eventDescriptors);
+        }
+
+        public bool TryGetEvents(Guid aggregateId, out List<EventStore.EventDescriptor> eventDescriptors)
+        {
+            throw new NotImplementedException();
         }
 
         public void Add(Guid aggregateId, List<EventStore.EventDescriptor> eventDescriptors)

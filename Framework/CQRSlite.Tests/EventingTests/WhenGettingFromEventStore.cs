@@ -18,7 +18,7 @@ namespace CQRSlite.Tests.EventingTests
             var testEventRepository = new TestEventRepository();
             var testEventPublisher = new TestEventPublisher();
             _eventstore = new EventStore(testEventRepository,testEventPublisher);
-            _events = _eventstore.GetEventsForAggregate(Guid.NewGuid());
+            _events = _eventstore.GetEventsForAggregate(Guid.NewGuid(), 0);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace CQRSlite.Tests.EventingTests
         [Fact]
         public void ShouldFailIfAggregateNotExists()
         {
-            Assert.Throws<AggregateNotFoundException>(() => { _eventstore.GetEventsForAggregate(Guid.Empty); });
+            Assert.Throws<AggregateNotFoundException>(() => { _eventstore.GetEventsForAggregate(Guid.Empty, 0); });
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestEventRepository : IEventRepository
     {
-        public bool TryGetEvents(Guid aggregateId, out List<EventStore.EventDescriptor> eventDescriptors)
+        public bool TryGetEvents(Guid aggregateId, int version, out List<EventStore.EventDescriptor> eventDescriptors)
         {
             if (aggregateId == Guid.Empty)
             {

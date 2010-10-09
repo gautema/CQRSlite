@@ -6,9 +6,9 @@ namespace CQRSlite.Domain
     public class Repository<T> : IRepository<T> where T : AggregateRoot
     {
         private readonly IEventStore _storage;
-        private readonly ISnapshotStore<T> _snapshotStore;
+        private readonly ISnapshotStore _snapshotStore;
 
-        public Repository(IEventStore storage, ISnapshotStore<T> snapshotStore)
+        public Repository(IEventStore storage, ISnapshotStore snapshotStore)
         {
             _storage = storage;
             _snapshotStore = snapshotStore;
@@ -38,9 +38,12 @@ namespace CQRSlite.Domain
             // get events after snapshot
             // apply the rest of the events
             // return obj
-            if (_snapshotStore != null)
-                _snapshotStore.Get(id);
-            var e = _storage.GetEventsForAggregate(id);
+            if (obj is ISnapshotable && _snapshotStore != null)
+            {
+                //var snapshot = _snapshotStore.Get<T>(id);
+                
+            }
+            var e = _storage.GetEventsForAggregate(id, obj.Version);
             obj.LoadsFromHistory(e);
             return obj;
         }

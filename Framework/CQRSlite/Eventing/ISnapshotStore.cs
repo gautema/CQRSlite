@@ -1,11 +1,10 @@
 ﻿using System;
-using CQRSlite.Domain;
 
 namespace CQRSlite.Eventing
 {
-    public interface ISnapshotStore<T>  where T : AggregateRoot
+    public interface ISnapshotStore
     {
-        Snapshot<T> Get(Guid id);
-        void Save(T aggregateRoot);
+        T Get<T>(Guid id) where T : Snapshot;
+        void Save<T>(T aggregateRoot) where T : Snapshot;
     }
 }

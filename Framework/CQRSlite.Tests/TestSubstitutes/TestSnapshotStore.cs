@@ -3,19 +3,18 @@ using CQRSlite.Eventing;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
-    public class TestSnapshotStore : ISnapshotStore<TestAggregate>
+    public class TestSnapshotStore : ISnapshotStore
     {
-        public Snapshot<TestAggregate> Get(Guid id  )
+        public bool VerifyGet { get; set; }
+        public T Get<T>(Guid id) where T : Snapshot
         {
             VerifyGet = true;
             return null;
         }
 
-        public void Save(TestAggregate aggregateRoot)
+        public void Save<T>(T aggregateRoot) where T : Snapshot
         {
             throw new NotImplementedException();
         }
-
-        public bool VerifyGet { get; set; }
     }
 }

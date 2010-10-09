@@ -33,7 +33,7 @@ namespace CQRSlite.Eventing
         public void SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
         {
             List<EventDescriptor> eventDescriptors;
-            if (!_eventRepository.TryGetEvents(aggregateId, out eventDescriptors))
+            if (!_eventRepository.TryGetEvents(aggregateId, 0, out eventDescriptors))
             {
                 eventDescriptors = new List<EventDescriptor>();
                 _eventRepository.Add(aggregateId, eventDescriptors);
@@ -52,10 +52,10 @@ namespace CQRSlite.Eventing
             }
         }
 
-        public  IEnumerable<Event> GetEventsForAggregate(Guid aggregateId)
+        public  IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int version)
         {
             List<EventDescriptor> eventDescriptors;
-            if (!_eventRepository.TryGetEvents(aggregateId, out eventDescriptors))
+            if (!_eventRepository.TryGetEvents(aggregateId, version, out eventDescriptors))
             {
                 throw new AggregateNotFoundException();
             }
