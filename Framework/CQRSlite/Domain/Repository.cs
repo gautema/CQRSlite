@@ -1,7 +1,7 @@
 ﻿using System;
-using SimpleCQRS.Eventing;
+using CQRSlite.Eventing;
 
-namespace SimpleCQRS.Domain
+namespace CQRSlite.Domain
 {
     public class Repository<T> : IRepository<T> where T : AggregateRoot
     {

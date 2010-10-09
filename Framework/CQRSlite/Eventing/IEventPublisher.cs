@@ -1,4 +1,4 @@
-﻿namespace SimpleCQRS.Eventing
+﻿namespace CQRSlite.Eventing
 {
     public interface IEventPublisher
     {

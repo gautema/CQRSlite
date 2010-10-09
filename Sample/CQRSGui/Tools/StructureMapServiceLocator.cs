@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using StructureMap;
+using IServiceLocator = CQRSlite.Config.IServiceLocator;
 
 namespace CQRSGui.Tools
 {
-    public class StructureMapServiceLocator : ServiceLocatorImplBase, SimpleCQRS.Config.IServiceLocator
+    public class StructureMapServiceLocator : ServiceLocatorImplBase, IServiceLocator
     {
         private readonly IContainer _container;
 

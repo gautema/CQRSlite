@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleCQRS.Domain;
+using CQRSlite.Domain;
 
-namespace SimpleCQRS.Eventing
+namespace CQRSlite.Eventing
 {
     public class EventStore : IEventStore
     {

@@ -1,4 +1,4 @@
-﻿namespace SimpleCQRS.Commanding
+﻿namespace CQRSlite.Commanding
 {
     public class Command : Message
     {

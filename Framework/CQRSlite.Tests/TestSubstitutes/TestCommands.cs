@@ -1,7 +1,6 @@
-using System;
-using SimpleCQRS.Commanding;
+using CQRSlite.Commanding;
 
-namespace SimpleCQRS.Tests.TestSubstitutes
+namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestAggregateDoSomething : Command
     {

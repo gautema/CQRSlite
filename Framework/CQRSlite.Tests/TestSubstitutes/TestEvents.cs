@@ -1,6 +1,6 @@
-﻿using SimpleCQRS.Eventing;
+﻿using CQRSlite.Eventing;
 
-namespace SimpleCQRS.Tests.TestSubstitutes
+namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestAggregateDidSomething : Event
     {

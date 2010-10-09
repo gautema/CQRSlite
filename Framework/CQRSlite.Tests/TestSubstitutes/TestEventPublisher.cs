@@ -1,6 +1,6 @@
-﻿using SimpleCQRS.Eventing;
+﻿using CQRSlite.Eventing;
 
-namespace SimpleCQRS.Tests.TestSubstitutes
+namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestEventPublisher: IEventPublisher {
         public void Publish<T>(T @event) where T : Event

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SimpleCQRS.Bus;
+using CQRSlite.Bus;
 
-namespace SimpleCQRS.Config
+namespace CQRSlite.Config
 {
     public class BusRegisterer
     {

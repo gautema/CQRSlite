@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SimpleCQRS.Eventing;
+using CQRSlite.Eventing;
 
 namespace CQRSCode.Domain
 {

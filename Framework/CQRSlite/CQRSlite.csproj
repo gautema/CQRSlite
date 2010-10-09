@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>SimpleCQRS</RootNamespace>
-    <AssemblyName>SimpleCQRS</AssemblyName>
+    <RootNamespace>CQRSlite</RootNamespace>
+    <AssemblyName>CQRSlite</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -69,6 +69,7 @@
     <Compile Include="Eventing\IEventPublisher.cs" />
     <Compile Include="Eventing\IEventRepository.cs" />
     <Compile Include="Bus\IHandleRegister.cs" />
+    <Compile Include="Eventing\ISnapshotStore.cs" />
     <Compile Include="IHandles.cs" />
     <Compile Include="Domain\Repository.cs" />
     <Compile Include="Domain\AggregateNotFoundException.cs" />

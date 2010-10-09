@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleCQRS.Eventing;
+using CQRSlite.Eventing;
 
-namespace SimpleCQRS.Tests.TestSubstitutes
+namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestEventStore : IEventStore
     {

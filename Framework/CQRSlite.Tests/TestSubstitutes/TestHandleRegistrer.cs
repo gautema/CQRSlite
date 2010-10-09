@@ -1,8 +1,8 @@
 ﻿using System;
-using SimpleCQRS.Bus;
+using CQRSlite.Bus;
 using System.Collections;
 
-namespace SimpleCQRS.Tests.TestSubstitutes
+namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestHandleRegistrer : IHandleRegister
     {

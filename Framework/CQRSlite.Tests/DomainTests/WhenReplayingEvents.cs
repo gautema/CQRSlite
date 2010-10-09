@@ -1,7 +1,7 @@
-﻿using SimpleCQRS.Tests.TestSubstitutes;
+﻿using CQRSlite.Tests.TestSubstitutes;
 using Xunit;
 
-namespace SimpleCQRS.Tests.DomainTests
+namespace CQRSlite.Tests.DomainTests
 {
     public class WhenReplayingEvents
     {

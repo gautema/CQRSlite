@@ -1,8 +1,8 @@
 ﻿using System;
-using SimpleCQRS.Bus;
-using SimpleCQRS.Config;
+using CQRSlite.Bus;
+using CQRSlite.Config;
 
-namespace SimpleCQRS.Tests.TestSubstitutes
+namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestServiceLocator : IServiceLocator {
         public T GetInstance<T>()

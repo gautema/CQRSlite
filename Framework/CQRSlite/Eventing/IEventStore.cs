@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SimpleCQRS.Eventing
+namespace CQRSlite.Eventing
 {
     public interface IEventStore
     {

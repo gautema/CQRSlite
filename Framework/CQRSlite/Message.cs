@@ -1,4 +1,4 @@
-namespace SimpleCQRS
+namespace CQRSlite
 {
 	public interface Message
 	{

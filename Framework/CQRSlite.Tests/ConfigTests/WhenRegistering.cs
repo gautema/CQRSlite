@@ -1,9 +1,8 @@
-﻿using System;
-using SimpleCQRS.Config;
-using SimpleCQRS.Tests.TestSubstitutes;
+﻿using CQRSlite.Config;
+using CQRSlite.Tests.TestSubstitutes;
 using Xunit;
 
-namespace SimpleCQRS.Tests.ConfigTests
+namespace CQRSlite.Tests.ConfigTests
 {
     public class WhenRegistering
     {

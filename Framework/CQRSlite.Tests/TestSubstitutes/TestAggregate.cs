@@ -1,7 +1,7 @@
 ﻿using System;
-using SimpleCQRS.Domain;
+using CQRSlite.Domain;
 
-namespace SimpleCQRS.Tests.TestSubstitutes
+namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestAggregate : AggregateRoot
     {

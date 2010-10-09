@@ -1,9 +1,9 @@
 using System;
-using SimpleCQRS.Bus;
-using SimpleCQRS.Tests.TestSubstitutes;
+using CQRSlite.Bus;
+using CQRSlite.Tests.TestSubstitutes;
 using Xunit;
 
-namespace SimpleCQRS.Tests.BusTests
+namespace CQRSlite.Tests.BusTests
 {
     public class WhenSendingCommand
     {

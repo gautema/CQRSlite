@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using SimpleCQRS.Commanding;
-using SimpleCQRS.Eventing;
+using CQRSlite.Commanding;
+using CQRSlite.Eventing;
 
-namespace SimpleCQRS.Bus
+namespace CQRSlite.Bus
 {
     public class InProcessBus : ICommandSender, IEventPublisher, IHandleRegister
     {

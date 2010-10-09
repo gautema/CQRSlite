@@ -1,8 +1,8 @@
 ﻿using CQRSCode.ReadModel;
-using SimpleCQRS.Bus;
-using SimpleCQRS.Commanding;
-using SimpleCQRS.Domain;
-using SimpleCQRS.Eventing;
+using CQRSlite.Bus;
+using CQRSlite.Commanding;
+using CQRSlite.Domain;
+using CQRSlite.Eventing;
 using StructureMap.Configuration.DSL;
 using StructureMap.Graph;
 

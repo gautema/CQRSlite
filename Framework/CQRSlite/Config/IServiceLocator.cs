@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleCQRS.Config
+namespace CQRSlite.Config
 {
     public interface IServiceLocator {
         T GetInstance<T>();

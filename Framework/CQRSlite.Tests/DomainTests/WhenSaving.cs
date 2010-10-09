@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using SimpleCQRS.Domain;
-using SimpleCQRS.Tests.TestSubstitutes;
+using CQRSlite.Domain;
+using CQRSlite.Tests.TestSubstitutes;
 using Xunit;
 
-namespace SimpleCQRS.Tests.DomainTests
+namespace CQRSlite.Tests.DomainTests
 {
     public class WhenSaving
     {
