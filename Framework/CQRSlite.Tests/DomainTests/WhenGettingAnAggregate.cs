@@ -8,11 +8,13 @@ namespace CQRSlite.Tests.DomainTests
     public class WhenGettingAnAggregate
     {
         private TestAggregate _aggregate;
+        private TestSnapshotStore _snapshotStore;
 
         public WhenGettingAnAggregate()
         {
             var eventStore = new TestEventStore();
-            var rep = new Repository<TestAggregate>(eventStore);
+            _snapshotStore = new TestSnapshotStore();
+            var rep = new Repository<TestAggregate>(eventStore, _snapshotStore);
             _aggregate = rep.GetById(Guid.NewGuid());
         }
 
@@ -31,7 +33,7 @@ namespace CQRSlite.Tests.DomainTests
         [Fact]
         public void ShouldCheckSnapshotStore()
         {
-            
+            Assert.True(_snapshotStore.VerifyGet);
         }
     }
 }

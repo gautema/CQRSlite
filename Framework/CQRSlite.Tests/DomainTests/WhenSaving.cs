@@ -13,7 +13,7 @@ namespace CQRSlite.Tests.DomainTests
         public WhenSaving()
         {
             _eventStore = new TestEventStore();
-            var rep = new Repository<TestAggregateNoParameterLessConstructor>(_eventStore);
+            var rep = new Repository<TestAggregateNoParameterLessConstructor>(_eventStore, null);
             _aggregate = new TestAggregate();
             _aggregate.DoSomething();
             rep.Save(_aggregate, 1);

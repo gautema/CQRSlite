@@ -12,7 +12,8 @@ namespace CQRSlite.Tests.DomainTests
         public WhenGettingNotValidAggregate()
         {
             var eventStore = new TestEventStore();
-            _rep = new Repository<TestAggregateNoParameterLessConstructor>(eventStore);
+            var snapshotStore = new TestSnapshotStore();
+            _rep = new Repository<TestAggregateNoParameterLessConstructor>(eventStore, null);
         }
 
         [Fact]
