@@ -109,7 +109,7 @@
       <Project>{34E7DC24-8080-4E47-90E6-3BCDA44955E5}</Project>
       <Name>CQRSCode</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SimpleCQRS\SimpleCQRS.csproj">
+    <ProjectReference Include="..\..\Framework\CQRSlite\CQRSlite.csproj">
       <Project>{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}</Project>
       <Name>SimpleCQRS</Name>
     </ProjectReference>

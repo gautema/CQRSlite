@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCQRS", "SimpleCQRS\SimpleCQRS.csproj", "{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSGui", "CQRSGui\CQRSGui.csproj", "{29ECBF37-9526-4CB6-8429-D09CF0301C26}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{B8A193A0-0649-4A91-AD4C-DD87794D5836}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSCode", "CQRSCode\CQRSCode.csproj", "{34E7DC24-8080-4E47-90E6-3BCDA44955E5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{2D2585B3-9047-41C0-BB5E-13342F1A6549}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleCQRS.Tests", "SimpleCQRS.Tests\SimpleCQRS.Tests.csproj", "{420F0A58-CB69-4517-9251-6F92911C3A61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite", "Framework\CQRSlite\CQRSlite.csproj", "{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Tests", "Framework\CQRSlite.Tests\CQRSlite.Tests.csproj", "{420F0A58-CB69-4517-9251-6F92911C3A61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSCode", "Sample\CQRSCode\CQRSCode.csproj", "{34E7DC24-8080-4E47-90E6-3BCDA44955E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSGui", "Sample\CQRSGui\CQRSGui.csproj", "{29ECBF37-9526-4CB6-8429-D09CF0301C26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,26 +33,6 @@ Global
 		{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}.Release|x86.ActiveCfg = Release|x86
 		{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}.Release|x86.Build.0 = Release|x86
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|x86.ActiveCfg = Release|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|x86.ActiveCfg = Release|Any CPU
 		{420F0A58-CB69-4517-9251-6F92911C3A61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{420F0A58-CB69-4517-9251-6F92911C3A61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{420F0A58-CB69-4517-9251-6F92911C3A61}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -63,6 +43,26 @@ Global
 		{420F0A58-CB69-4517-9251-6F92911C3A61}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{420F0A58-CB69-4517-9251-6F92911C3A61}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{420F0A58-CB69-4517-9251-6F92911C3A61}.Release|x86.ActiveCfg = Release|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{34E7DC24-8080-4E47-90E6-3BCDA44955E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,8 +70,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6} = {2D2585B3-9047-41C0-BB5E-13342F1A6549}
 		{420F0A58-CB69-4517-9251-6F92911C3A61} = {2D2585B3-9047-41C0-BB5E-13342F1A6549}
-		{29ECBF37-9526-4CB6-8429-D09CF0301C26} = {B8A193A0-0649-4A91-AD4C-DD87794D5836}
 		{34E7DC24-8080-4E47-90E6-3BCDA44955E5} = {B8A193A0-0649-4A91-AD4C-DD87794D5836}
+		{29ECBF37-9526-4CB6-8429-D09CF0301C26} = {B8A193A0-0649-4A91-AD4C-DD87794D5836}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = SimpleCQRS\SimpleCQRS.csproj

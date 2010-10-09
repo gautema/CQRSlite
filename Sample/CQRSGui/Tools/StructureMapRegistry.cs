@@ -1,5 +1,4 @@
 ﻿using CQRSCode.ReadModel;
-using SimpleCQRS;
 using SimpleCQRS.Bus;
 using SimpleCQRS.Commanding;
 using SimpleCQRS.Domain;
