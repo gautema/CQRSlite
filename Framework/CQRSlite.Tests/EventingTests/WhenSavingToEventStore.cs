@@ -44,7 +44,7 @@ namespace CQRSlite.Tests.EventingTests
         public void ShouldAddNewAggregate()
         {
             _eventstore.SaveEvents(Guid.Empty,new List<Event>{new TestAggregateDidSomething()},0);
-            Assert.Equal(1,_testEventRepository.AddedEvents);
+            Assert.Equal(1,_testEventRepository.SavedEvents);
         }
         [Fact]
         public void ShouldSaveNewAggregate()

@@ -32,13 +32,7 @@ namespace CQRSlite.Eventing
 
         public void SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
         {
-            List<EventDescriptor> eventDescriptors;
-            if (!_eventRepository.TryGetEvents(aggregateId, 0, out eventDescriptors))
-            {
-                eventDescriptors = new List<EventDescriptor>();
-                _eventRepository.Add(aggregateId, eventDescriptors);
-            }
-            else if(eventDescriptors[eventDescriptors.Count - 1].Version != expectedVersion && expectedVersion != -1)
+            if (_eventRepository.GetVersion(aggregateId) != expectedVersion && expectedVersion != -1)
             {
                 throw new ConcurrencyException();
             }

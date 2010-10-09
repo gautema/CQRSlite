@@ -23,17 +23,15 @@ namespace CQRSlite.Tests.TestSubstitutes
             return true;
         }
 
-        public void Add(Guid aggregateId, List<EventStore.EventDescriptor> eventDescriptors)
+        public int GetVersion(Guid aggregateId)
         {
-            AddedEvents++;
+            return aggregateId == Guid.Empty ? 0 : 2;
         }
-
         public void Save(Guid aggregateId, EventStore.EventDescriptor eventDescriptors)
         {
             SavedEvents++;
         }
 
-        public int AddedEvents { get; set; }
         public int SavedEvents { get; set; }
     }
 }

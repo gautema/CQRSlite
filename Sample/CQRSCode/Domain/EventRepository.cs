@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CQRSlite.Eventing;
 
 namespace CQRSCode.Domain
@@ -13,9 +14,13 @@ namespace CQRSCode.Domain
             return db.TryGetValue(aggregateId, out eventDescriptors);
         }
 
-        public bool TryGetEvents(Guid aggregateId, out List<EventStore.EventDescriptor> eventDescriptors)
+        public int GetVersion(Guid aggregateId)
         {
-            throw new NotImplementedException();
+            List<EventStore.EventDescriptor> eventDescriptors;
+            db.TryGetValue(aggregateId, out eventDescriptors);
+            if (eventDescriptors == null)
+                return 0;
+            return eventDescriptors.Max(x => x.Version);
         }
 
         public void Add(Guid aggregateId, List<EventStore.EventDescriptor> eventDescriptors)
@@ -27,6 +32,11 @@ namespace CQRSCode.Domain
         {
             List<EventStore.EventDescriptor> list;
             db.TryGetValue(aggregateId, out list);
+            if(list == null)
+            {
+                list = new List<EventStore.EventDescriptor>();
+                db.Add(aggregateId, list);
+            }
             list.Add(eventDescriptors);
         }
     }
