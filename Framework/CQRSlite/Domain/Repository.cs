@@ -18,18 +18,21 @@ namespace CQRSlite.Domain
 
         public void Save(AggregateRoot aggregate, int expectedVersion)
         {
-            if(ShouldMakeSnapShot(aggregate))
+            var shouldMakeSnapshot = ShouldMakeSnapShot(aggregate);
+            _storage.SaveEvents(aggregate.Id, aggregate.GetUncommittedChanges(), expectedVersion);
+            aggregate.MarkChangesAsCommitted();
+            if (shouldMakeSnapshot)
             {
                 // var snapshot = aggregate.GetSnapshot();
                 //_snapshotStore.Save();
             }
-            _storage.SaveEvents(aggregate.Id, aggregate.GetUncommittedChanges(), expectedVersion);
-            aggregate.MarkChangesAsCommitted();
         }
 
         private bool ShouldMakeSnapShot(AggregateRoot aggregate)
         {
-            return IsSNapshotable(aggregate) && aggregate.GetUncommittedChanges().Any(x => x.Version % SnapshotInterval == 0);
+            if(_snapshotStore == null) return false;
+            if(!IsSNapshotable(aggregate)) return false;
+            return aggregate.GetUncommittedChanges().Any(x => x.Version % SnapshotInterval == 0);
         }
 
         public T GetById(Guid id)
@@ -46,7 +49,7 @@ namespace CQRSlite.Domain
 
             if (IsSNapshotable(obj) && _snapshotStore != null)
             {
-                //var snapshot = _snapshotStore.Get(type, id);
+                // var snapshot = _snapshotStore.Get(type, id);
                 // obj.RestoreFromSnapshot(snapshot);
             }
             var e = _storage.GetEventsForAggregate(id, obj.Version);
