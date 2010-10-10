@@ -31,7 +31,7 @@ namespace CQRSlite.Domain
         private bool ShouldMakeSnapShot(AggregateRoot aggregate)
         {
             if(_snapshotStore == null) return false;
-            if(!IsSNapshotable(aggregate)) return false;
+            if(!IsSnapshotable(typeof(T))) return false;
             return aggregate.GetUncommittedChanges().Any(x => x.Version % SnapshotInterval == 0);
         }
 
@@ -47,7 +47,7 @@ namespace CQRSlite.Domain
                 throw new AggreagateMissingParameterlessConstructorException();
             }
 
-            if (IsSNapshotable(obj) && _snapshotStore != null)
+            if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
             {
                 // var snapshot = _snapshotStore.Get(type, id);
                 // obj.RestoreFromSnapshot(snapshot);
@@ -57,9 +57,14 @@ namespace CQRSlite.Domain
             return obj;
         }
 
-        private bool IsSNapshotable(AggregateRoot obj)
+        private bool IsSnapshotable(Type aggregateType)
         {
-            throw new NotImplementedException();
+            if(aggregateType.BaseType == null)
+                return false;
+            if (aggregateType.BaseType.IsGenericType &&
+                aggregateType.BaseType.GetGenericTypeDefinition() == typeof (SnapshotAggregateRoot<>))
+                return true;
+            return IsSnapshotable(aggregateType.BaseType);
         }
     }
 }

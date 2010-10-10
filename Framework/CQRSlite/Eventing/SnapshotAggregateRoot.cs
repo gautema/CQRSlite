@@ -1,12 +1,10 @@
 ﻿using System;
+using CQRSlite.Domain;
 
 namespace CQRSlite.Eventing
 {
-    public abstract class Snapshotable<T> where T : Snapshot
+    public abstract class SnapshotAggregateRoot<T>: AggregateRoot where T : Snapshot
     {
-        public abstract Guid Id { get; protected set; }
-        public int Version { get; internal set; }
-
         public T GetSnapshot()
         {
             var snapshot = CreateSnapshot();
