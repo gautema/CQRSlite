@@ -6,10 +6,7 @@ namespace CQRSlite.Tests.TestSubstitutes
     public class TestAggregate : AggregateRoot
     {
         public int I;
-        public override Guid Id
-        {
-            get { return Guid.NewGuid(); }
-        }
+
 
         public void DoSomething()
         {
@@ -25,18 +22,14 @@ namespace CQRSlite.Tests.TestSubstitutes
         {
             I++;
         }
+
     }
 
     public class TestAggregateNoParameterLessConstructor : AggregateRoot
     {
         public TestAggregateNoParameterLessConstructor(int i)
         {
-            
-        }
 
-        public override Guid Id
-        {
-            get { throw new NotImplementedException(); }
         }
     }
 }

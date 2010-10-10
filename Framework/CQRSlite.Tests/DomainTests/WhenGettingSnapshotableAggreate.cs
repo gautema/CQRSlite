@@ -5,12 +5,12 @@ using Xunit;
 
 namespace CQRSlite.Tests.DomainTests
 {
-    public class WhenGettingAnAggregateWithSnapshot
+    public class WhenGettingSnapshotableAggreate
     {
         private TestSnapshotStore _snapshotStore;
         private TestSnapshotAggreagate _aggregate;
 
-        public WhenGettingAnAggregateWithSnapshot()
+        public WhenGettingSnapshotableAggreate()
         {
             var eventStore = new TestEventStore();
             _snapshotStore = new TestSnapshotStore();
@@ -19,15 +19,15 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Fact]
-        public void ShouldRestore()
+        public void ShouldAskForSnapshot()
         {
-            Assert.True(_aggregate.Restored);
+            Assert.True(_snapshotStore.VerifyGet);
         }
 
         [Fact]
-        public void ShouldLoadVersion()
+        public void ShouldRunRestoreMethod()
         {
-            Assert.Equal(2, _aggregate.Version);
+            Assert.True(_aggregate.Restored);
         }
     }
 }

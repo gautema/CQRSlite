@@ -70,8 +70,9 @@
     <Compile Include="Eventing\IEventRepository.cs" />
     <Compile Include="Bus\IHandleRegister.cs" />
     <Compile Include="Eventing\ISnapshotStore.cs" />
-    <Compile Include="Eventing\Snapshot.cs" />
-    <Compile Include="Eventing\SnapshotAggregateRoot.cs" />
+    <Compile Include="Domain\Snapshot.cs" />
+    <Compile Include="Domain\SnapshotAggregateRoot.cs" />
+    <Compile Include="Eventing\NullSnapshotStore.cs" />
     <Compile Include="IHandles.cs" />
     <Compile Include="Domain\Repository.cs" />
     <Compile Include="Domain\AggregateNotFoundException.cs" />

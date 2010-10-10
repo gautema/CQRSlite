@@ -8,8 +8,8 @@ namespace CQRSlite.Domain
     {
         private readonly List<Event> _changes = new List<Event>();
 
-        public abstract Guid Id { get; protected set; }
-        public int Version { get; internal set; }
+        public Guid Id { get; protected set; }
+        public int Version { get; protected set; }
 
         public IEnumerable<Event> GetUncommittedChanges()
         {

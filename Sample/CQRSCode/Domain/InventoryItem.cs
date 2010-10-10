@@ -7,11 +7,10 @@ namespace CQRSCode.Domain
     public class InventoryItem : AggregateRoot
     {
         private bool _activated;
-        private Guid _id;
 
         private void Apply(InventoryItemCreated e)
         {
-            _id = e.Id;
+            Id = e.Id;
             _activated = true;
         }
 
@@ -23,31 +22,26 @@ namespace CQRSCode.Domain
         public void ChangeName(string newName)
         {
             if (string.IsNullOrEmpty(newName)) throw new ArgumentException("newName");
-            ApplyChange(new InventoryItemRenamed(_id, newName));
+            ApplyChange(new InventoryItemRenamed(Id, newName));
         }
 
         public void Remove(int count)
         {
             if (count <= 0) throw new InvalidOperationException("cant remove negative count from inventory");
-            ApplyChange(new ItemsRemovedFromInventory(_id, count));
+            ApplyChange(new ItemsRemovedFromInventory(Id, count));
         }
 
 
         public void CheckIn(int count)
         {
             if(count <= 0) throw new InvalidOperationException("must have a count greater than 0 to add to inventory");
-            ApplyChange(new ItemsCheckedInToInventory(_id, count));
+            ApplyChange(new ItemsCheckedInToInventory(Id, count));
         }
 
         public void Deactivate()
         {
             if(!_activated) throw new InvalidOperationException("already deactivated");
-            ApplyChange(new InventoryItemDeactivated(_id));
-        }
-
-        public override Guid Id
-        {
-            get { return _id; }
+            ApplyChange(new InventoryItemDeactivated(Id));
         }
 
         private InventoryItem(){}

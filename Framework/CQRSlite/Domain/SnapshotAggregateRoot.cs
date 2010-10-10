@@ -1,7 +1,6 @@
-﻿using System;
-using CQRSlite.Domain;
+﻿using CQRSlite.Eventing;
 
-namespace CQRSlite.Eventing
+namespace CQRSlite.Domain
 {
     public abstract class SnapshotAggregateRoot<T>: AggregateRoot where T : Snapshot
     {

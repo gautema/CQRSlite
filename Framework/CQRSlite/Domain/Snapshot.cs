@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CQRSlite.Eventing
+namespace CQRSlite.Domain
 {
     public abstract class Snapshot
     {

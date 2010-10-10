@@ -21,10 +21,11 @@ namespace CQRSlite.Domain
             var shouldMakeSnapshot = ShouldMakeSnapShot(aggregate);
             _storage.SaveEvents(aggregate.Id, aggregate.GetUncommittedChanges(), expectedVersion);
             aggregate.MarkChangesAsCommitted();
+            
             if (shouldMakeSnapshot)
             {
-                // var snapshot = aggregate.GetSnapshot();
-                //_snapshotStore.Save();
+                var snapshot = aggregate.AsDynamic().GetSnapshot();
+                _snapshotStore.Save(snapshot);
             }
         }
 
@@ -49,8 +50,8 @@ namespace CQRSlite.Domain
 
             if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
             {
-                // var snapshot = _snapshotStore.Get(type, id);
-                // obj.RestoreFromSnapshot(snapshot);
+                var snapshot = _snapshotStore.Get(id);
+                obj.AsDynamic().Restore(snapshot);
             }
             var e = _storage.GetEventsForAggregate(id, obj.Version);
             obj.LoadsFromHistory(e);

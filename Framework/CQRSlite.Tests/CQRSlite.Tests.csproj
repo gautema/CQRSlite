@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusTests\WhenPublishingEvents.cs" />
-    <Compile Include="DomainTests\WhenConvertingSnapshotToAggreate.cs" />
+    <Compile Include="DomainTests\WhenGettingSnapshotableAggreate.cs" />
     <Compile Include="DomainTests\WhenGettingAnAggregateWithSnapshot.cs" />
     <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
     <Compile Include="EventingTests\WhenGettingFromEventStore.cs" />
@@ -64,6 +64,7 @@
     <Compile Include="TestSubstitutes\TestAggregate.cs" />
     <Compile Include="TestSubstitutes\TestEvents.cs" />
     <Compile Include="TestSubstitutes\TestEventStore.cs" />
+    <Compile Include="TestSubstitutes\TestSnapshotAggreagate.cs" />
     <Compile Include="TestSubstitutes\TestSnapshotStore.cs" />
   </ItemGroup>
   <ItemGroup>

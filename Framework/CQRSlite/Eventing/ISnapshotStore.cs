@@ -1,10 +1,11 @@
 ﻿using System;
+using CQRSlite.Domain;
 
 namespace CQRSlite.Eventing
 {
     public interface ISnapshotStore
     {
-        T Get<T>(Guid id) where T : Snapshot;
-        void Save<T>(T snapshot) where T : Snapshot;
+        Snapshot Get(Guid id);
+        void Save(Snapshot snapshot);
     }
 }

@@ -53,7 +53,7 @@ namespace CQRSlite.Eventing
             {
                 throw new AggregateNotFoundException();
             }
-            return eventDescriptors.Where(desc => desc.Version > fromVersion).Select(desc => desc.EventData).ToList();
+            return eventDescriptors.Where(desc => desc.Version >= fromVersion).Select(desc => desc.EventData).ToList();
         }
     }
 }
