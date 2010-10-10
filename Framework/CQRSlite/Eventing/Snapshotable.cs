@@ -2,7 +2,7 @@
 
 namespace CQRSlite.Eventing
 {
-    public abstract class Snapshotable<T> : ISnapshotable  where T : Snapshot
+    public abstract class Snapshotable<T> where T : Snapshot
     {
         public abstract Guid Id { get; protected set; }
         public int Version { get; internal set; }
@@ -26,5 +26,4 @@ namespace CQRSlite.Eventing
         protected abstract void RestoreFromSnapshot(T snapshot);
     }
 
-    public interface ISnapshotable {}
 }

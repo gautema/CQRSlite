@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CQRSlite.Eventing;
 
 namespace CQRSlite.Domain
@@ -7,6 +8,7 @@ namespace CQRSlite.Domain
     {
         private readonly IEventStore _storage;
         private readonly ISnapshotStore _snapshotStore;
+        private const int SnapshotInterval = 15;
 
         public Repository(IEventStore storage, ISnapshotStore snapshotStore)
         {
@@ -16,9 +18,18 @@ namespace CQRSlite.Domain
 
         public void Save(AggregateRoot aggregate, int expectedVersion)
         {
-            //TODO: If version modulus snapshotInterval save snapshot.
+            if(ShouldMakeSnapShot(aggregate))
+            {
+                // var snapshot = aggregate.GetSnapshot();
+                //_snapshotStore.Save();
+            }
             _storage.SaveEvents(aggregate.Id, aggregate.GetUncommittedChanges(), expectedVersion);
             aggregate.MarkChangesAsCommitted();
+        }
+
+        private bool ShouldMakeSnapShot(AggregateRoot aggregate)
+        {
+            return IsSNapshotable(aggregate) && aggregate.GetUncommittedChanges().Any(x => x.Version % SnapshotInterval == 0);
         }
 
         public T GetById(Guid id)
@@ -32,20 +43,20 @@ namespace CQRSlite.Domain
             {
                 throw new AggreagateMissingParameterlessConstructorException();
             }
-            // TODO: Check if aggregate is snapshotable
-            // get snapshot for aggragate
-            // aggregate needs to get state from snapshot.
-            // get events after snapshot
-            // apply the rest of the events
-            // return obj
-            if (obj is ISnapshotable && _snapshotStore != null)
+
+            if (IsSNapshotable(obj) && _snapshotStore != null)
             {
-                //var snapshot = _snapshotStore.Get<T>(id);
-                
+                //var snapshot = _snapshotStore.Get(type, id);
+                // obj.RestoreFromSnapshot(snapshot);
             }
             var e = _storage.GetEventsForAggregate(id, obj.Version);
             obj.LoadsFromHistory(e);
             return obj;
+        }
+
+        private bool IsSNapshotable(AggregateRoot obj)
+        {
+            throw new NotImplementedException();
         }
     }
 }
