@@ -48,12 +48,17 @@ namespace CQRSlite.Domain
                 throw new AggreagateMissingParameterlessConstructorException();
             }
 
+            var snapshotversion = -1;
             if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
             {
                 var snapshot = _snapshotStore.Get(id);
-                if(snapshot != null) obj.AsDynamic().Restore(snapshot);
+                if(snapshot != null)
+                {
+                    obj.AsDynamic().Restore(snapshot);
+                    snapshotversion = snapshot.Version;
+                }
             }
-            var e = _storage.GetEventsForAggregate(id, obj.Version);
+            var e = _storage.GetEventsForAggregate(id, snapshotversion);
             obj.LoadsFromHistory(e);
             return obj;
         }

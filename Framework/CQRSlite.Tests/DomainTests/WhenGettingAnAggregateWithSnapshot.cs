@@ -22,12 +22,5 @@ namespace CQRSlite.Tests.DomainTests
         {
             Assert.True(_aggregate.Restored);
         }
-
-        [Fact]
-        public void ShouldLoadVersion()
-        {
-            Assert.Equal(3, _aggregate.Version);
-        }
-
     }
 }

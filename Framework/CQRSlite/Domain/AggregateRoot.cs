@@ -9,7 +9,6 @@ namespace CQRSlite.Domain
         private readonly List<Event> _changes = new List<Event>();
 
         public Guid Id { get; protected set; }
-        public int Version { get; protected set; }
 
         public IEnumerable<Event> GetUncommittedChanges()
         {
@@ -34,7 +33,6 @@ namespace CQRSlite.Domain
         private void ApplyChange(Event @event, bool isNew)
         {
             this.AsDynamic().Apply(@event);
-            Version = @event.Version;
             if(isNew) _changes.Add(@event);
         }
     }

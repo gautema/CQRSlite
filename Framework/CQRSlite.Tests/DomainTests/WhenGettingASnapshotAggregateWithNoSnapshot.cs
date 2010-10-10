@@ -21,7 +21,13 @@ namespace CQRSlite.Tests.DomainTests
         [Fact]
         public void ShouldLoadEvents()
         {
-            Assert.Equal(3, _aggregate.Version);
+            Assert.True(_aggregate.Loaded);
+        }
+
+        [Fact]
+        public void ShouldNotLoadSnapshot()
+        {
+            Assert.False(_aggregate.Restored);
         }
     }
 }

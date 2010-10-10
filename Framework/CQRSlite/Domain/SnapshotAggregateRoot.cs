@@ -8,14 +8,12 @@ namespace CQRSlite.Domain
         {
             var snapshot = CreateSnapshot();
             snapshot.Id = Id;
-            snapshot.Version = Version;
             return snapshot;
         }
 
         public void Restore(T snapshot)
         {
             Id = snapshot.Id;
-            Version = snapshot.Version;
             RestoreFromSnapshot(snapshot);
         }
 
