@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusTests\WhenPublishingEvents.cs" />
+    <Compile Include="DomainTests\WhenGettingASnapshotAggregateWithNoSnapshot.cs" />
     <Compile Include="DomainTests\WhenGettingSnapshotableAggreate.cs" />
     <Compile Include="DomainTests\WhenGettingAnAggregateWithSnapshot.cs" />
     <Compile Include="TestSubstitutes\TestEventPublisher.cs" />

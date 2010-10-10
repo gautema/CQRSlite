@@ -34,6 +34,7 @@ namespace CQRSlite.Domain
         private void ApplyChange(Event @event, bool isNew)
         {
             this.AsDynamic().Apply(@event);
+            Version = @event.Version;
             if(isNew) _changes.Add(@event);
         }
     }

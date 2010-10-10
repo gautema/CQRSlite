@@ -51,7 +51,7 @@ namespace CQRSlite.Domain
             if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
             {
                 var snapshot = _snapshotStore.Get(id);
-                obj.AsDynamic().Restore(snapshot);
+                if(snapshot != null) obj.AsDynamic().Restore(snapshot);
             }
             var e = _storage.GetEventsForAggregate(id, obj.Version);
             obj.LoadsFromHistory(e);

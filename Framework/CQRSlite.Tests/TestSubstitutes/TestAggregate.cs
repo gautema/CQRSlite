@@ -7,7 +7,6 @@ namespace CQRSlite.Tests.TestSubstitutes
     {
         public int I;
 
-
         public void DoSomething()
         {
             ApplyChange(new TestAggregateDidSomething());

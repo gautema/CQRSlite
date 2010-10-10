@@ -14,7 +14,7 @@ namespace CQRSlite.Tests.TestSubstitutes
 
         public IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion)
         {
-            return new List<Event> {new TestAggregateDidSomething(), new TestAggregateDidSomething(), new TestAggregateDidSomeethingElse()};
+            return new List<Event> {new TestAggregateDidSomething(), new TestAggregateDidSomething(), new TestAggregateDidSomeethingElse {Version = 3}};
         }
 
         public int SavedEvents { get; set; }
