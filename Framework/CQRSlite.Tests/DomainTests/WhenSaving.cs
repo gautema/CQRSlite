@@ -8,13 +8,13 @@ namespace CQRSlite.Tests.DomainTests
     public class WhenSaving
     {
         private readonly TestEventStore _eventStore;
-        private readonly TestAggregate _aggregate;
+        private readonly TestAggregateNoParameterLessConstructor _aggregate;
 
         public WhenSaving()
         {
             _eventStore = new TestEventStore();
             var rep = new Repository<TestAggregateNoParameterLessConstructor>(_eventStore, null);
-            _aggregate = new TestAggregate();
+            _aggregate = new TestAggregateNoParameterLessConstructor(2);
             _aggregate.DoSomething();
             rep.Save(_aggregate, 1);
         }
@@ -22,7 +22,6 @@ namespace CQRSlite.Tests.DomainTests
         [Fact]
         public void ShouldSaveUncommitedChanges()
         {
-
             Assert.Equal(1, _eventStore.SavedEvents);
         }
 

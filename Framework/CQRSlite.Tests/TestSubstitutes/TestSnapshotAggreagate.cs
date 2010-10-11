@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.TestSubstitutes
 
         protected override TestSnapshotAggreagateSnapshot CreateSnapshot()
         {
-            return new TestSnapshotAggreagateSnapshot();
+            return new TestSnapshotAggreagateSnapshot {Version = Version};
         }
 
         protected override void RestoreFromSnapshot(TestSnapshotAggreagateSnapshot snapshot)
@@ -20,14 +20,18 @@ namespace CQRSlite.Tests.TestSubstitutes
         private void Apply(TestAggregateDidSomething e)
         {
             Loaded = true;
+            Version++;
         }
+
+        public void DoSomething()
+        {
+            ApplyChange(new TestAggregateDidSomething());
+        }
+
+        protected int Version { get; set; }
     }
 
     public class TestSnapshotAggreagateSnapshot : Snapshot
     {
-        public TestSnapshotAggreagateSnapshot()
-        {
-            Version = 2;
-        }
     }
 }

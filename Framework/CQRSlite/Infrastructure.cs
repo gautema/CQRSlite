@@ -10,7 +10,7 @@ namespace CQRSlite
     //doesnt count to line counts :)
     internal class PrivateReflectionDynamicObject : DynamicObject
     {
-        private object RealObject { get; set; }
+        public object RealObject { get; set; }
         private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
         internal static object WrapObjectIfNeeded(object o)

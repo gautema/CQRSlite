@@ -30,5 +30,10 @@ namespace CQRSlite.Tests.TestSubstitutes
         {
 
         }
+
+        public void DoSomething()
+        {
+            ApplyChange(new TestAggregateDidSomething());
+        }
     }
 }

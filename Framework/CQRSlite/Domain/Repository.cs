@@ -16,7 +16,7 @@ namespace CQRSlite.Domain
             _snapshotStore = snapshotStore;
         }
 
-        public void Save(AggregateRoot aggregate, int expectedVersion)
+        public void Save(T aggregate, int expectedVersion)
         {
             var shouldMakeSnapshot = ShouldMakeSnapShot(aggregate);
             _storage.SaveEvents(aggregate.Id, aggregate.GetUncommittedChanges(), expectedVersion);
@@ -25,7 +25,7 @@ namespace CQRSlite.Domain
             if (shouldMakeSnapshot)
             {
                 var snapshot = aggregate.AsDynamic().GetSnapshot();
-                _snapshotStore.Save(snapshot);
+                _snapshotStore.Save(snapshot.RealObject);
             }
         }
 

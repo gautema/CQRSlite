@@ -7,6 +7,8 @@ namespace CQRSlite.Tests.TestSubstitutes
     public class TestSnapshotStore : ISnapshotStore
     {
         public bool VerifyGet { get; set; }
+        public bool VerifySave { get; set; }
+        public int SavedVersion { get; set; }
 
         public Snapshot Get(Guid id)
         {
@@ -16,7 +18,8 @@ namespace CQRSlite.Tests.TestSubstitutes
 
         public void Save(Snapshot snapshot)
         {
-            throw new NotImplementedException();
+            VerifySave = true;
+            SavedVersion = snapshot.Version;
         }
     }
 }
