@@ -30,7 +30,7 @@ namespace CQRSlite.Eventing
             }
         }
 
-        public void SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
+        public int SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
         {
             if (_eventRepository.GetVersion(aggregateId) != expectedVersion && expectedVersion != -1)
             {
@@ -44,6 +44,7 @@ namespace CQRSlite.Eventing
                 _eventRepository.Save(aggregateId, new EventDescriptor(aggregateId,@event,i));
                 _publisher.Publish(@event);
             }
+            return i;
         }
 
         public  IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion)

@@ -49,6 +49,7 @@
     <Compile Include="DomainTests\WhenGettingSnapshotableAggreate.cs" />
     <Compile Include="DomainTests\WhenGettingAnAggregateWithSnapshot.cs" />
     <Compile Include="DomainTests\WhenSavingASnapshotableAggregate.cs" />
+    <Compile Include="DomainTests\WhenSavingASnapshotableAggregateForEachChange.cs" />
     <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
     <Compile Include="EventingTests\WhenGettingFromEventStore.cs" />
     <Compile Include="EventingTests\WhenSavingToEventStore.cs" />

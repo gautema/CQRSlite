@@ -5,7 +5,7 @@ namespace CQRSlite.Eventing
 {
     public interface IEventStore
     {
-        void SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion);
+        int SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion);
         IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion);
     }
 }

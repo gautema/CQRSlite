@@ -9,6 +9,7 @@ namespace CQRSlite.Tests.TestSubstitutes
         public bool VerifyGet { get; set; }
         public bool VerifySave { get; set; }
         public int SavedVersion { get; set; }
+        public bool FirstSaved { get; set; }
 
         public Snapshot Get(Guid id)
         {
@@ -19,6 +20,8 @@ namespace CQRSlite.Tests.TestSubstitutes
         public void Save(Snapshot snapshot)
         {
             VerifySave = true;
+            if (snapshot.Version == 0) FirstSaved = true;
+
             SavedVersion = snapshot.Version;
         }
     }

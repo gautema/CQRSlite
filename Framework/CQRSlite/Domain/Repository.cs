@@ -18,22 +18,27 @@ namespace CQRSlite.Domain
 
         public void Save(T aggregate, int expectedVersion)
         {
-            var shouldMakeSnapshot = ShouldMakeSnapShot(aggregate);
-            _storage.SaveEvents(aggregate.Id, aggregate.GetUncommittedChanges(), expectedVersion);
+            var shouldMakeSnapshot = ShouldMakeSnapShot(aggregate,expectedVersion);
+            var version = _storage.SaveEvents(aggregate.Id, aggregate.GetUncommittedChanges(), expectedVersion);
             aggregate.MarkChangesAsCommitted();
             
             if (shouldMakeSnapshot)
             {
                 var snapshot = aggregate.AsDynamic().GetSnapshot();
+                snapshot.RealObject.Version = version;
                 _snapshotStore.Save(snapshot.RealObject);
             }
         }
 
-        private bool ShouldMakeSnapShot(AggregateRoot aggregate)
+        private bool ShouldMakeSnapShot(AggregateRoot aggregate, int expectedVersion)
         {
             if(_snapshotStore == null) return false;
             if(!IsSnapshotable(typeof(T))) return false;
-            return aggregate.GetUncommittedChanges().Any(x => x.Version % SnapshotInterval == 0);
+            var i = expectedVersion;
+
+            for (var j = 0; j < aggregate.GetUncommittedChanges().Count(); j++)
+                if (++i%SnapshotInterval == 0 && i != 0) return true;
+            return false;
         }
 
         public T GetById(Guid id)

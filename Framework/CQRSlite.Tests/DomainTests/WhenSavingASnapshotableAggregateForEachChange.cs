@@ -4,33 +4,33 @@ using Xunit;
 
 namespace CQRSlite.Tests.DomainTests
 {
-    public class WhenSavingASnapshotableAggregate
+    public class WhenSavingASnapshotableAggregateForEachChange
     {
         private TestSnapshotStore _snapshotStore;
 
-        public WhenSavingASnapshotableAggregate()
+        public WhenSavingASnapshotableAggregateForEachChange()
         {
             var eventStore = new TestEventStore();
             _snapshotStore = new TestSnapshotStore();
             var rep = new Repository<TestSnapshotAggreagate>(eventStore, _snapshotStore);
             var aggregate = new TestSnapshotAggreagate();
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 20; i++)
             {
                 aggregate.DoSomething();
+                rep.Save(aggregate, i);
             }
-            rep.Save(aggregate, 0);
         }
 
         [Fact]
-        public void ShouldSaveSnapshot()
+        public void ShouldSnapshot15thChange()
         {
-            Assert.True(_snapshotStore.VerifySave);
+            Assert.Equal(15, _snapshotStore.SavedVersion);
         }
 
         [Fact]
-        public void ShouldSaveLastVersionNumber()
+        public void ShouldNotSnapshotFirstEvent()
         {
-            Assert.Equal(30, _snapshotStore.SavedVersion);
+            Assert.False(_snapshotStore.FirstSaved);
         }
     }
 }

@@ -4,7 +4,7 @@ using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
 using CQRSlite;
 
-namespace CQRSCode.ReadModel
+namespace CQRSCode.ReadModel.Handlers
 {
     public class InvenotryItemDetailView : IHandles<InventoryItemCreated>, IHandles<InventoryItemDeactivated>, 
         IHandles<InventoryItemRenamed>, IHandles<ItemsRemovedFromInventory>, IHandles<ItemsCheckedInToInventory>
