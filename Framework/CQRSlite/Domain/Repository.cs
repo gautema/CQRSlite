@@ -32,7 +32,6 @@ namespace CQRSlite.Domain
 
         private bool ShouldMakeSnapShot(AggregateRoot aggregate, int expectedVersion)
         {
-            if(_snapshotStore == null) return false;
             if(!IsSnapshotable(typeof(T))) return false;
             var i = expectedVersion;
 
