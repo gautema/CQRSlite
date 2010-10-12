@@ -1,4 +1,5 @@
-﻿using CQRSlite.Domain;
+﻿using System;
+using CQRSlite.Domain;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
@@ -10,11 +11,12 @@ namespace CQRSlite.Tests.TestSubstitutes
 
         protected override TestSnapshotAggreagateSnapshot CreateSnapshot()
         {
-            return new TestSnapshotAggreagateSnapshot{Number = Number};
+            return new TestSnapshotAggreagateSnapshot {Number = Number};
         }
 
         protected override void RestoreFromSnapshot(TestSnapshotAggreagateSnapshot snapshot)
         {
+            Number = snapshot.Number;
             Restored = true;
         }
 

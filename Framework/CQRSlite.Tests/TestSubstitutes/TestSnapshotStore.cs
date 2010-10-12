@@ -6,10 +6,9 @@ namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestSnapshotStore : ISnapshotStore
     {
-        public bool VerifyGet { get; set; }
-        public bool VerifySave { get; set; }
-        public int SavedVersion { get; set; }
-        public bool FirstSaved { get; set; }
+        public bool VerifyGet { get; private set; }
+        public bool VerifySave { get; private set; }
+        public int SavedVersion { get; private set; }
 
         public Snapshot Get(Guid id)
         {
@@ -20,8 +19,6 @@ namespace CQRSlite.Tests.TestSubstitutes
         public void Save(Snapshot snapshot)
         {
             VerifySave = true;
-            if (snapshot.Version == 0) FirstSaved = true;
-
             SavedVersion = snapshot.Version;
         }
     }
