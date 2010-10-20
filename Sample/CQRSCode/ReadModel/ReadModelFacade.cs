@@ -9,12 +9,12 @@ namespace CQRSCode.ReadModel
     {
         public IEnumerable<InventoryItemListDto> GetInventoryItems()
         {
-            return InMemoryDatabase.List;
+            return BullShitDatabase.List;
         }
 
         public InventoryItemDetailsDto GetInventoryItemDetails(Guid id)
         {
-            return InMemoryDatabase.Details[id];
+            return BullShitDatabase.Details[id];
         }
     }
 }
