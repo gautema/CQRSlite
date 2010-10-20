@@ -11,7 +11,7 @@ namespace CQRSCode.ReadModel.Handlers
     {
         public void Handle(InventoryItemCreated message)
         {
-            BullShitDatabase.Details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0,0));
+            InMemoryDatabase.Details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0,0));
         }
 
         public void Handle(InventoryItemRenamed message)
@@ -24,7 +24,7 @@ namespace CQRSCode.ReadModel.Handlers
         private InventoryItemDetailsDto GetDetailsItem(Guid id)
         {
             InventoryItemDetailsDto d;
-            if(!BullShitDatabase.Details.TryGetValue(id, out d))
+            if(!InMemoryDatabase.Details.TryGetValue(id, out d))
             {
                 throw new InvalidOperationException("did not find the original inventory this shouldnt happen");
             }
@@ -47,7 +47,7 @@ namespace CQRSCode.ReadModel.Handlers
 
         public void Handle(InventoryItemDeactivated message)
         {
-            BullShitDatabase.Details.Remove(message.Id);
+            InMemoryDatabase.Details.Remove(message.Id);
         }
     }
 }
