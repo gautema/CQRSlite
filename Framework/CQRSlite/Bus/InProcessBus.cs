@@ -25,12 +25,12 @@ namespace CQRSlite.Bus
             List<Action<Message>> handlers; 
             if (_routes.TryGetValue(typeof(T), out handlers))
             {
-                if (handlers.Count != 1) throw new InvalidOperationException("cannot send to more than one handler");
+                if (handlers.Count != 1) throw new InvalidOperationException("Cannot send to more than one handler");
                 handlers[0](command);
             }
             else
             {
-                throw new InvalidOperationException("no handler registered");
+                throw new InvalidOperationException("No handler registered");
             }
         }
 
