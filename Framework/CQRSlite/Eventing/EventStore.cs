@@ -47,7 +47,7 @@ namespace CQRSlite.Eventing
             return i;
         }
 
-        public  IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion)
+        public IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion)
         {
             List<EventDescriptor> eventDescriptors;
             if (!_eventRepository.TryGetEvents(aggregateId, fromVersion, out eventDescriptors))

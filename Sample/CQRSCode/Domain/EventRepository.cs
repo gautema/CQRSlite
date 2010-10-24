@@ -23,11 +23,6 @@ namespace CQRSCode.Domain
             return eventDescriptors.Max(x => x.Version);
         }
 
-        public void Add(Guid aggregateId, List<EventStore.EventDescriptor> eventDescriptors)
-        {
-            db.Add(aggregateId, eventDescriptors);
-        }
-
         public void Save(Guid aggregateId, EventStore.EventDescriptor eventDescriptors)
         {
             List<EventStore.EventDescriptor> list;
