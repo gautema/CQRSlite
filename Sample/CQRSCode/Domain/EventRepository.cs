@@ -11,7 +11,10 @@ namespace CQRSCode.Domain
 
         public bool TryGetEvents(Guid aggregateId, int version, out List<EventStore.EventDescriptor> eventDescriptors)
         {
-            return db.TryGetValue(aggregateId, out eventDescriptors);
+            List<EventStore.EventDescriptor> alldescriptors;
+            var foundAggregate = db.TryGetValue(aggregateId, out alldescriptors);
+            eventDescriptors = alldescriptors.Where(x => x.Version > version).ToList();
+            return foundAggregate;
         }
 
         public int GetVersion(Guid aggregateId)
