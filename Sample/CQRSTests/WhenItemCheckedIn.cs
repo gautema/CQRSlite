@@ -6,7 +6,6 @@ using CQRSCode.Commands;
 using CQRSCode.Domain;
 using CQRSCode.Events;
 using CQRSlite.Eventing;
-using CQRSlite.Extensions;
 using CQRSlite.Extensions.TestHelpers;
 using Xunit;
 
