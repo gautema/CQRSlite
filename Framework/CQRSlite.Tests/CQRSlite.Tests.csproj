@@ -45,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusTests\WhenPublishingEvents.cs" />
-    <Compile Include="TestSubstitutes\TestInMemoryEventRepository.cs" />
+    <Compile Include="TestSubstitutes\TestInMemoryEventStore.cs" />
     <Compile Include="TestSubstitutes\TestInMemorySnapshotStore.cs" />
     <Compile Include="DomainTests\WhenGettingASnapshotAggregateWithNoSnapshot.cs" />
     <Compile Include="DomainTests\WhenGettingSnapshotableAggreate.cs" />
@@ -54,10 +54,8 @@
     <Compile Include="DomainTests\WhenSavingASnapshotableAggregateForEachChange.cs" />
     <Compile Include="EventingTests\WhenSavingToNullSnapshotStore.cs" />
     <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
-    <Compile Include="EventingTests\WhenGettingFromEventStore.cs" />
-    <Compile Include="EventingTests\WhenSavingToEventStore.cs" />
     <Compile Include="BusTests\WhenSendingCommand.cs" />
-    <Compile Include="TestSubstitutes\TestEventRepository.cs" />
+    <Compile Include="TestSubstitutes\TestEventStore.cs" />
     <Compile Include="TestSubstitutes\TestHandleRegistrer.cs" />
     <Compile Include="TestSubstitutes\TestCommands.cs" />
     <Compile Include="TestSubstitutes\TestServiceLocator.cs" />
@@ -69,7 +67,6 @@
     <Compile Include="DomainTests\WhenGettingNotValidAggregate.cs" />
     <Compile Include="TestSubstitutes\TestAggregate.cs" />
     <Compile Include="TestSubstitutes\TestEvents.cs" />
-    <Compile Include="TestSubstitutes\TestEventStore.cs" />
     <Compile Include="TestSubstitutes\TestSnapshotAggreagate.cs" />
     <Compile Include="TestSubstitutes\TestSnapshotStore.cs" />
   </ItemGroup>

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CQRSlite.Eventing
 {
-    public interface IEventStore
-    {
-        int SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion);
-        IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion);
+    public interface IEventStore {
+        void Save(Guid aggregateId, EventDescriptor eventDescriptors);
+        IEnumerable<EventDescriptor> Get(Guid aggregateId, int fromVersion);
+        int GetVersion(Guid aggregateId);
     }
 }

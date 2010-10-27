@@ -12,7 +12,8 @@ namespace CQRSlite.Tests.DomainTests
         public WhenGettingNotValidAggregate()
         {
             var eventStore = new TestEventStore();
-            _rep = new Repository<TestAggregateNoParameterLessConstructor>(eventStore, null);
+            var eventPublisher = new TestEventPublisher();
+            _rep = new Repository<TestAggregateNoParameterLessConstructor>(eventStore, null, eventPublisher);
         }
 
         [Fact]
@@ -21,7 +22,7 @@ namespace CQRSlite.Tests.DomainTests
 
             Assert.Throws<AggreagateMissingParameterlessConstructorException>(() =>
                                                                                   {
-                                                                                      _rep.GetById(Guid.NewGuid());
+                                                                                      _rep.Get(Guid.NewGuid());
                                                                                   });
 
         }

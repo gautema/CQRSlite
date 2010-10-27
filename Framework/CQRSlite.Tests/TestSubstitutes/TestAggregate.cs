@@ -6,6 +6,7 @@ namespace CQRSlite.Tests.TestSubstitutes
     public class TestAggregate : AggregateRoot
     {
         public int I;
+        public int Version { get; set; }
 
         public void DoSomething()
         {
@@ -26,9 +27,10 @@ namespace CQRSlite.Tests.TestSubstitutes
 
     public class TestAggregateNoParameterLessConstructor : AggregateRoot
     {
-        public TestAggregateNoParameterLessConstructor(int i)
+        public TestAggregateNoParameterLessConstructor(int i, Guid? id = null)
         {
-
+            if (id != null)
+                Id = id.Value;
         }
 
         public void DoSomething()

@@ -46,7 +46,7 @@
     <Compile Include="Commands\DeactivateInventoryItem.cs" />
     <Compile Include="Commands\RemoveItemsFromInventory.cs" />
     <Compile Include="Commands\RenameInventoryItem.cs" />
-    <Compile Include="Domain\EventRepository.cs" />
+    <Compile Include="Domain\EventStore.cs" />
     <Compile Include="Domain\InventoryItem.cs" />
     <Compile Include="Events\InventoryItemCreated.cs" />
     <Compile Include="Events\InventoryItemDeactivated.cs" />

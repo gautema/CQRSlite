@@ -66,8 +66,9 @@
     <Compile Include="Commanding\Command.cs" />
     <Compile Include="Commanding\ICommandSender.cs" />
     <Compile Include="Domain\AggreagateMissingParameterlessConstructorException.cs" />
+    <Compile Include="Eventing\EventDescriptor.cs" />
     <Compile Include="Eventing\IEventPublisher.cs" />
-    <Compile Include="Eventing\IEventRepository.cs" />
+    <Compile Include="Eventing\IEventStore.cs" />
     <Compile Include="Bus\IHandleRegister.cs" />
     <Compile Include="Eventing\ISnapshotStore.cs" />
     <Compile Include="Domain\Snapshot.cs" />
@@ -77,8 +78,6 @@
     <Compile Include="Domain\Repository.cs" />
     <Compile Include="Domain\AggregateNotFoundException.cs" />
     <Compile Include="Domain\ConcurrencyException.cs" />
-    <Compile Include="Eventing\EventStore.cs" />
-    <Compile Include="Eventing\IEventStore.cs" />
     <Compile Include="Bus\InProcessBus.cs" />
     <Compile Include="Infrastructure.cs" />
     <Compile Include="Eventing\Event.cs" />

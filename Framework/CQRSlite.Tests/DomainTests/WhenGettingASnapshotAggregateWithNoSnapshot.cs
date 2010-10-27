@@ -13,9 +13,10 @@ namespace CQRSlite.Tests.DomainTests
         public WhenGettingASnapshotAggregateWithNoSnapshot()
         {
             var eventStore = new TestEventStore();
+            var eventPublisher = new TestEventPublisher();
             var snapshotStore = new NullSnapshotStore();
-            var rep = new Repository<TestSnapshotAggreagate>(eventStore, snapshotStore);
-            _aggregate = rep.GetById(Guid.NewGuid());
+            var rep = new Repository<TestSnapshotAggreagate>(eventStore, snapshotStore, eventPublisher);
+            _aggregate = rep.Get(Guid.NewGuid());
         }
 
         [Fact]

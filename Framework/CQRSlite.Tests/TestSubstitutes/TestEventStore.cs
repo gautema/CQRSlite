@@ -1,21 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CQRSlite.Eventing;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestEventStore : IEventStore
     {
-        public int SaveEvents(Guid aggregateId, IEnumerable<Event> events, int expectedVersion)
+        public IEnumerable<EventDescriptor> Get(Guid aggregateId, int version)
         {
-            SavedEvents = events.Count();
-            return expectedVersion + events.Count();
+            if (aggregateId == Guid.Empty)
+            {
+                return new List<EventDescriptor>();
+            }
+
+            return new List<EventDescriptor>
+                                   {
+                                       new EventDescriptor(aggregateId, new TestAggregateDidSomething(), 1),
+                                       new EventDescriptor(aggregateId, new TestAggregateDidSomeethingElse(), 2),
+                                       new EventDescriptor(aggregateId, new TestAggregateDidSomething(), 3)
+                                   };
+
         }
 
-        public IEnumerable<Event> GetEventsForAggregate(Guid aggregateId, int fromVersion)
+        public int GetVersion(Guid aggregateId)
         {
-            return new List<Event> {new TestAggregateDidSomething(), new TestAggregateDidSomething(), new TestAggregateDidSomeethingElse {Version = 3}};
+            return aggregateId == Guid.Empty ? 0 : 2;
+        }
+        public void Save(Guid aggregateId, EventDescriptor eventDescriptors)
+        {
+            SavedEvents++;
         }
 
         public int SavedEvents { get; set; }

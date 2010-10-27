@@ -13,11 +13,10 @@ namespace CQRSlite.Tests.DomainTests
 
         public WhenSavingASnapshotableAggregateForEachChange()
         {
-            IEventRepository eventRepository = new TestInMemoryEventRepository();
+            IEventStore eventStore = new TestInMemoryEventStore();
             var eventpubliser = new TestEventPublisher();
-            var eventStore = new EventStore(eventRepository,eventpubliser);
             _snapshotStore = new TestInMemorySnapshotStore();
-            _rep = new Repository<TestSnapshotAggreagate>(eventStore, _snapshotStore);
+            _rep = new Repository<TestSnapshotAggreagate>(eventStore, _snapshotStore, eventpubliser);
             var aggregate = new TestSnapshotAggreagate();
             for (int i = 0; i < 20; i++)
             {
@@ -41,7 +40,7 @@ namespace CQRSlite.Tests.DomainTests
         [Fact]
         public void ShouldGetAggregateBackCorrect()
         {
-            Assert.Equal(20, _rep.GetById(Guid.Empty).Number);
+            Assert.Equal(20, _rep.Get(Guid.Empty).Number);
         }
     }
 }

@@ -8,26 +8,36 @@ namespace CQRSlite.Tests.DomainTests
 {
     public class WhenGettingAnAggregate
     {
-        private readonly TestAggregate _aggregate;
+
+        private Repository<TestAggregate> _rep;
 
         public WhenGettingAnAggregate()
         {
             var eventStore = new TestEventStore();
+            var testEventPublisher = new TestEventPublisher();
             var snapshotStore = new NullSnapshotStore();
-            var rep = new Repository<TestAggregate>(eventStore, snapshotStore);
-            _aggregate = rep.GetById(Guid.NewGuid());
+            _rep = new Repository<TestAggregate>(eventStore, snapshotStore, testEventPublisher);
+
         }
 
         [Fact]
         public void ShouldGetAggreagateFromEventStore()
         {
-            Assert.NotNull(_aggregate);
+            var aggregate = _rep.Get(Guid.NewGuid());
+            Assert.NotNull(aggregate);
         }
 
         [Fact]
         public void ShouldApplyEvents()
         {
-            Assert.Equal(2,_aggregate.I);
+            var aggregate = _rep.Get(Guid.NewGuid());
+            Assert.Equal(2,aggregate.I);
+        }
+
+        [Fact]
+        public void ShouldFailIfAggregateNotExists()
+        {
+            Assert.Throws<AggregateNotFoundException>(() => { _rep.Get(Guid.Empty); });
         }
     }
 }
