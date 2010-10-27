@@ -34,10 +34,9 @@ namespace CQRSlite.Domain
                 _publisher.Publish(@event);
             }
 
-            var shouldMakeSnapshot = ShouldMakeSnapShot(aggregate, expectedVersion);
+            if (ShouldMakeSnapShot(aggregate, expectedVersion)) 
+                MakeSnapshot(aggregate, version);
             aggregate.MarkChangesAsCommitted();
-
-            if (shouldMakeSnapshot) MakeSnapshot(aggregate, version);
         }
 
         private void MakeSnapshot(T aggregate, int version) 
