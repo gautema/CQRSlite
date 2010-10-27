@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSGui", "Sample\CQRSGui\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSTests", "Sample\CQRSTests\CQRSTests.csproj", "{ADBFA246-319B-4555-98BE-09726B7E6B89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Extentions", "Framework\CQRSlite.Extentions\CQRSlite.Extentions.csproj", "{8E96F332-4D60-42E5-A264-5707A68A297A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Extensions", "Framework\CQRSlite.Extensions\CQRSlite.Extensions.csproj", "{8E96F332-4D60-42E5-A264-5707A68A297A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

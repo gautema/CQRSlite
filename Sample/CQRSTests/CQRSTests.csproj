@@ -48,9 +48,9 @@
     <Compile Include="WhenItemCheckedIn.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\CQRSlite.Extentions\CQRSlite.Extentions.csproj">
+    <ProjectReference Include="..\..\Framework\CQRSlite.Extensions\CQRSlite.Extensions.csproj">
       <Project>{8E96F332-4D60-42E5-A264-5707A68A297A}</Project>
-      <Name>CQRSlite.Extentions</Name>
+      <Name>CQRSlite.Extensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Framework\CQRSlite\CQRSlite.csproj">
       <Project>{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}</Project>

@@ -8,8 +8,8 @@
     <ProjectGuid>{8E96F332-4D60-42E5-A264-5707A68A297A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CQRSlite.Extentions</RootNamespace>
-    <AssemblyName>CQRSlite.Extentions</AssemblyName>
+    <RootNamespace>CQRSlite.Extensions</RootNamespace>
+    <AssemblyName>CQRSlite.Extensions</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,8 +43,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Specification.cs" />
-    <Compile Include="Then.cs" />
+    <Compile Include="TestHelpers\Specification.cs" />
+    <Compile Include="TestHelpers\Then.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

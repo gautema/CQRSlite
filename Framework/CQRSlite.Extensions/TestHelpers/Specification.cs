@@ -5,7 +5,7 @@ using CQRSlite.Commanding;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
 
-namespace CQRSlite.Extentions
+namespace CQRSlite.Extensions.TestHelpers
 {
     public abstract class Specification<TAggreagate, THandler, TCommand> 
         where TAggreagate: AggregateRoot

@@ -3,7 +3,7 @@ using System.Xml;
 using Xunit;
 using Xunit.Sdk;
 
-namespace CQRSlite.Extentions
+namespace CQRSlite.Extensions.TestHelpers
 {
     public class ThenAttribute : FactAttribute
     {
