@@ -111,7 +111,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Framework\CQRSlite\CQRSlite.csproj">
       <Project>{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}</Project>
-      <Name>SimpleCQRS</Name>
+      <Name>CQRSlite</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

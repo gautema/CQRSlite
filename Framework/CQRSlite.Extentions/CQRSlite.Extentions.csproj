@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{420F0A58-CB69-4517-9251-6F92911C3A61}</ProjectGuid>
+    <ProjectGuid>{8E96F332-4D60-42E5-A264-5707A68A297A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CQRSlite.Tests</RootNamespace>
-    <AssemblyName>CQRSlite.Tests</AssemblyName>
+    <RootNamespace>CQRSlite.Extentions</RootNamespace>
+    <AssemblyName>CQRSlite.Extentions</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,31 +43,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusTests\WhenPublishingEvents.cs" />
-    <Compile Include="TestSubstitutes\TestInMemoryEventStore.cs" />
-    <Compile Include="TestSubstitutes\TestInMemorySnapshotStore.cs" />
-    <Compile Include="DomainTests\WhenGettingASnapshotAggregateWithNoSnapshot.cs" />
-    <Compile Include="DomainTests\WhenGettingSnapshotableAggreate.cs" />
-    <Compile Include="DomainTests\WhenGettingAnAggregateWithSnapshot.cs" />
-    <Compile Include="DomainTests\WhenSavingASnapshotableAggregate.cs" />
-    <Compile Include="DomainTests\WhenSavingASnapshotableAggregateForEachChange.cs" />
-    <Compile Include="EventingTests\WhenSavingToNullSnapshotStore.cs" />
-    <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
-    <Compile Include="BusTests\WhenSendingCommand.cs" />
-    <Compile Include="TestSubstitutes\TestEventStore.cs" />
-    <Compile Include="TestSubstitutes\TestHandleRegistrer.cs" />
-    <Compile Include="TestSubstitutes\TestCommands.cs" />
-    <Compile Include="TestSubstitutes\TestServiceLocator.cs" />
-    <Compile Include="ConfigTests\WhenRegistering.cs" />
-    <Compile Include="DomainTests\WhenReplayingEvents.cs" />
+    <Compile Include="Specification.cs" />
+    <Compile Include="Then.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DomainTests\WhenSaving.cs" />
-    <Compile Include="DomainTests\WhenGettingAnAggregate.cs" />
-    <Compile Include="DomainTests\WhenGettingNotValidAggregate.cs" />
-    <Compile Include="TestSubstitutes\TestAggregate.cs" />
-    <Compile Include="TestSubstitutes\TestEvents.cs" />
-    <Compile Include="TestSubstitutes\TestSnapshotAggreagate.cs" />
-    <Compile Include="TestSubstitutes\TestSnapshotStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CQRSlite\CQRSlite.csproj">
