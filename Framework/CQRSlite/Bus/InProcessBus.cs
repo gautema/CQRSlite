@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using CQRSlite.Commanding;
 using CQRSlite.Eventing;
 
@@ -40,7 +41,8 @@ namespace CQRSlite.Bus
             if (!_routes.TryGetValue(@event.GetType(), out handlers)) return;
             foreach(var handler in handlers)
             {
-                handler(@event);
+                var handler1 = handler;
+                ThreadPool.QueueUserWorkItem(x => handler1(@event));
             }
         }
     }

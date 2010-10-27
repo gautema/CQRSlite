@@ -15,7 +15,10 @@ namespace CQRSlite.Tests.TestSubstitutes
     {
         public void Handle(TestAggregateDidSomething message)
         {
-            TimesRun++;
+            lock (message)
+            {
+                TimesRun++;
+            }
         }
 
         public int TimesRun { get; set; }
