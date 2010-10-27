@@ -59,7 +59,21 @@ namespace CQRSlite.Domain
         public T Get(Guid id)
         {
             var aggregate = CreateAggregate();
+            var snapshotVersion = RestoreAggregateFromSnapshot(id, aggregate);
 
+            var eventDescriptors = _storage.Get(id, snapshotVersion);
+            var events = eventDescriptors.Where(desc => desc.Version > snapshotVersion).Select(desc => desc.EventData);
+            aggregate.LoadsFromHistory(events);
+
+            if (eventDescriptors.Count() == 0 && snapshotVersion == -1)
+            {
+                throw new AggregateNotFoundException();
+            }
+            return aggregate;
+        }
+
+        private int RestoreAggregateFromSnapshot(Guid id, T aggregate)
+        {
             var version = -1;
             if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
             {
@@ -70,19 +84,11 @@ namespace CQRSlite.Domain
                     version = snapshot.Version;
                 }
             }
-
-            var eventDescriptors = _storage.Get(id, version);
-            var events = eventDescriptors.Where(desc => desc.Version > version).Select(desc => desc.EventData);
-            aggregate.LoadsFromHistory(events);
-
-            if (eventDescriptors.Count() == 0 && version == -1)
-            {
-                throw new AggregateNotFoundException();
-            }
-            return aggregate;
+            return version;
         }
 
-        private T CreateAggregate() {
+        private T CreateAggregate() 
+        {
             T obj;
             try
             {
