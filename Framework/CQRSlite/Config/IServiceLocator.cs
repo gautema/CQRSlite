@@ -2,7 +2,8 @@
 
 namespace CQRSlite.Config
 {
-    public interface IServiceLocator {
+    public interface IServiceLocator 
+	{
         T GetInstance<T>();
         object GetInstance(Type type);
     }

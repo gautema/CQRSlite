@@ -40,10 +40,8 @@ namespace CQRSlite.Bus
             List<Action<Message>> handlers; 
             if (!_routes.TryGetValue(@event.GetType(), out handlers)) return;
             foreach(var handler in handlers)
-            {
-                var handler1 = handler;
-                ThreadPool.QueueUserWorkItem(x => handler1(@event));
-            }
+                ThreadPool.QueueUserWorkItem(x => handler(@event));
+            
         }
     }
 }

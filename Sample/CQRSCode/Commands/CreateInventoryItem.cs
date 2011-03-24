@@ -3,7 +3,8 @@ using CQRSlite.Commanding;
 
 namespace CQRSCode.Commands
 {
-    public class CreateInventoryItem : Command {
+    public class CreateInventoryItem : Command 
+	{
         public readonly Guid InventoryItemId;
         public readonly string Name;
 	    

@@ -3,7 +3,7 @@ using CQRSlite.Domain;
 
 namespace CQRSlite.Eventing
 {
-    public class NullSnapshotStore :ISnapshotStore
+    public class NullSnapshotStore : ISnapshotStore
     {
         public Snapshot Get(Guid id)
         {

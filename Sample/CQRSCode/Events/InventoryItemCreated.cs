@@ -3,8 +3,8 @@ using CQRSlite.Eventing;
 
 namespace CQRSCode.Events
 {
-    public class InventoryItemCreated : Event {
-        public readonly Guid Id;
+    public class InventoryItemCreated : Event 
+	{
         public readonly string Name;
         public InventoryItemCreated(Guid id, string name) {
             Id = id;

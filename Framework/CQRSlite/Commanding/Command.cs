@@ -1,6 +1,6 @@
 ﻿namespace CQRSlite.Commanding
 {
-    public class Command : Message
+    public interface Command : Message
     {
     }
 }
