@@ -1,14 +1,9 @@
 ﻿using System.Linq;
-using Xunit;
-using Xunit.Sdk;
+using NUnit.Framework;
 
 namespace CQRSlite.Extensions.TestHelpers
 {
-    public class ThenAttribute : FactAttribute
+    public class ThenAttribute : TestAttribute
     {
-        protected override System.Collections.Generic.IEnumerable<ITestCommand> EnumerateTestCommands(IMethodInfo method)
-        {
-            return base.EnumerateTestCommands(method).Select(command => new ThenCommand(command));
-        }
     }
 }

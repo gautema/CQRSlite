@@ -7,10 +7,11 @@ using CQRSCode.Domain;
 using CQRSCode.Events;
 using CQRSlite.Eventing;
 using CQRSlite.Extensions.TestHelpers;
-using Xunit;
+using NUnit.Framework;
 
 namespace CQRSTests
 {
+	[TestFixture]
     public class WhenItemCheckedIn : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
     {
         protected override InventoryCommandHandlers BuildHandler()
@@ -31,19 +32,19 @@ namespace CQRSTests
         [Then]
         public void ShouldCreateOneEvent()
         {
-            Assert.Equal(1, PublishedEvents.Count());
+            Assert.AreEqual(1, PublishedEvents.Count());
         }
 
         [Then]
         public void ShouldCreateCorrectEvent()
         {
-            Assert.IsType(typeof (ItemsCheckedInToInventory), PublishedEvents.First());
+            Assert.IsInstanceOf<ItemsCheckedInToInventory>(PublishedEvents.First());
         }
 
         [Then]
         public void ShouldSaveName()
         {
-            Assert.Equal(2,((ItemsCheckedInToInventory)PublishedEvents.First()).Count);
+            Assert.AreEqual(2,((ItemsCheckedInToInventory)PublishedEvents.First()).Count);
         }
     }
 }

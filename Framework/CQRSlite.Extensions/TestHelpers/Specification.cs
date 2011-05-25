@@ -4,9 +4,11 @@ using System.Linq;
 using CQRSlite.Commanding;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
+using NUnit.Framework;
 
 namespace CQRSlite.Extensions.TestHelpers
 {
+	
     public abstract class Specification<TAggreagate, THandler, TCommand> 
         where TAggreagate: AggregateRoot
         where THandler : class, IHandles<TCommand>
@@ -22,7 +24,8 @@ namespace CQRSlite.Extensions.TestHelpers
         protected Snapshot Snapshot { get; set; }
         protected IList<EventDescriptor> EventDescriptors { get; set; }
         protected IList<Event> PublishedEvents { get; set; }
-
+		
+		[SetUp]
         public void Run()
         {
             var version = 0;
