@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace CQRSlite.Extensions.TestHelpers
 {
-	
+	[TestFixture]
     public abstract class Specification<TAggreagate, THandler, TCommand> 
         where TAggreagate: AggregateRoot
         where THandler : class, IHandles<TCommand>

@@ -11,7 +11,6 @@ using NUnit.Framework;
 
 namespace CQRSTests
 {
-	[TestFixture]
     public class WhenItemCheckedIn : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
     {
         protected override InventoryCommandHandlers BuildHandler()
