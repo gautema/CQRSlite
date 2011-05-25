@@ -4,18 +4,20 @@ using System.Linq;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
 using CQRSlite.Tests.TestSubstitutes;
-using Xunit;
+using NUnit.Framework;
 
 namespace CQRSlite.Tests.DomainTests
 {
+	[TestFixture]
     public class WhenSaving
     {
-        private readonly TestEventStore _eventStore;
-        private readonly TestAggregateNoParameterLessConstructor _aggregate;
+        private TestEventStore _eventStore;
+        private TestAggregateNoParameterLessConstructor _aggregate;
         private TestEventPublisher _eventPublisher;
         private Repository<TestAggregateNoParameterLessConstructor> _rep;
 
-        public WhenSaving()
+		[SetUp]
+        public void Setup()
         {
             _eventStore = new TestEventStore();
             _eventPublisher = new TestEventPublisher();
@@ -25,43 +27,43 @@ namespace CQRSlite.Tests.DomainTests
 
         }
 
-        [Fact]
+        [Test]
         public void ShouldSaveUncommitedChanges()
         {
             _aggregate.DoSomething();
             _rep.Save(_aggregate, 0);
-            Assert.Equal(1, _eventStore.SavedEvents);
+            Assert.AreEqual(1, _eventStore.SavedEvents);
         }
 
-        [Fact]
+        [Test]
         public void ShouldMarkCommitedAfterSave()
         {
             _aggregate.DoSomething();
             _rep.Save(_aggregate, 0);
-            Assert.Equal(0, _aggregate.GetUncommittedChanges().Count());
+            Assert.AreEqual(0, _aggregate.GetUncommittedChanges().Count());
         }
 
-        [Fact]
+        [Test]
         public void ShouldThrowConcurrencyException()
         {
             Assert.Throws<ConcurrencyException>(() =>  _rep.Save(_aggregate, 1));
         }
         
-        [Fact]
+        [Test]
         public void ShouldPublishEvents()
         {
             _aggregate.DoSomething();
             _rep.Save(_aggregate, 0);
-            Assert.Equal(1, _eventPublisher.Published);
+            Assert.AreEqual(1, _eventPublisher.Published);
         }
 
-        [Fact]
+        [Test]
         public void ShouldAddNewAggregate()
         {
             var agg = new TestAggregateNoParameterLessConstructor(1,Guid.Empty);
             agg.DoSomething();
             _rep.Save(agg,0);
-            Assert.Equal(1, _eventStore.SavedEvents);
+            Assert.AreEqual(1, _eventStore.SavedEvents);
         }
     }
 }

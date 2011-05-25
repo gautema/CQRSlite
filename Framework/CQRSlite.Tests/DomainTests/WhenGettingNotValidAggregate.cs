@@ -1,22 +1,24 @@
 ﻿using System;
 using CQRSlite.Domain;
 using CQRSlite.Tests.TestSubstitutes;
-using Xunit;
+using NUnit.Framework;
 
 namespace CQRSlite.Tests.DomainTests
 {
+	[TestFixture]
     public class WhenGettingNotValidAggregate
     {
         private Repository<TestAggregateNoParameterLessConstructor> _rep;
 
-        public WhenGettingNotValidAggregate()
+		[SetUp]
+        public void Setup()
         {
             var eventStore = new TestEventStore();
             var eventPublisher = new TestEventPublisher();
             _rep = new Repository<TestAggregateNoParameterLessConstructor>(eventStore, null, eventPublisher);
         }
 
-        [Fact]
+        [Test]
         public void ShouldThrowIfNoParameterlessConstructor()
         {
 

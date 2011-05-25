@@ -1,20 +1,22 @@
 using System.Threading;
 using CQRSlite.Bus;
 using CQRSlite.Tests.TestSubstitutes;
-using Xunit;
+using NUnit.Framework;
 
 namespace CQRSlite.Tests.BusTests
 {
+	[TestFixture]
     public class WhenPublishingEvents
     {
         private InProcessBus _bus;
 
-        public WhenPublishingEvents()
+		[SetUp]
+        public void Setup()
         {
             _bus = new InProcessBus();
         }
 
-        [Fact]
+        [Test]
         public void ShouldPublishToAllHandlers()
         {
             var handler = new TestAggregateDidSomethingHandler();
@@ -22,10 +24,10 @@ namespace CQRSlite.Tests.BusTests
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
             _bus.Publish(new TestAggregateDidSomething());
             Thread.Sleep(50);
-            Assert.Equal(2, handler.TimesRun);
+            Assert.AreEqual(2, handler.TimesRun);
         }
 
-        [Fact]
+        [Test]
         public void ShouldWorkWithNoHandlers()
         {
             _bus.Publish(new TestAggregateDidSomething());

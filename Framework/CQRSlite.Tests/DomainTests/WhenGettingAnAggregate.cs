@@ -2,16 +2,18 @@
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
 using CQRSlite.Tests.TestSubstitutes;
-using Xunit;
+using NUnit.Framework;
 
 namespace CQRSlite.Tests.DomainTests
 {
+	[TestFixture]
     public class WhenGettingAnAggregate
     {
 
         private Repository<TestAggregate> _rep;
-
-        public WhenGettingAnAggregate()
+		
+		[SetUp]
+        public void Setup()
         {
             var eventStore = new TestEventStore();
             var testEventPublisher = new TestEventPublisher();
@@ -20,21 +22,21 @@ namespace CQRSlite.Tests.DomainTests
 
         }
 
-        [Fact]
+        [Test]
         public void ShouldGetAggreagateFromEventStore()
         {
             var aggregate = _rep.Get(Guid.NewGuid());
             Assert.NotNull(aggregate);
         }
 
-        [Fact]
+        [Test]
         public void ShouldApplyEvents()
         {
             var aggregate = _rep.Get(Guid.NewGuid());
-            Assert.Equal(2,aggregate.I);
+            Assert.AreEqual(2,aggregate.I);
         }
 
-        [Fact]
+        [Test]
         public void ShouldFailIfAggregateNotExists()
         {
             Assert.Throws<AggregateNotFoundException>(() => { _rep.Get(Guid.Empty); });

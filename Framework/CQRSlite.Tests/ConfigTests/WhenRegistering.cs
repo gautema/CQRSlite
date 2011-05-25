@@ -1,15 +1,17 @@
 ﻿using CQRSlite.Config;
 using CQRSlite.Tests.TestSubstitutes;
-using Xunit;
+using NUnit.Framework;
 
 namespace CQRSlite.Tests.ConfigTests
 {
+	[TestFixture]
     public class WhenRegistering
     {
         private BusRegisterer _register;
         private TestServiceLocator _locator;
 
-        public WhenRegistering()
+		[SetUp]
+        public void Setup()
         {
             _register = new BusRegisterer();
             _locator = new TestServiceLocator();
@@ -17,18 +19,18 @@ namespace CQRSlite.Tests.ConfigTests
                 _register.Register(_locator, GetType());
         }
 
-        [Fact]
+        [Test]
         public void ShouldRegisterAllHandlers()
         {
-            Assert.Equal(3, TestHandleRegistrer.HandlerList.Count);
+            Assert.AreEqual(3, TestHandleRegistrer.HandlerList.Count);
         }
 
-        [Fact]
+        [Test]
         public void ShouldRegisterHandlerMethod()
         {
             foreach (var handler in TestHandleRegistrer.HandlerList)
             {
-                Assert.Equal("Handle",((dynamic)handler).Method.Name);
+                Assert.AreEqual("Handle",((dynamic)handler).Method.Name);
             }
         }
     }
