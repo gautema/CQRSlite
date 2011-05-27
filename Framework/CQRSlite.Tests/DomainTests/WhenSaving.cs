@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.DomainTests
 {
 	[TestFixture]
-    public class WhenSaving
+    public class When_saving
     {
         private TestEventStore _eventStore;
         private TestAggregateNoParameterLessConstructor _aggregate;
@@ -28,7 +28,7 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldSaveUncommitedChanges()
+        public void Should_save_uncommited_changes()
         {
             _aggregate.DoSomething();
             _rep.Save(_aggregate, 0);
@@ -36,7 +36,7 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldMarkCommitedAfterSave()
+        public void Should_mark_commited_after_save()
         {
             _aggregate.DoSomething();
             _rep.Save(_aggregate, 0);

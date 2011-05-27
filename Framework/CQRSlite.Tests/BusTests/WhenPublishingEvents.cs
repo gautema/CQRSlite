@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.BusTests
 {
 	[TestFixture]
-    public class WhenPublishingEvents
+    public class When_publishing_events
     {
         private InProcessBus _bus;
 
@@ -16,7 +16,7 @@ namespace CQRSlite.Tests.BusTests
         }
 
         [Test]
-        public void ShouldPublishToAllHandlers()
+        public void Should_publish_to_all_handlers()
         {
             var handler = new TestAggregateDidSomethingHandler();
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
@@ -26,7 +26,7 @@ namespace CQRSlite.Tests.BusTests
         }
 
         [Test]
-        public void ShouldWorkWithNoHandlers()
+        public void Should_work_with_no_handlers()
         {
             _bus.Publish(new TestAggregateDidSomething());
         }

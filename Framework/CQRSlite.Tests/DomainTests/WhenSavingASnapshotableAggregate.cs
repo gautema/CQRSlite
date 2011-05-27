@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.DomainTests
 {
 	[TestFixture]
-    public class WhenSavingASnapshotableAggregate
+    public class When_saving_a_snapshotable_aggregate
     {
         private TestSnapshotStore _snapshotStore;
 
@@ -25,13 +25,13 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldSaveSnapshot()
+        public void Should_save_snapshot()
         {
             Assert.True(_snapshotStore.VerifySave);
         }
 
         [Test]
-        public void ShouldSaveLastVersionNumber()
+        public void Should_save_last_version_number()
         {
             Assert.AreEqual(30, _snapshotStore.SavedVersion);
         }

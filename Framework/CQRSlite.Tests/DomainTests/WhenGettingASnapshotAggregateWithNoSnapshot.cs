@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.DomainTests
 {
 	[TestFixture]
-    public class WhenGettingASnapshotAggregateWithNoSnapshot
+    public class When_getting_a_snapshot_aggregate_with_no_snapshot
     {
         private TestSnapshotAggreagate _aggregate;
 
@@ -22,13 +22,13 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldLoadEvents()
+        public void Should_load_events()
         {
             Assert.True(_aggregate.Loaded);
         }
 
         [Test]
-        public void ShouldNotLoadSnapshot()
+        public void Should_not_load_snapshot()
         {
             Assert.False(_aggregate.Restored);
         }

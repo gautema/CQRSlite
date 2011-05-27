@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.BusTests
 {
 	[TestFixture]
-    public class WhenSendingCommand
+    public class When_sending_command
     {
         private InProcessBus _bus;
 
@@ -17,7 +17,7 @@ namespace CQRSlite.Tests.BusTests
         }
 
         [Test]
-        public void ShouldRunHandler()
+        public void Should_run_handler()
         {
             var handler = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
@@ -27,7 +27,7 @@ namespace CQRSlite.Tests.BusTests
         }
 
         [Test]
-        public void ShouldThrowIfMoreHandlers()
+        public void Should_throw_if_more_handlers()
         {
             var x = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(x.Handle);
@@ -37,7 +37,7 @@ namespace CQRSlite.Tests.BusTests
         }
 
         [Test]
-        public void ShouldThrowIfNoHandles()
+        public void Should_throw_if_no_handlers()
         {
             Assert.Throws<InvalidOperationException>(() => _bus.Send(new TestAggregateDoSomething()));
         }

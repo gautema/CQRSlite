@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.DomainTests
 {
 	[TestFixture]
-    public class WhenGettingSnapshotableAggreate
+    public class When_getting_snapshotable_aggreate
     {
         private TestSnapshotStore _snapshotStore;
         private TestSnapshotAggreagate _aggregate;
@@ -22,13 +22,13 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldAskForSnapshot()
+        public void Should_ask_for_snapshot()
         {
             Assert.True(_snapshotStore.VerifyGet);
         }
 
         [Test]
-        public void ShouldRunRestoreMethod()
+        public void Should_run_restore_method()
         {
             Assert.True(_aggregate.Restored);
         }

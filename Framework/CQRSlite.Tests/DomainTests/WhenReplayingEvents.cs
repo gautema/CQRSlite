@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.DomainTests
 {
 	[TestFixture]
-    public class WhenReplayingEvents
+    public class When_replaying_events
     {
         private TestAggregate _aggregate;
 
@@ -15,14 +15,14 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldCallApplyIfExists()
+        public void Should_call_apply_if_exist()
         {
             _aggregate.DoSomething();
             Assert.AreEqual(1, _aggregate.I);
         }
 
         [Test]
-        public void ShouldNotFailApplyIfDontExists()
+        public void Should_not_fail_apply_if_dont_exist()
         {
             _aggregate.DoSomethingElse();
             Assert.AreEqual(0, _aggregate.I);

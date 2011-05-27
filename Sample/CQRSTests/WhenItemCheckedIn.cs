@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace CQRSTests
 {
-    public class WhenItemCheckedIn : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
+    public class When_item_checked_in : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
     {
         protected override InventoryCommandHandlers BuildHandler()
         {
@@ -29,19 +29,19 @@ namespace CQRSTests
         }
 
         [Then]
-        public void ShouldCreateOneEvent()
+        public void Should_create_one_event()
         {
             Assert.AreEqual(1, PublishedEvents.Count());
         }
 
         [Then]
-        public void ShouldCreateCorrectEvent()
+        public void Should_create_correct_event()
         {
             Assert.IsInstanceOf<ItemsCheckedInToInventory>(PublishedEvents.First());
         }
 
         [Then]
-        public void ShouldSaveName()
+        public void Should_save_name()
         {
             Assert.AreEqual(2,((ItemsCheckedInToInventory)PublishedEvents.First()).Count);
         }

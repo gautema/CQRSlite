@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.EventingTests
 {
 	[TestFixture]
-    public class WhenSavingToNullSnapshotStore
+    public class When_saving_to_null_snapshot_store
     {
         private NullSnapshotStore _snapshotstore;
         private TestSnapshotAggreagateSnapshot _snapshot;
@@ -19,7 +19,7 @@ namespace CQRSlite.Tests.EventingTests
         }
 
         [Test]
-        public void ShouldNotReturnSnapshot()
+        public void Should_not_return_snapshot()
         {
             var result = _snapshotstore.Get(_snapshot.Id);
             Assert.Null(result);

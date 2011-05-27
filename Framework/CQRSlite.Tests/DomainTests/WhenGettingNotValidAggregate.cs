@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.DomainTests
 {
 	[TestFixture]
-    public class WhenGettingNotValidAggregate
+    public class When_getting_not_valid_aggregate
     {
         private Repository<TestAggregateNoParameterLessConstructor> _rep;
 
@@ -19,7 +19,7 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldThrowIfNoParameterlessConstructor()
+        public void Should_throw_if_no_parameterless_constructor()
         {
 
             Assert.Throws<AggreagateMissingParameterlessConstructorException>(() =>
