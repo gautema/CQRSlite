@@ -48,6 +48,7 @@
     <Compile Include="Commands\RenameInventoryItem.cs" />
     <Compile Include="Domain\EventStore.cs" />
     <Compile Include="Domain\InventoryItem.cs" />
+    <Compile Include="Events\EventDescriptor.cs" />
     <Compile Include="Events\InventoryItemCreated.cs" />
     <Compile Include="Events\InventoryItemDeactivated.cs" />
     <Compile Include="Events\InventoryItemRenamed.cs" />

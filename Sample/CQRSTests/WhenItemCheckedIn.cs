@@ -13,6 +13,8 @@ namespace CQRSTests
 {
     public class When_item_checked_in : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
     {
+        private Guid _guid;
+
         protected override InventoryCommandHandlers BuildHandler()
         {
             return new InventoryCommandHandlers(Repository);
@@ -20,12 +22,13 @@ namespace CQRSTests
 
         protected override IEnumerable<Event> Given()
         {
-            return new List<Event> { new InventoryItemCreated(Guid.Empty, "Jadda"), new ItemsCheckedInToInventory(Guid.Empty, 2) };
+            _guid = Guid.NewGuid();
+            return new List<Event> { new InventoryItemCreated(_guid, "Jadda"){Version = 1}, new ItemsCheckedInToInventory(_guid, 2){Version = 2} };
         }
 
         protected override CheckInItemsToInventory When()
         {
-            return new CheckInItemsToInventory(Guid.Empty, 2, 1);
+            return new CheckInItemsToInventory(_guid, 2, 2);
         }
 
         [Then]

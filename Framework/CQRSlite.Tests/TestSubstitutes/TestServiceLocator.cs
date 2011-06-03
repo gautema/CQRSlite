@@ -5,12 +5,12 @@ using CQRSlite.Config;
 namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestServiceLocator : IServiceLocator {
-        public T GetInstance<T>()
+        public T GetService<T>()
         {
-            return (T)GetInstance(typeof(T));
+            return (T)GetService(typeof(T));
         }
 
-        public object GetInstance(Type type)
+        public object GetService(Type type)
         {
             if(type == typeof(IHandleRegister))
                 return new TestHandleRegistrer();

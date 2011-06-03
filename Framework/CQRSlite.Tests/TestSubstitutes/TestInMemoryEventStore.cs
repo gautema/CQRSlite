@@ -7,14 +7,14 @@ namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestInMemoryEventStore : IEventStore 
     {
-        private readonly List<EventDescriptor> _list = new List<EventDescriptor>();
+        private readonly List<Event> _list = new List<Event>();
 
-        public void Save(Guid aggregateId, EventDescriptor eventDescriptors)
+        public void Save(Guid aggregateId, Event eventDescriptor)
         {
-            _list.Add(eventDescriptors);
+            _list.Add(eventDescriptor);
         }
 
-        public IEnumerable<EventDescriptor> Get(Guid aggregateId, int fromVersion)
+        public IEnumerable<Event> Get(Guid aggregateId, int fromVersion)
         {
             return _list;
         }

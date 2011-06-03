@@ -6,18 +6,18 @@ namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestEventStore : IEventStore
     {
-        public IEnumerable<EventDescriptor> Get(Guid aggregateId, int version)
+        public IEnumerable<Event> Get(Guid aggregateId, int version)
         {
             if (aggregateId == Guid.Empty)
             {
-                return new List<EventDescriptor>();
+                return new List<Event>();
             }
 
-            return new List<EventDescriptor>
+            return new List<Event>
                                    {
-                                       new EventDescriptor(aggregateId, new TestAggregateDidSomething(), 1),
-                                       new EventDescriptor(aggregateId, new TestAggregateDidSomeethingElse(), 2),
-                                       new EventDescriptor(aggregateId, new TestAggregateDidSomething(), 3)
+                                       new TestAggregateDidSomething {Id= aggregateId, Version = 1},
+                                       new TestAggregateDidSomeethingElse{Id= aggregateId, Version = 2},
+                                       new TestAggregateDidSomething{Id= aggregateId, Version = 3},
                                    };
 
         }
@@ -26,7 +26,7 @@ namespace CQRSlite.Tests.TestSubstitutes
         {
             return aggregateId == Guid.Empty ? 0 : 2;
         }
-        public void Save(Guid aggregateId, EventDescriptor eventDescriptors)
+        public void Save(Guid aggregateId, Event eventDescriptor)
         {
             SavedEvents++;
         }

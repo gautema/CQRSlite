@@ -10,7 +10,7 @@ namespace CQRSlite.Config
     {
         public void Register(IServiceLocator serviceLocator, params Type[] typesFromAssemblyContainingMessages)
         {
-            var bus = serviceLocator.GetInstance<IHandleRegister>();
+            var bus = serviceLocator.GetService<IHandleRegister>();
             
             foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
             {
@@ -22,7 +22,7 @@ namespace CQRSlite.Config
                 
                 foreach (var executorType in executorTypes)
                 {
-                    object executorInstance = serviceLocator.GetInstance(executorType.Type);
+                    object executorInstance = serviceLocator.GetService(executorType.Type);
                     foreach (var @interface in executorType.Interfaces)
                     {
                         InvokeHandler(@interface, bus, executorInstance);

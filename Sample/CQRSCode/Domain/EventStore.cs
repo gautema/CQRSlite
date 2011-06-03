@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CQRSCode.Events;
 using CQRSlite.Eventing;
 
 namespace CQRSCode.Domain
@@ -9,11 +10,11 @@ namespace CQRSCode.Domain
     {
         private Dictionary<Guid, List<EventDescriptor>> db = new Dictionary<Guid, List<EventDescriptor>>();
 
-        public IEnumerable<EventDescriptor> Get(Guid aggregateId, int fromVersion)
+        public IEnumerable<Event> Get(Guid aggregateId, int fromVersion)
         {
             List<EventDescriptor> alldescriptors;
             db.TryGetValue(aggregateId, out alldescriptors);
-            return alldescriptors.Where(x => x.Version > fromVersion);
+            return alldescriptors.Where(x => x.Version > fromVersion).Select(e=> e.EventData);
         }
 
         public int GetVersion(Guid aggregateId)
@@ -25,7 +26,7 @@ namespace CQRSCode.Domain
             return eventDescriptors.Max(x => x.Version);
         }
 
-        public void Save(Guid aggregateId, EventDescriptor eventDescriptors)
+        public void Save(Guid aggregateId, Event @event)
         {
             List<EventDescriptor> list;
             db.TryGetValue(aggregateId, out list);
@@ -34,7 +35,8 @@ namespace CQRSCode.Domain
                 list = new List<EventDescriptor>();
                 db.Add(aggregateId, list);
             }
-            list.Add(eventDescriptors);
+            var eventDescriptor = new EventDescriptor(@event.Id, @event, @event.Version);
+            list.Add(eventDescriptor);
         }
     }
 }

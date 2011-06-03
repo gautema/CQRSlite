@@ -30,7 +30,7 @@ namespace CQRSlite.Domain
             {
                 version++;
                 @event.Version = version;
-                _storage.Save(aggregate.Id, new EventDescriptor(aggregate.Id, @event, version));
+                _storage.Save(aggregate.Id, @event);
                 _publisher.Publish(@event);
             }
 
@@ -61,11 +61,10 @@ namespace CQRSlite.Domain
             var aggregate = CreateAggregate();
             var snapshotVersion = RestoreAggregateFromSnapshot(id, aggregate);
 
-            var eventDescriptors = _storage.Get(id, snapshotVersion);
-            var events = eventDescriptors.Where(desc => desc.Version > snapshotVersion).Select(desc => desc.EventData);
+            var events = _storage.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
             aggregate.LoadsFromHistory(events);
 
-            if (eventDescriptors.Count() == 0 && snapshotVersion == -1)
+            if (events.Count() == 0 && snapshotVersion == -1)
             {
                 throw new AggregateNotFoundException();
             }

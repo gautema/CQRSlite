@@ -22,15 +22,13 @@ namespace CQRSlite.Extensions.TestHelpers
         protected abstract THandler BuildHandler();
 
         protected Snapshot Snapshot { get; set; }
-        protected IList<EventDescriptor> EventDescriptors { get; set; }
+        protected IList<Event> EventDescriptors { get; set; }
         protected IList<Event> PublishedEvents { get; set; }
 		
 		[SetUp]
         public void Run()
         {
-            var version = 0;
-            IList<EventDescriptor> descriptors = Given().Select(@event => new EventDescriptor(@event.Id, @event, version++)).ToList();
-            var eventstorage = new SpecEventStorage(descriptors);
+            var eventstorage = new SpecEventStorage(Given().ToList());
             var snapshotstorage = new SpecSnapShotStorage(Snapshot);
             var eventpublisher = new SpecEventPublisher();
 
@@ -43,7 +41,7 @@ namespace CQRSlite.Extensions.TestHelpers
 
             Snapshot = snapshotstorage.Snapshot;
             PublishedEvents = eventpublisher.PublishedEvents;
-            EventDescriptors = eventstorage.Descriptors;
+            EventDescriptors = eventstorage.Events;
         }
     }
 
@@ -81,26 +79,26 @@ namespace CQRSlite.Extensions.TestHelpers
     }
 
     internal class SpecEventStorage : IEventStore {
-        public SpecEventStorage(IList<EventDescriptor> descriptors)
+        public SpecEventStorage(IList<Event> events)
         {
-            Descriptors = descriptors;
+            Events = events;
         }
 
-        public IList<EventDescriptor> Descriptors { get; set; }
+        public IList<Event> Events { get; set; }
 
-        public void Save(Guid aggregateId, EventDescriptor eventDescriptors)
+        public void Save(Guid aggregateId, Event @event)
         {
-            Descriptors.Add(eventDescriptors);
+            Events.Add(@event);
         }
 
-        public IEnumerable<EventDescriptor> Get(Guid aggregateId, int fromVersion)
+        public IEnumerable<Event> Get(Guid aggregateId, int fromVersion)
         {
-            return Descriptors;
+            return Events;
         }
 
         public int GetVersion(Guid aggregateId)
         {
-            return Descriptors.Max(x => x.Version);
+            return Events.Max(x => x.Version);
         }
     }
 }
