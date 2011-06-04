@@ -5,10 +5,25 @@ using CQRSlite;
 using CQRSlite.Config;
 
 namespace CQRSWeb
-{
+{	
+	public class MonoWebFormViewEngine : WebFormViewEngine
+	{
+    	protected override bool FileExists(ControllerContext controllerContext, string virtualPath)
+    	{
+        	return base.FileExists(controllerContext, virtualPath.Replace("~", ""));
+    	}
+	}
+
+	public class MonoRazorViewEngine : RazorViewEngine
+	{
+    	protected override bool FileExists(ControllerContext controllerContext, string virtualPath)
+    	{
+        	return base.FileExists(controllerContext, virtualPath.Replace("~", ""));
+    	}
+	}
     public class MvcApplication : System.Web.HttpApplication
     {
-		
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -28,6 +43,9 @@ namespace CQRSWeb
 
         protected void Application_Start()
         {
+			ViewEngines.Engines.Clear();
+    		ViewEngines.Engines.Add(new MonoWebFormViewEngine());
+    		ViewEngines.Engines.Add(new MonoRazorViewEngine());
 			AreaRegistration.RegisterAllAreas();
 
             RegisterGlobalFilters(GlobalFilters.Filters);
