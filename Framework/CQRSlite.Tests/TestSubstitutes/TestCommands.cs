@@ -7,7 +7,8 @@ namespace CQRSlite.Tests.TestSubstitutes
 
     }
 
-    public class TestAggregateDoSomethingHandler : IHandles<TestAggregateDoSomething> {
+    public class TestAggregateDoSomethingHandler : IHandles<TestAggregateDoSomething> 
+    {
         public void Handle(TestAggregateDoSomething message)
         {
             TimesRun++;

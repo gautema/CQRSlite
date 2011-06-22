@@ -1,4 +1,6 @@
-﻿using CQRSlite.Config;
+﻿using System;
+using System.Linq;
+using CQRSlite.Config;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
@@ -13,10 +15,10 @@ namespace CQRSlite.Tests.ConfigTests
 		[SetUp]
         public void Setup()
         {
-            _register = new BusRegisterer();
             _locator = new TestServiceLocator();
+            _register = new BusRegisterer(_locator);
             if (TestHandleRegistrer.HandlerList.Count == 0)
-                _register.Register(_locator, GetType());
+                _register.Register(GetType());
         }
 
         [Test]
@@ -26,11 +28,16 @@ namespace CQRSlite.Tests.ConfigTests
         }
 
         [Test]
-        public void Should_register_handler_method()
+        public void Should_be_able_to_run_all_handlers()
         {
-            foreach (var handler in TestHandleRegistrer.HandlerList)
+            foreach (var item in TestHandleRegistrer.HandlerList)
             {
-                Assert.AreEqual("Handle",((dynamic)handler).Method.Name);
+                var @event = Activator.CreateInstance(item.Type);
+                item.Handler(@event);
+            }
+            foreach (var handler in _locator.Handlers)
+            {
+                Assert.That(handler.TimesRun, Is.EqualTo(1));
             }
         }
     }

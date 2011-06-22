@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using CQRSlite.Bus;
 using CQRSlite.Config;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
-    public class TestServiceLocator : IServiceLocator {
+    public class TestServiceLocator : IServiceLocator
+    {
+        public List<dynamic> Handlers = new List<dynamic>();
         public T GetService<T>()
         {
             return (T)GetService(typeof(T));
@@ -15,8 +18,17 @@ namespace CQRSlite.Tests.TestSubstitutes
             if(type == typeof(IHandleRegister))
                 return new TestHandleRegistrer();
             if (type == typeof(TestAggregateDidSomethingHandler))
-                return new TestAggregateDidSomethingHandler();
-            return new TestAggregateDoSomethingHandler();
+            {
+                var handler = new TestAggregateDidSomethingHandler();
+                Handlers.Add(handler);
+                return handler;
+            }
+            else
+            {
+                var handler = new TestAggregateDoSomethingHandler();
+                Handlers.Add(handler);
+                return handler;
+            }
         }
     }
 }

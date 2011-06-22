@@ -8,7 +8,7 @@ namespace CQRSCode.Domain
 {
     public class EventStore : IEventStore
     {
-        private Dictionary<Guid, List<EventDescriptor>> db = new Dictionary<Guid, List<EventDescriptor>>();
+        private readonly Dictionary<Guid, List<EventDescriptor>> db = new Dictionary<Guid, List<EventDescriptor>>();
 
         public IEnumerable<Event> Get(Guid aggregateId, int fromVersion)
         {

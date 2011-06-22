@@ -2,5 +2,7 @@
 
 namespace CQRSlite.Domain
 {
-    public class AggreagateMissingParameterlessConstructorException : Exception {}
+    public class AggreagateMissingParameterlessConstructorException : Exception
+    {
+    }
 }

@@ -37,8 +37,8 @@ namespace CQRSWeb
 
         private void RegisterHandlers(IServiceLocator serviceLocator)
         {
-            var registerer = new BusRegisterer();
-            registerer.Register(serviceLocator, typeof(IHandles<>), typeof(ReadModelFacade));
+            var registerer = new BusRegisterer(serviceLocator);
+            registerer.Register(typeof(IHandles<>), typeof(ReadModelFacade));
         }
     }
 }
