@@ -7,7 +7,7 @@ CQRSlite has been made with pluggability in mind. So every standard implementati
 
 ##Getting started
 
-A sample project is located with the code, this shows a common usage scenario of the framework. There are some features of CQRSlite, such as snap:wqshoting that the sample does not show. These features are only documented through the tests.
+A sample project is located with the code, this shows a common usage scenario of the framework. There are some features of CQRSlite, such as snapshotting that the sample does not show. These features are only documented through the tests.
 
 I have tried to keep the project running in .NET 4.0 and Mono 2.10. But the sample has some problems in Mono right now. The project should compile without any setup.
 
