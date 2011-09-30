@@ -21,7 +21,8 @@ namespace CQRSlite.Tests.DomainTests
             {
                 aggregate.DoSomething();
             }
-            rep.Save(aggregate, 0);
+            rep.Add(aggregate);
+		    rep.Commit();
         }
 
         [Test]

@@ -4,7 +4,8 @@ namespace CQRSlite.Domain
 {
     public interface IRepository<T> where T : AggregateRoot
     {
-        void Save(T aggregate, int expectedVersion);
+        void Add(T aggregate);
+        void Commit();
         T Get(Guid id);
     }
 }

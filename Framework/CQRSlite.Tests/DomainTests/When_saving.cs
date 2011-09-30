@@ -30,29 +30,35 @@ namespace CQRSlite.Tests.DomainTests
         public void Should_save_uncommited_changes()
         {
             _aggregate.DoSomething();
-            _rep.Save(_aggregate, 0);
+            _rep.Add(_aggregate);
+            _rep.Commit();
             Assert.AreEqual(1, _eventStore.SavedEvents);
         }
 
         [Test]
-        public void Should_mark_commited_after_save()
+        public void Should_mark_commited_after_commit()
         {
             _aggregate.DoSomething();
-            _rep.Save(_aggregate, 0);
+            _rep.Add(_aggregate);
+            _rep.Commit();
             Assert.AreEqual(0, _aggregate.GetUncommittedChanges().Count());
         }
 
         [Test]
         public void ShouldThrowConcurrencyException()
         {
-            Assert.Throws<ConcurrencyException>(() =>  _rep.Save(_aggregate, 1));
+            _aggregate.SetVersion(12);
+            _rep.Add(_aggregate);
+
+            Assert.Throws<ConcurrencyException>(() => _rep.Commit());
         }
         
         [Test]
         public void ShouldPublishEvents()
         {
             _aggregate.DoSomething();
-            _rep.Save(_aggregate, 0);
+            _rep.Add(_aggregate);
+            _rep.Commit();
             Assert.AreEqual(1, _eventPublisher.Published);
         }
 
@@ -61,7 +67,8 @@ namespace CQRSlite.Tests.DomainTests
         {
             var agg = new TestAggregateNoParameterLessConstructor(1,Guid.Empty);
             agg.DoSomething();
-            _rep.Save(agg,0);
+            _rep.Add(agg);
+            _rep.Commit();
             Assert.AreEqual(1, _eventStore.SavedEvents);
         }
     }

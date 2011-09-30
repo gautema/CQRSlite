@@ -20,11 +20,14 @@ namespace CQRSlite.Tests.DomainTests
             _snapshotStore = new TestInMemorySnapshotStore();
             _rep = new Repository<TestSnapshotAggreagate>(eventStore, _snapshotStore, eventpubliser);
             var aggregate = new TestSnapshotAggreagate();
+
             for (int i = 0; i < 20; i++)
             {
+                _rep.Add(aggregate);
                 aggregate.DoSomething();
-                _rep.Save(aggregate, i);
+                _rep.Commit();
             }
+
         }
 
         [Test]

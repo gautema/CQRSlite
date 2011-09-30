@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CQRSlite.Eventing;
 
@@ -9,47 +10,57 @@ namespace CQRSlite.Domain
         private readonly IEventStore _storage;
         private readonly ISnapshotStore _snapshotStore;
         private readonly IEventPublisher _publisher;
+        private readonly Dictionary<Guid,AggregateRoot> _trackedAggregates;
         private const int SnapshotInterval = 15;
 
         public Repository(IEventStore storage, ISnapshotStore snapshotStore, IEventPublisher publisher)
         {
+            _trackedAggregates = new Dictionary<Guid, AggregateRoot>();
             _storage = storage;
             _snapshotStore = snapshotStore;
             _publisher = publisher;
         }
 
-        public void Save(T aggregate, int expectedVersion)
+        public void Add(T aggregate)
         {
-            if (_storage.GetVersion(aggregate.Id) != expectedVersion && expectedVersion != -1)
-            {
-                throw new ConcurrencyException();
-            }
-
-            var version = expectedVersion;
-            foreach (var @event in aggregate.GetUncommittedChanges())
-            {
-                version++;
-                @event.Version = version;
-                _storage.Save(aggregate.Id, @event);
-                _publisher.Publish(@event);
-            }
-
-            if (ShouldMakeSnapShot(aggregate, expectedVersion)) 
-                MakeSnapshot(aggregate, version);
-            aggregate.MarkChangesAsCommitted();
+            if(!_trackedAggregates.ContainsKey(aggregate.Id))
+                _trackedAggregates.Add(aggregate.Id,aggregate);
         }
 
-        private void MakeSnapshot(T aggregate, int version) 
+        public void Commit()
         {
-            var snapshot = aggregate.AsDynamic().GetSnapshot();
-            snapshot.RealObject.Version = version;
-            _snapshotStore.Save(snapshot.RealObject);
+            foreach (var aggregate in _trackedAggregates.Values)
+            {
+                if(_storage.GetVersion(aggregate.Id) != aggregate.Version)
+                    throw new ConcurrencyException();
+
+                var i = 0;
+                foreach (var @event in aggregate.GetUncommittedChanges())
+                {
+                    i++;
+                    @event.Version = aggregate.Version + i;
+                    _storage.Save(aggregate.Id, @event);
+                    _publisher.Publish(@event);
+                }
+
+                if (ShouldMakeSnapShot(aggregate))
+                    MakeSnapshot(aggregate);
+                aggregate.MarkChangesAsCommitted();
+            }
+            _trackedAggregates.Clear();
         }
 
-        private bool ShouldMakeSnapShot(AggregateRoot aggregate, int expectedVersion)
+        private void MakeSnapshot(AggregateRoot aggregate) 
+        {
+            var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
+            snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
+            _snapshotStore.Save(snapshot);
+        }
+
+        private bool ShouldMakeSnapShot(AggregateRoot aggregate)
         {
             if(!IsSnapshotable(typeof(T))) return false;
-            var i = expectedVersion;
+            var i = aggregate.Version;
 
             for (var j = 0; j < aggregate.GetUncommittedChanges().Count(); j++)
                 if (++i % SnapshotInterval == 0 && i != 0) return true;
@@ -58,16 +69,19 @@ namespace CQRSlite.Domain
 
         public T Get(Guid id)
         {
+            if (_trackedAggregates.ContainsKey(id))
+                return (T)_trackedAggregates[id];
             var aggregate = CreateAggregate();
             var snapshotVersion = RestoreAggregateFromSnapshot(id, aggregate);
 
             var events = _storage.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
-            aggregate.LoadsFromHistory(events);
+            aggregate.LoadFromHistory(events);
 
             if (events.Count() == 0 && snapshotVersion == -1)
             {
                 throw new AggregateNotFoundException();
             }
+            _trackedAggregates.Add(aggregate.Id,aggregate);
             return aggregate;
         }
 

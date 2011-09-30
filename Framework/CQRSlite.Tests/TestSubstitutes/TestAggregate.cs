@@ -6,7 +6,6 @@ namespace CQRSlite.Tests.TestSubstitutes
     public class TestAggregate : AggregateRoot
     {
         public int I;
-        public int Version { get; set; }
 
         public void DoSomething()
         {
@@ -36,6 +35,11 @@ namespace CQRSlite.Tests.TestSubstitutes
         public void DoSomething()
         {
             ApplyChange(new TestAggregateDidSomething());
+        }
+
+        public void SetVersion(int version)
+        {
+            Version = version;
         }
     }
 }

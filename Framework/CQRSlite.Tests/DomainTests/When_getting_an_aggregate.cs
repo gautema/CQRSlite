@@ -19,7 +19,6 @@ namespace CQRSlite.Tests.DomainTests
             var testEventPublisher = new TestEventPublisher();
             var snapshotStore = new NullSnapshotStore();
             _rep = new Repository<TestAggregate>(eventStore, snapshotStore, testEventPublisher);
-
         }
 
         [Test]
@@ -30,7 +29,7 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void Should_applye_events()
+        public void Should_apply_events()
         {
             var aggregate = _rep.Get(Guid.NewGuid());
             Assert.AreEqual(2,aggregate.I);
@@ -39,7 +38,26 @@ namespace CQRSlite.Tests.DomainTests
         [Test]
         public void Should_fail_if_aggregate_do_not_exist()
         {
-            Assert.Throws<AggregateNotFoundException>(() => { _rep.Get(Guid.Empty); });
+            Assert.Throws<AggregateNotFoundException>(() => _rep.Get(Guid.Empty));
+        }
+
+        [Test]
+	    public void Should_track_changes()
+	    {
+            var agg = new TestAggregate();
+            _rep.Add(agg);
+	        var aggregate = _rep.Get(agg.Id);
+            Assert.AreEqual(agg,aggregate);
+	    }
+
+        [Test]
+        public void Should_get_from_session_if_tracked()
+        {
+            var id = Guid.NewGuid();
+            var aggregate = _rep.Get(id);
+            var aggregate2 = _rep.Get(id);
+
+            Assert.AreEqual(aggregate, aggregate2);
         }
     }
 }
