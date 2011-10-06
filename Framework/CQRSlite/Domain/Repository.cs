@@ -24,8 +24,10 @@ namespace CQRSlite.Domain
 
         public void Add(T aggregate)
         {
-            if(!_trackedAggregates.ContainsKey(aggregate.Id))
-                _trackedAggregates.Add(aggregate.Id,aggregate);
+            if (!_trackedAggregates.ContainsKey(aggregate.Id))
+                _trackedAggregates.Add(aggregate.Id, aggregate);
+            else if (_trackedAggregates[aggregate.Id] != aggregate)
+                throw new TrackedAggregateAddedException();
         }
 
         public void Commit()

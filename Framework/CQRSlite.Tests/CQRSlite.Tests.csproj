@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusTests\When_publishing_events.cs" />
+    <Compile Include="DomainTests\When_adding_aggregates_to_repository.cs" />
     <Compile Include="DomainTests\When_getting_aggregate_without_contructor.cs" />
     <Compile Include="TestSubstitutes\TestInMemoryEventStore.cs" />
     <Compile Include="TestSubstitutes\TestInMemorySnapshotStore.cs" />

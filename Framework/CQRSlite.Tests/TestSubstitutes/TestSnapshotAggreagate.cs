@@ -31,6 +31,10 @@ namespace CQRSlite.Tests.TestSubstitutes
             ApplyChange(new TestAggregateDidSomething());
         }
 
+        public void SetId(Guid id)
+        {
+            Id = id;
+        }
     }
 
     public class TestSnapshotAggreagateSnapshot : Snapshot
