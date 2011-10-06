@@ -6,27 +6,30 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.DomainTests
 {
 	[TestFixture]
-    public class When_getting_not_valid_aggregate
+    public class When_getting_aggregate_without_contructor
     {
         private Repository<TestAggregateNoParameterLessConstructor> _rep;
+	    private TestAggregateNoParameterLessConstructor _aggregate;
 
-		[SetUp]
+	    [SetUp]
         public void Setup()
         {
             var eventStore = new TestEventStore();
             var eventPublisher = new TestEventPublisher();
             _rep = new Repository<TestAggregateNoParameterLessConstructor>(eventStore, null, eventPublisher);
+            _aggregate = _rep.Get(Guid.NewGuid());
         }
 
         [Test]
-        public void Should_throw_if_no_parameterless_constructor()
+        public void Should_create_aggregate()
         {
+            Assert.That(_aggregate, Is.Not.Null);
+        }
 
-            Assert.Throws<AggreagateMissingParameterlessConstructorException>(() =>
-                                                                                  {
-                                                                                      _rep.Get(Guid.NewGuid());
-                                                                                  });
-
+        [Test]
+        public void Should_playback_events()
+        {
+            Assert.That(_aggregate.Version,Is.EqualTo(3));
         }
     }
 }

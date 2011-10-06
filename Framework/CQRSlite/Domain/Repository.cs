@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using CQRSlite.Eventing;
 
 namespace CQRSlite.Domain
@@ -109,7 +110,7 @@ namespace CQRSlite.Domain
             }
             catch(MissingMethodException)
             {
-                throw new AggreagateMissingParameterlessConstructorException();
+                obj = (T) FormatterServices.GetUninitializedObject(typeof (T)); 
             }
             return obj;
         }
