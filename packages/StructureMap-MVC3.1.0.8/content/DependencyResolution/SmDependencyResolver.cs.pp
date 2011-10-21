@@ -28,7 +28,7 @@ namespace $rootnamespace$
         }
 
         public IEnumerable<object> GetServices(Type serviceType) {
-            return _container.GetAllInstances<object>().Where(s => s.GetType() == serviceType);
+            return _container.GetAllInstances(serviceType).Cast<object>();
         }
     }
 }
