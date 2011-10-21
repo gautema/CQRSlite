@@ -10,7 +10,7 @@ namespace CQRSlite.Tests.DomainTests
     public class When_saving_a_snapshotable_aggregate_for_each_change
     {
         private TestInMemorySnapshotStore _snapshotStore;
-        private Repository<TestSnapshotAggreagate> _rep;
+        private Repository<TestSnapshotAggregate> _rep;
 
 		[SetUp]
         public void Setup()        
@@ -18,8 +18,8 @@ namespace CQRSlite.Tests.DomainTests
             IEventStore eventStore = new TestInMemoryEventStore();
             var eventpubliser = new TestEventPublisher();
             _snapshotStore = new TestInMemorySnapshotStore();
-            _rep = new Repository<TestSnapshotAggreagate>(eventStore, _snapshotStore, eventpubliser);
-            var aggregate = new TestSnapshotAggreagate();
+            _rep = new Repository<TestSnapshotAggregate>(eventStore, _snapshotStore, eventpubliser);
+            var aggregate = new TestSnapshotAggregate();
 
             for (int i = 0; i < 20; i++)
             {

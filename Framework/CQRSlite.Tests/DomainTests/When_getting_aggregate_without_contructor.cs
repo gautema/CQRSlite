@@ -31,5 +31,7 @@ namespace CQRSlite.Tests.DomainTests
         {
             Assert.That(_aggregate.Version,Is.EqualTo(3));
         }
+
+
     }
 }

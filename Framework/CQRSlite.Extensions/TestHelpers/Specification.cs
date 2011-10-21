@@ -9,14 +9,14 @@ using NUnit.Framework;
 namespace CQRSlite.Extensions.TestHelpers
 {
 	[TestFixture]
-    public abstract class Specification<TAggreagate, THandler, TCommand> 
-        where TAggreagate: AggregateRoot
+    public abstract class Specification<TAggregate, THandler, TCommand> 
+        where TAggregate: AggregateRoot
         where THandler : class, IHandles<TCommand>
         where TCommand : Command
     {
 
-        protected TAggreagate Aggregate { get; set; }
-        protected IRepository<TAggreagate> Repository { get; set; }
+        protected TAggregate Aggregate { get; set; }
+        protected IRepository<TAggregate> Repository { get; set; }
         protected abstract IEnumerable<Event> Given();
         protected abstract TCommand When();
         protected abstract THandler BuildHandler();
@@ -32,7 +32,7 @@ namespace CQRSlite.Extensions.TestHelpers
             var snapshotstorage = new SpecSnapShotStorage(Snapshot);
             var eventpublisher = new SpecEventPublisher();
 
-            Repository = new Repository<TAggreagate>(eventstorage, snapshotstorage, eventpublisher);
+            Repository = new Repository<TAggregate>(eventstorage, snapshotstorage, eventpublisher);
 
             Aggregate = Repository.Get(Guid.Empty);
 

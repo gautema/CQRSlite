@@ -3,18 +3,18 @@ using CQRSlite.Domain;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
-    public class TestSnapshotAggreagate : SnapshotAggregateRoot<TestSnapshotAggreagateSnapshot>
+    public class TestSnapshotAggregate : SnapshotAggregateRoot<TestSnapshotAggregateSnapshot>
     {
         public bool Restored { get; set; }
         public bool Loaded { get; set; }
         public int Number { get; set; }
 
-        protected override TestSnapshotAggreagateSnapshot CreateSnapshot()
+        protected override TestSnapshotAggregateSnapshot CreateSnapshot()
         {
-            return new TestSnapshotAggreagateSnapshot {Number = Number};
+            return new TestSnapshotAggregateSnapshot {Number = Number};
         }
 
-        protected override void RestoreFromSnapshot(TestSnapshotAggreagateSnapshot snapshot)
+        protected override void RestoreFromSnapshot(TestSnapshotAggregateSnapshot snapshot)
         {
             Number = snapshot.Number;
             Restored = true;
@@ -37,7 +37,7 @@ namespace CQRSlite.Tests.TestSubstitutes
         }
     }
 
-    public class TestSnapshotAggreagateSnapshot : Snapshot
+    public class TestSnapshotAggregateSnapshot : Snapshot
     {
         public int Number { get; set; }
     }

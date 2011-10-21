@@ -112,7 +112,7 @@ namespace CQRSlite.Domain
             }
             catch(MissingMethodException)
             {
-                obj = (T) FormatterServices.GetUninitializedObject(typeof (T)); 
+               obj = (T) FormatterServices.GetUninitializedObject(typeof (T));
             }
             return obj;
         }

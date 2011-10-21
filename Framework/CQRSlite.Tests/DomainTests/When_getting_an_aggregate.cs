@@ -22,7 +22,7 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void Should_get_aggreagate_from_eventstore()
+        public void Should_get_aggregate_from_eventstore()
         {
             var aggregate = _rep.Get(Guid.NewGuid());
             Assert.NotNull(aggregate);

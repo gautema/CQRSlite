@@ -13,7 +13,7 @@ namespace CQRSlite.Tests.TestSubstitutes
         public Snapshot Get(Guid id)
         {
             VerifyGet = true;
-            return new TestSnapshotAggreagateSnapshot();
+            return new TestSnapshotAggregateSnapshot();
         }
 
         public void Save(Snapshot snapshot)

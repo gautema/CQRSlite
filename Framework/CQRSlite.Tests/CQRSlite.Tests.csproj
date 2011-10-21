@@ -74,7 +74,7 @@
     <Compile Include="DomainTests\When_getting_an_aggregate.cs" />
     <Compile Include="TestSubstitutes\TestAggregate.cs" />
     <Compile Include="TestSubstitutes\TestEvents.cs" />
-    <Compile Include="TestSubstitutes\TestSnapshotAggreagate.cs" />
+    <Compile Include="TestSubstitutes\TestSnapshotAggregate.cs" />
     <Compile Include="TestSubstitutes\TestSnapshotStore.cs" />
   </ItemGroup>
   <ItemGroup>

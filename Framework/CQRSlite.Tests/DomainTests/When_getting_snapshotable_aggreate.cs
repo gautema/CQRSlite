@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.DomainTests
     public class When_getting_snapshotable_aggreate
     {
         private TestSnapshotStore _snapshotStore;
-        private TestSnapshotAggreagate _aggregate;
+        private TestSnapshotAggregate _aggregate;
 
 		[SetUp]
         public void Setup()
@@ -17,7 +17,7 @@ namespace CQRSlite.Tests.DomainTests
             var eventStore = new TestEventStore();
             var eventPublisher = new TestEventPublisher();
             _snapshotStore = new TestSnapshotStore();
-            var rep = new Repository<TestSnapshotAggreagate>(eventStore, _snapshotStore,eventPublisher);
+            var rep = new Repository<TestSnapshotAggregate>(eventStore, _snapshotStore,eventPublisher);
             _aggregate = rep.Get(Guid.NewGuid());
         }
 
