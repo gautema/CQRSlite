@@ -8,13 +8,13 @@ namespace CQRSlite.Tests.EventingTests
     public class When_saving_to_null_snapshot_store
     {
         private NullSnapshotStore _snapshotstore;
-        private TestSnapshotAggreagateSnapshot _snapshot;
+        private TestSnapshotAggregateSnapshot _snapshot;
 
 		[SetUp]
         public void Setup()
         {
             _snapshotstore = new NullSnapshotStore();
-            _snapshot = new TestSnapshotAggreagateSnapshot();
+            _snapshot = new TestSnapshotAggregateSnapshot();
             _snapshotstore.Save(_snapshot);
         }
 

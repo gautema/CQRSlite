@@ -95,7 +95,7 @@ namespace CQRSlite.Domain
             }
             catch(MissingMethodException)
             {
-                throw new AggreagateMissingParameterlessConstructorException();
+                throw new AggregateMissingParameterlessConstructorException();
             }
             return obj;
         }

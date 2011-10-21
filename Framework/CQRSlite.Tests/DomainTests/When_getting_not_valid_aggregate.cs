@@ -22,7 +22,7 @@ namespace CQRSlite.Tests.DomainTests
         public void Should_throw_if_no_parameterless_constructor()
         {
 
-            Assert.Throws<AggreagateMissingParameterlessConstructorException>(() =>
+            Assert.Throws<AggregateMissingParameterlessConstructorException>(() =>
                                                                                   {
                                                                                       _rep.Get(Guid.NewGuid());
                                                                                   });

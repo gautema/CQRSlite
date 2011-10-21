@@ -52,7 +52,7 @@
     <Compile Include="Domain\AggregateRoot.cs" />
     <Compile Include="Commanding\Command.cs" />
     <Compile Include="Commanding\ICommandSender.cs" />
-    <Compile Include="Domain\AggreagateMissingParameterlessConstructorException.cs" />
+    <Compile Include="Domain\AggregateMissingParameterlessConstructorException.cs" />
     <Compile Include="Eventing\IEventPublisher.cs" />
     <Compile Include="Eventing\IEventStore.cs" />
     <Compile Include="Bus\IHandleRegister.cs" />
