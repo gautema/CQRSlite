@@ -10,7 +10,6 @@ namespace CQRSCode.Domain
 
         private void Apply(InventoryItemCreated e)
         {
-            Id = e.Id;
             _activated = true;
         }
 

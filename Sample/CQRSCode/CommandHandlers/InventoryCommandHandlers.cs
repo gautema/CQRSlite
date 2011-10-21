@@ -25,7 +25,6 @@ namespace CQRSCode.CommandHandlers
         {
             var item = _repository.Get(message.InventoryItemId);
             item.Deactivate();
-            _repository.Add(item);
             _repository.Commit();
         }
 
@@ -33,7 +32,6 @@ namespace CQRSCode.CommandHandlers
         {
             var item = _repository.Get(message.InventoryItemId);
             item.Remove(message.Count);
-            _repository.Add(item);
             _repository.Commit();
         }
 
@@ -41,7 +39,6 @@ namespace CQRSCode.CommandHandlers
         {
             var item = _repository.Get(message.InventoryItemId);
             item.CheckIn(message.Count);
-            _repository.Add(item);
             _repository.Commit();
         }
 
@@ -49,7 +46,6 @@ namespace CQRSCode.CommandHandlers
         {
             var item = _repository.Get(message.InventoryItemId);
             item.ChangeName(message.NewName);
-            _repository.Add(item);
             _repository.Commit();
         }
     }
