@@ -14,11 +14,11 @@ namespace CQRSlite.Tests.TestSubstitutes
             }
 
             return new List<Event>
-                                   {
-                                       new TestAggregateDidSomething {Id= aggregateId, Version = 1},
-                                       new TestAggregateDidSomeethingElse{Id= aggregateId, Version = 2},
-                                       new TestAggregateDidSomething{Id= aggregateId, Version = 3},
-                                   };
+                       {
+                           new TestAggregateDidSomething {Id = aggregateId, Version = 1},
+                           new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 2},
+                           new TestAggregateDidSomething {Id = aggregateId, Version = 3},
+                       };
 
         }
 

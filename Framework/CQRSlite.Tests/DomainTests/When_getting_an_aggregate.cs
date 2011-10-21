@@ -59,5 +59,14 @@ namespace CQRSlite.Tests.DomainTests
 
             Assert.AreEqual(aggregate, aggregate2);
         }
+
+        [Test]
+        public void Should_get_correct_version()
+        {
+            var id = Guid.NewGuid();
+            var aggregate = _rep.Get(id);
+
+            Assert.AreEqual(3,aggregate.Version);
+        }
     }
 }
