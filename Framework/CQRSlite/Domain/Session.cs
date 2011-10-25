@@ -41,20 +41,22 @@ namespace CQRSlite.Domain
                 if (_storage.GetVersion(aggregate.Id) != aggregate.Version)
                     throw new ConcurrencyException();
 
-                var i = 0;
-                foreach (var @event in aggregate.GetUncommittedChanges())
-                {
-                    i++;
-                    @event.Version = aggregate.Version + i;
-                    _storage.Save(aggregate.Id, @event);
-                    _publisher.Publish(@event);
-                }
-
-                if (SnapshotHelper.ShouldMakeSnapShot(aggregate))
-                    MakeSnapshot(aggregate);
+                Save(aggregate);
+                TryMakeSnapshot(aggregate);
                 aggregate.MarkChangesAsCommitted();
             }
-            _trackedAggregates.Clear();
+        }
+
+        private void Save(AggregateRoot aggregate)
+        {
+            var i = 0;
+            foreach (var @event in aggregate.GetUncommittedChanges())
+            {
+                i++;
+                @event.Version = aggregate.Version + i;
+                _storage.Save(aggregate.Id, @event);
+                _publisher.Publish(@event);
+            }
         }
 
         public bool IsTracked(Guid id)
@@ -62,8 +64,10 @@ namespace CQRSlite.Domain
             return _trackedAggregates.ContainsKey(id);
         }
         
-        private void MakeSnapshot(AggregateRoot aggregate)
+        private void TryMakeSnapshot(AggregateRoot aggregate)
         {
+            if (!SnapshotHelper.ShouldMakeSnapShot(aggregate))
+                return;
             var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
             _snapshotStore.Save(snapshot);
