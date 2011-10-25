@@ -33,6 +33,7 @@ namespace CQRSlite.Extensions.TestHelpers
             var snapshotstorage = new SpecSnapShotStorage(Snapshot);
             var eventpublisher = new SpecEventPublisher();
 
+            Session = new Session(eventstorage, snapshotstorage, eventpublisher);
             Repository = new Repository<TAggregate>(Session, eventstorage, snapshotstorage);
 
             Aggregate = Repository.Get(Guid.Empty);
