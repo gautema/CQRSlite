@@ -41,13 +41,13 @@ namespace CQRSlite.Domain
                 if (_storage.GetVersion(aggregate.Id) != aggregate.Version)
                     throw new ConcurrencyException();
 
-                Save(aggregate);
+                SaveAndPublishUncommitedEvents(aggregate);
                 TryMakeSnapshot(aggregate);
                 aggregate.MarkChangesAsCommitted();
             }
         }
 
-        private void Save(AggregateRoot aggregate)
+        private void SaveAndPublishUncommitedEvents(AggregateRoot aggregate)
         {
             var i = 0;
             foreach (var @event in aggregate.GetUncommittedChanges())
