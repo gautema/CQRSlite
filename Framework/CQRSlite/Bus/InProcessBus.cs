@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CQRSlite.Commanding;
 using CQRSlite.Eventing;
+using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Bus
 {

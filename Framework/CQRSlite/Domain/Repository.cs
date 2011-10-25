@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.Serialization;
 using CQRSlite.Eventing;
+using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Domain
 {
@@ -59,7 +60,7 @@ namespace CQRSlite.Domain
         private int RestoreAggregateFromSnapshot(Guid id, T aggregate)
         {
             var version = -1;
-            if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
+            if (SnapshotHelper.IsSnapshotable(typeof(T)) && _snapshotStore != null)
             {
                 var snapshot = _snapshotStore.Get(id);
                 if (snapshot != null)
@@ -69,16 +70,6 @@ namespace CQRSlite.Domain
                 }
             }
             return version;
-        }
-
-        private bool IsSnapshotable(Type aggregateType)
-        {
-            if(aggregateType.BaseType == null)
-                return false;
-            if (aggregateType.BaseType.IsGenericType &&
-                aggregateType.BaseType.GetGenericTypeDefinition() == typeof (SnapshotAggregateRoot<>))
-                return true;
-            return IsSnapshotable(aggregateType.BaseType);
         }
     }
 }

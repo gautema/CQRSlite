@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Dynamic;
-using System.Linq.Expressions;
 using System.Reflection;
 
-namespace CQRSlite
+namespace CQRSlite.Infrastructure
 {
     internal class PrivateReflectionDynamicObject : DynamicObject
     {
@@ -54,32 +53,4 @@ namespace CQRSlite
             }
         }
     }
-    
-    internal static class PrivateReflectionDynamicObjectExtensions
-    {
-        public static dynamic AsDynamic(this object o)
-        {
-            return PrivateReflectionDynamicObject.WrapObjectIfNeeded(o);
-        }
-    }
-
-    internal static class DelegateAdjuster
-    {
-        public static Action<TBase> CastArgument<TBase, TDerived>(Expression<Action<TDerived>> source) where TDerived : TBase
-        {
-            if (typeof(TDerived) == typeof(TBase))
-            {
-                return (Action<TBase>)((Delegate)source.Compile());
-            }
-
-            ParameterExpression sourceParameter = Expression.Parameter(typeof(TBase), "source");
-            var result = Expression.Lambda<Action<TBase>>(
-                Expression.Invoke(
-                    source,
-                    Expression.Convert(sourceParameter, typeof(TDerived))),
-                sourceParameter);
-            return result.Compile();
-        }
-    }
 }
-

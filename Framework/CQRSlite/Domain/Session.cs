@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using CQRSlite.Eventing;
+using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Domain
 {
@@ -12,7 +12,6 @@ namespace CQRSlite.Domain
         private readonly ISnapshotStore _snapshotStore;
         private readonly IEventPublisher _publisher;
         private readonly Dictionary<Guid, AggregateRoot> _trackedAggregates;
-        private const int SnapshotInterval = 15;
 
         public Session(IEventStore storage, ISnapshotStore snapshotStore, IEventPublisher publisher)
         {
@@ -24,7 +23,7 @@ namespace CQRSlite.Domain
 
         public void Track(AggregateRoot aggregate)
         {
-            if (!_trackedAggregates.ContainsKey(aggregate.Id))
+            if (!IsTracked(aggregate.Id))
                 _trackedAggregates.Add(aggregate.Id, aggregate);
             else if (_trackedAggregates[aggregate.Id] != aggregate)
                 throw new TrackedAggregateAddedException();
@@ -51,7 +50,7 @@ namespace CQRSlite.Domain
                     _publisher.Publish(@event);
                 }
 
-                if (ShouldMakeSnapShot(aggregate))
+                if (SnapshotHelper.ShouldMakeSnapShot(aggregate))
                     MakeSnapshot(aggregate);
                 aggregate.MarkChangesAsCommitted();
             }
@@ -68,26 +67,6 @@ namespace CQRSlite.Domain
             var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
             _snapshotStore.Save(snapshot);
-        }
-
-        private bool ShouldMakeSnapShot(AggregateRoot aggregate)
-        {
-            if (!IsSnapshotable(aggregate.GetType())) return false;
-            var i = aggregate.Version;
-
-            for (var j = 0; j < aggregate.GetUncommittedChanges().Count(); j++)
-                if (++i % SnapshotInterval == 0 && i != 0) return true;
-            return false;
-        }
-
-        private bool IsSnapshotable(Type aggregateType)
-        {
-            if (aggregateType.BaseType == null)
-                return false;
-            if (aggregateType.BaseType.IsGenericType &&
-                aggregateType.BaseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
-                return true;
-            return IsSnapshotable(aggregateType.BaseType);
         }
     }
 }
