@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using CQRSlite.Eventing;
@@ -10,70 +9,25 @@ namespace CQRSlite.Domain
     {
         private readonly IEventStore _storage;
         private readonly ISnapshotStore _snapshotStore;
-        private readonly IEventPublisher _publisher;
-        private readonly Dictionary<Guid,AggregateRoot> _trackedAggregates;
-        private const int SnapshotInterval = 15;
+        private readonly ISession _session;
 
-        public Repository(IEventStore storage, ISnapshotStore snapshotStore, IEventPublisher publisher)
+        public Repository(ISession session, IEventStore storage, ISnapshotStore snapshotStore)
         {
-            _trackedAggregates = new Dictionary<Guid, AggregateRoot>();
             _storage = storage;
             _snapshotStore = snapshotStore;
-            _publisher = publisher;
+            _session = session;
         }
 
         public void Add(T aggregate)
         {
-            if (!_trackedAggregates.ContainsKey(aggregate.Id))
-                _trackedAggregates.Add(aggregate.Id, aggregate);
-            else if (_trackedAggregates[aggregate.Id] != aggregate)
-                throw new TrackedAggregateAddedException();
-        }
-
-        public void Commit()
-        {
-            foreach (var aggregate in _trackedAggregates.Values)
-            {
-                if(_storage.GetVersion(aggregate.Id) != aggregate.Version)
-                    throw new ConcurrencyException();
-
-                var i = 0;
-                foreach (var @event in aggregate.GetUncommittedChanges())
-                {
-                    i++;
-                    @event.Version = aggregate.Version + i;
-                    _storage.Save(aggregate.Id, @event);
-                    _publisher.Publish(@event);
-                }
-
-                if (ShouldMakeSnapShot(aggregate))
-                    MakeSnapshot(aggregate);
-                aggregate.MarkChangesAsCommitted();
-            }
-            _trackedAggregates.Clear();
-        }
-
-        private void MakeSnapshot(AggregateRoot aggregate) 
-        {
-            var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
-            snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
-            _snapshotStore.Save(snapshot);
-        }
-
-        private bool ShouldMakeSnapShot(AggregateRoot aggregate)
-        {
-            if(!IsSnapshotable(typeof(T))) return false;
-            var i = aggregate.Version;
-
-            for (var j = 0; j < aggregate.GetUncommittedChanges().Count(); j++)
-                if (++i % SnapshotInterval == 0 && i != 0) return true;
-            return false;
+            _session.Track(aggregate);
         }
 
         public T Get(Guid id)
         {
-            if (_trackedAggregates.ContainsKey(id))
-                return (T)_trackedAggregates[id];
+            if (_session.IsTracked(id))
+                return _session.Get<T>(id);
+
             var aggregate = CreateAggregate();
             var snapshotVersion = RestoreAggregateFromSnapshot(id, aggregate);
 
@@ -84,23 +38,8 @@ namespace CQRSlite.Domain
             {
                 throw new AggregateNotFoundException();
             }
-            _trackedAggregates.Add(aggregate.Id,aggregate);
+            _session.Track(aggregate);
             return aggregate;
-        }
-
-        private int RestoreAggregateFromSnapshot(Guid id, T aggregate)
-        {
-            var version = -1;
-            if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
-            {
-                var snapshot = _snapshotStore.Get(id);
-                if(snapshot != null)
-                {
-                    aggregate.AsDynamic().Restore(snapshot);
-                    version = snapshot.Version;
-                }
-            }
-            return version;
         }
 
         private T CreateAggregate() 
@@ -115,6 +54,21 @@ namespace CQRSlite.Domain
                obj = (T) FormatterServices.GetUninitializedObject(typeof (T));
             }
             return obj;
+        }
+
+        private int RestoreAggregateFromSnapshot(Guid id, T aggregate)
+        {
+            var version = -1;
+            if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
+            {
+                var snapshot = _snapshotStore.Get(id);
+                if (snapshot != null)
+                {
+                    aggregate.AsDynamic().Restore(snapshot);
+                    version = snapshot.Version;
+                }
+            }
+            return version;
         }
 
         private bool IsSnapshotable(Type aggregateType)

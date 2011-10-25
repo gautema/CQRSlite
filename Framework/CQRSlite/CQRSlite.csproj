@@ -53,6 +53,8 @@
     <Compile Include="Commanding\Command.cs" />
     <Compile Include="Commanding\ICommandSender.cs" />
     <Compile Include="Domain\AggregateMissingParameterlessConstructorException.cs" />
+    <Compile Include="Domain\ISession.cs" />
+    <Compile Include="Domain\Session.cs" />
     <Compile Include="Domain\TrackedAggregateAddedException.cs" />
     <Compile Include="Eventing\IEventPublisher.cs" />
     <Compile Include="Eventing\IEventStore.cs" />

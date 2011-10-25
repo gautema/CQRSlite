@@ -9,44 +9,47 @@ namespace CQRSCode.CommandHandlers
         IHandles<CheckInItemsToInventory>, IHandles<RenameInventoryItem>
     {
         private readonly IRepository<InventoryItem> _repository;
-        public InventoryCommandHandlers(IRepository<InventoryItem> repository)
+        private readonly ISession _session;
+
+        public InventoryCommandHandlers(IRepository<InventoryItem> repository, ISession session)
         {
             _repository = repository;
+            _session = session;
         }
 
         public void Handle(CreateInventoryItem message)
         {
             var item = new InventoryItem(message.InventoryItemId, message.Name);
             _repository.Add(item);
-            _repository.Commit();
+            _session.Commit();
         }
 
         public void Handle(DeactivateInventoryItem message)
         {
             var item = _repository.Get(message.InventoryItemId);
             item.Deactivate();
-            _repository.Commit();
+            _session.Commit();
         }
 
         public void Handle(RemoveItemsFromInventory message)
         {
             var item = _repository.Get(message.InventoryItemId);
             item.Remove(message.Count);
-            _repository.Commit();
+            _session.Commit();
         }
 
         public void Handle(CheckInItemsToInventory message)
         {
             var item = _repository.Get(message.InventoryItemId);
             item.CheckIn(message.Count);
-            _repository.Commit();
+            _session.Commit();
         }
 
         public void Handle(RenameInventoryItem message)
         {
             var item = _repository.Get(message.InventoryItemId);
             item.ChangeName(message.NewName);
-            _repository.Commit();
+            _session.Commit();
         }
     }
 }

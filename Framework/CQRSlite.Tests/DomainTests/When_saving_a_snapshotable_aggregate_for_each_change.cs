@@ -18,14 +18,15 @@ namespace CQRSlite.Tests.DomainTests
             IEventStore eventStore = new TestInMemoryEventStore();
             var eventpubliser = new TestEventPublisher();
             _snapshotStore = new TestInMemorySnapshotStore();
-            _rep = new Repository<TestSnapshotAggregate>(eventStore, _snapshotStore, eventpubliser);
+            var session = new Session(eventStore, _snapshotStore, eventpubliser);
+            _rep = new Repository<TestSnapshotAggregate>(session, eventStore, _snapshotStore);
             var aggregate = new TestSnapshotAggregate();
 
             for (int i = 0; i < 20; i++)
             {
                 _rep.Add(aggregate);
                 aggregate.DoSomething();
-                _rep.Commit();
+                session.Commit();
             }
 
         }
