@@ -4,10 +4,10 @@ using CQRSlite.Domain;
 
 namespace CQRSlite.Infrastructure
 {
-    public class SnapshotHelper
+    public class DefaultSnapshotStrategy : ISnapshotStrategy
     {
         private const int SnapshotInterval = 15;
-        public static bool IsSnapshotable(Type aggregateType)
+        public bool IsSnapshotable(Type aggregateType)
         {
             if (aggregateType.BaseType == null)
                 return false;
@@ -17,7 +17,7 @@ namespace CQRSlite.Infrastructure
             return IsSnapshotable(aggregateType.BaseType);
         }
 
-        public static bool ShouldMakeSnapShot(AggregateRoot aggregate)
+        public bool ShouldMakeSnapShot(AggregateRoot aggregate)
         {
             if (!IsSnapshotable(aggregate.GetType())) return false;
             var i = aggregate.Version;

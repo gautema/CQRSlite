@@ -4,6 +4,7 @@ using System.Linq;
 using CQRSlite.Commanding;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
+using CQRSlite.Infrastructure;
 using NUnit.Framework;
 
 namespace CQRSlite.Extensions.TestHelpers
@@ -33,8 +34,9 @@ namespace CQRSlite.Extensions.TestHelpers
             var snapshotstorage = new SpecSnapShotStorage(Snapshot);
             var eventpublisher = new SpecEventPublisher();
 
-            Session = new Session(eventstorage, snapshotstorage, eventpublisher);
-            Repository = new Repository<TAggregate>(Session, eventstorage, snapshotstorage);
+            var snapshotStrategy = new DefaultSnapshotStrategy();
+            Session = new Session(eventstorage, snapshotstorage, eventpublisher, snapshotStrategy);
+            Repository = new Repository<TAggregate>(Session, eventstorage, snapshotstorage, snapshotStrategy);
 
             Aggregate = Repository.Get(Guid.Empty);
 

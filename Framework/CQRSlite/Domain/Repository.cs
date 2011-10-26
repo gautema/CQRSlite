@@ -10,12 +10,14 @@ namespace CQRSlite.Domain
     {
         private readonly IEventStore _storage;
         private readonly ISnapshotStore _snapshotStore;
+        private readonly ISnapshotStrategy _snapshotStrategy;
         private readonly ISession _session;
 
-        public Repository(ISession session, IEventStore storage, ISnapshotStore snapshotStore)
+        public Repository(ISession session, IEventStore storage, ISnapshotStore snapshotStore, ISnapshotStrategy snapshotStrategy)
         {
             _storage = storage;
             _snapshotStore = snapshotStore;
+            _snapshotStrategy = snapshotStrategy;
             _session = session;
         }
 
@@ -60,7 +62,7 @@ namespace CQRSlite.Domain
         private int RestoreAggregateFromSnapshot(Guid id, T aggregate)
         {
             var version = -1;
-            if (SnapshotHelper.IsSnapshotable(typeof(T)) && _snapshotStore != null)
+            if (_snapshotStrategy.IsSnapshotable(typeof(T)) && _snapshotStore != null)
             {
                 var snapshot = _snapshotStore.Get(id);
                 if (snapshot != null)

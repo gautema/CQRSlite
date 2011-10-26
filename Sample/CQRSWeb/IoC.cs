@@ -16,6 +16,7 @@ namespace CQRSWeb {
                             x.For<ICommandSender>().Use(y => y.GetInstance<InProcessBus>());
                             x.For<IEventPublisher>().Use(y => y.GetInstance<InProcessBus>());
                             x.For<IHandleRegister>().Use(y => y.GetInstance<InProcessBus>());
+                            x.For<ISession>().HybridHttpOrThreadLocalScoped().Use<Session>();
                             x.For<IEventStore>().Singleton().Use<EventStore>();
                             x.For(typeof(IRepository<>)).Use(typeof(Repository<>));
 

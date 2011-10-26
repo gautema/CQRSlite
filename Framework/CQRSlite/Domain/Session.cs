@@ -11,13 +11,15 @@ namespace CQRSlite.Domain
         private readonly IEventStore _storage;
         private readonly ISnapshotStore _snapshotStore;
         private readonly IEventPublisher _publisher;
+        private readonly ISnapshotStrategy _snapshotStrategy;
         private readonly Dictionary<Guid, AggregateRoot> _trackedAggregates;
 
-        public Session(IEventStore storage, ISnapshotStore snapshotStore, IEventPublisher publisher)
+        public Session(IEventStore storage, ISnapshotStore snapshotStore, IEventPublisher publisher, ISnapshotStrategy snapshotStrategy)
         {
             _storage = storage;
             _snapshotStore = snapshotStore;
             _publisher = publisher;
+            _snapshotStrategy = snapshotStrategy;
             _trackedAggregates = new Dictionary<Guid, AggregateRoot>();
         }
 
@@ -66,7 +68,7 @@ namespace CQRSlite.Domain
         
         private void TryMakeSnapshot(AggregateRoot aggregate)
         {
-            if (!SnapshotHelper.ShouldMakeSnapShot(aggregate))
+            if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
                 return;
             var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
