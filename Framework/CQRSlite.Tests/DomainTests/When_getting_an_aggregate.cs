@@ -1,6 +1,7 @@
 ﻿using System;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
+using CQRSlite.Infrastructure;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
@@ -18,8 +19,8 @@ namespace CQRSlite.Tests.DomainTests
             var eventStore = new TestEventStore();
             var testEventPublisher = new TestEventPublisher();
             var snapshotStore = new NullSnapshotStore();
-            _rep = new Repository<TestAggregate>(eventStore, snapshotStore, testEventPublisher);
-
+		    var snapshotStrategy = new DefaultSnapshotStrategy();
+            _rep = new Repository<TestAggregate>(eventStore, snapshotStore, testEventPublisher, snapshotStrategy);
         }
 
         [Test]

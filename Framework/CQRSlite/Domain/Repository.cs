@@ -10,13 +10,14 @@ namespace CQRSlite.Domain
         private readonly IEventStore _storage;
         private readonly ISnapshotStore _snapshotStore;
         private readonly IEventPublisher _publisher;
-        private const int SnapshotInterval = 15;
+        private readonly ISnapshotStrategy _snapshotStrategy;
 
-        public Repository(IEventStore storage, ISnapshotStore snapshotStore, IEventPublisher publisher)
+        public Repository(IEventStore storage, ISnapshotStore snapshotStore, IEventPublisher publisher, ISnapshotStrategy snapshotStrategy)
         {
             _storage = storage;
             _snapshotStore = snapshotStore;
             _publisher = publisher;
+            _snapshotStrategy = snapshotStrategy;
         }
 
         public void Save(T aggregate, int expectedVersion)
@@ -36,7 +37,7 @@ namespace CQRSlite.Domain
                 _publisher.Publish(@event);
             }
 
-            if (ShouldMakeSnapShot(aggregate, expectedVersion)) 
+            if (_snapshotStrategy.ShouldMakeSnapShot(aggregate, expectedVersion)) 
                 MakeSnapshot(aggregate, version);
             aggregate.MarkChangesAsCommitted();
         }
@@ -46,16 +47,6 @@ namespace CQRSlite.Domain
             var snapshot = aggregate.AsDynamic().GetSnapshot();
             snapshot.RealObject.Version = version;
             _snapshotStore.Save(snapshot.RealObject);
-        }
-
-        private bool ShouldMakeSnapShot(AggregateRoot aggregate, int expectedVersion)
-        {
-            if(!IsSnapshotable(typeof(T))) return false;
-            var i = expectedVersion;
-
-            for (var j = 0; j < aggregate.GetUncommittedChanges().Count(); j++)
-                if (++i % SnapshotInterval == 0 && i != 0) return true;
-            return false;
         }
 
         public T Get(Guid id)
@@ -76,7 +67,7 @@ namespace CQRSlite.Domain
         private int RestoreAggregateFromSnapshot(Guid id, T aggregate)
         {
             var version = -1;
-            if (IsSnapshotable(typeof(T)) && _snapshotStore != null)
+            if (_snapshotStrategy.IsSnapshotable(typeof(T)) && _snapshotStore != null)
             {
                 var snapshot = _snapshotStore.Get(id);
                 if(snapshot != null)
@@ -100,16 +91,6 @@ namespace CQRSlite.Domain
                 throw new AggregateMissingParameterlessConstructorException();
             }
             return obj;
-        }
-
-        private bool IsSnapshotable(Type aggregateType)
-        {
-            if(aggregateType.BaseType == null)
-                return false;
-            if (aggregateType.BaseType.IsGenericType &&
-                aggregateType.BaseType.GetGenericTypeDefinition() == typeof (SnapshotAggregateRoot<>))
-                return true;
-            return IsSnapshotable(aggregateType.BaseType);
         }
     }
 }
