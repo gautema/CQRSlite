@@ -50,6 +50,12 @@ namespace CQRSlite.Domain
             return aggregate;
         }
 
+        private bool IsTracked(Guid id)
+        {
+            return _trackedAggregates.ContainsKey(id);
+        }
+
+
         public void Commit()
         {
             foreach (var aggregate in _trackedAggregates.Values)
@@ -71,11 +77,6 @@ namespace CQRSlite.Domain
                 _storage.Save(aggregate.Id, @event);
                 _publisher.Publish(@event);
             }
-        }
-
-        private bool IsTracked(Guid id)
-        {
-            return _trackedAggregates.ContainsKey(id);
         }
         
         private void TryMakeSnapshot(AggregateRoot aggregate)
