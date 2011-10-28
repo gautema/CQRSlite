@@ -30,6 +30,7 @@ namespace CQRSlite.Domain
             {
                 version++;
                 @event.Version = version;
+                @event.Timestamp = DateTimeOffset.UtcNow;
                 _storage.Save(aggregate.Id, @event);
                 _publisher.Publish(@event);
             }

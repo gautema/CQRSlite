@@ -31,7 +31,7 @@ namespace CQRSlite.Tests.DomainTests
         {
             _aggregate.DoSomething();
             _rep.Save(_aggregate, 0);
-            Assert.AreEqual(1, _eventStore.SavedEvents);
+            Assert.AreEqual(1, _eventStore.SavedEvents.Count);
         }
 
         [Test]
@@ -62,7 +62,16 @@ namespace CQRSlite.Tests.DomainTests
             var agg = new TestAggregateNoParameterLessConstructor(1,Guid.Empty);
             agg.DoSomething();
             _rep.Save(agg,0);
-            Assert.AreEqual(1, _eventStore.SavedEvents);
+            Assert.AreEqual(1, _eventStore.SavedEvents.Count);
+        }
+
+        [Test]
+        public void Should_set_date()
+        {
+            var agg = new TestAggregateNoParameterLessConstructor(1, Guid.Empty);
+            agg.DoSomething();
+            _rep.Save(agg,0);
+            Assert.That(_eventStore.SavedEvents.First().Timestamp, Is.InRange(DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddSeconds(1)));
         }
     }
 }
