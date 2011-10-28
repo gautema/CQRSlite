@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CQRSlite.Eventing;
+using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Domain
 {
