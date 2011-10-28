@@ -36,7 +36,7 @@ namespace CQRSlite.Tests.DomainTests
             _aggregate.DoSomething();
             _rep.Add(_aggregate);
             _session.Commit();
-            Assert.AreEqual(1, _eventStore.SavedEvents);
+            Assert.AreEqual(1, _eventStore.SavedEvents.Count);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldThrowConcurrencyException()
+        public void Should_throw_concurrency_exception()
         {
             _aggregate.SetVersion(12);
             _rep.Add(_aggregate);
@@ -58,7 +58,7 @@ namespace CQRSlite.Tests.DomainTests
         }
         
         [Test]
-        public void ShouldPublishEvents()
+        public void Should_publish_events()
         {
             _aggregate.DoSomething();
             _rep.Add(_aggregate);
@@ -67,13 +67,23 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldAddNewAggregate()
+        public void Should_add_new_aggregate()
         {
             var agg = new TestAggregateNoParameterLessConstructor(1,Guid.Empty);
             agg.DoSomething();
             _rep.Add(agg);
             _session.Commit();
-            Assert.AreEqual(1, _eventStore.SavedEvents);
+            Assert.AreEqual(1, _eventStore.SavedEvents.Count);
+        }
+
+        [Test]
+        public void Should_set_date()
+        {
+            var agg = new TestAggregateNoParameterLessConstructor(1, Guid.Empty);
+            agg.DoSomething();
+            _rep.Add(agg);
+            _session.Commit();
+            Assert.That(_eventStore.SavedEvents.First().TimeStamp, Is.InRange(DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddSeconds(1)));
         }
     }
 }

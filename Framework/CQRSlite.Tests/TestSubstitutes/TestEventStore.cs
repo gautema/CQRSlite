@@ -6,6 +6,10 @@ namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestEventStore : IEventStore
     {
+        public TestEventStore()
+        {
+            SavedEvents = new List<Event>();   
+        }
         public IEnumerable<Event> Get(Guid aggregateId, int version)
         {
             if (aggregateId == Guid.Empty)
@@ -28,9 +32,9 @@ namespace CQRSlite.Tests.TestSubstitutes
         }
         public void Save(Guid aggregateId, Event eventDescriptor)
         {
-            SavedEvents++;
+            SavedEvents.Add(eventDescriptor);
         }
 
-        public int SavedEvents { get; set; }
+        public List<Event> SavedEvents { get; set; }
     }
 }

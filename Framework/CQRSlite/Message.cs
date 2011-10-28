@@ -4,4 +4,3 @@ namespace CQRSlite
 	{
 	}
 }
-

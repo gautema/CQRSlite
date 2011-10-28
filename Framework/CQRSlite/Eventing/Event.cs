@@ -6,6 +6,7 @@ namespace CQRSlite.Eventing
 	{
 	    public Guid Id;
         public int Version;
+	    public DateTimeOffset TimeStamp;
 	}
 }
 
