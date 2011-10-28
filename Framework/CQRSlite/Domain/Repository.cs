@@ -26,21 +26,22 @@ namespace CQRSlite.Domain
             _session.Track(aggregate);
         }
 
-        public T Get(Guid id)
+        public T Get(Guid id, int? expectedVersion = null)
         {
             if (_session.IsTracked(id))
-                return _session.Get<T>(id);
+                return _session.Get<T>(id, expectedVersion??-1);
 
+            if (expectedVersion != null && _storage.GetVersion(id) != expectedVersion && expectedVersion != -1)
+                throw new ConcurrencyException();
+            
             var aggregate = CreateAggregate();
-            var snapshotVersion = RestoreAggregateFromSnapshot(id, aggregate);
+            var snapshotVersion = TryRestoreAggregateFromSnapshot(id, aggregate);
 
             var events = _storage.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
-            aggregate.LoadFromHistory(events);
-
             if (events.Count() == 0 && snapshotVersion == -1)
-            {
                 throw new AggregateNotFoundException();
-            }
+
+            aggregate.LoadFromHistory(events);
             _session.Track(aggregate);
             return aggregate;
         }
@@ -59,7 +60,7 @@ namespace CQRSlite.Domain
             return obj;
         }
 
-        private int RestoreAggregateFromSnapshot(Guid id, T aggregate)
+        private int TryRestoreAggregateFromSnapshot(Guid id, T aggregate)
         {
             var version = -1;
             if (_snapshotStrategy.IsSnapshotable(typeof(T)) && _snapshotStore != null)

@@ -47,15 +47,6 @@ namespace CQRSlite.Tests.DomainTests
             _session.Commit();
             Assert.AreEqual(0, _aggregate.GetUncommittedChanges().Count());
         }
-
-        [Test]
-        public void Should_throw_concurrency_exception()
-        {
-            _aggregate.SetVersion(12);
-            _rep.Add(_aggregate);
-
-            Assert.Throws<ConcurrencyException>(() => _session.Commit());
-        }
         
         [Test]
         public void Should_publish_events()

@@ -28,21 +28,21 @@ namespace CQRSlite.Domain
             if (!IsTracked(aggregate.Id))
                 _trackedAggregates.Add(aggregate.Id, aggregate);
             else if (_trackedAggregates[aggregate.Id] != aggregate)
-                throw new TrackedAggregateAddedException();
+                throw new ConcurrencyException();
         }
 
-        public T Get<T>(Guid id) where T : AggregateRoot
+        public T Get<T>(Guid id, int expectedVersion) where T : AggregateRoot
         {
-            return (T)_trackedAggregates[id];
+            var trackedAggregate = (T)_trackedAggregates[id];
+            if(trackedAggregate.Version != expectedVersion && expectedVersion != -1)
+                throw new ConcurrencyException();
+            return trackedAggregate;
         }
 
         public void Commit()
         {
             foreach (var aggregate in _trackedAggregates.Values)
             {
-                if (_storage.GetVersion(aggregate.Id) != aggregate.Version)
-                    throw new ConcurrencyException();
-
                 SaveAndPublishUncommitedEvents(aggregate);
                 TryMakeSnapshot(aggregate);
                 aggregate.MarkChangesAsCommitted();

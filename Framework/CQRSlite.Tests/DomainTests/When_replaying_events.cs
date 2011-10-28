@@ -1,4 +1,5 @@
-﻿using CQRSlite.Tests.TestSubstitutes;
+﻿using System;
+using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
 namespace CQRSlite.Tests.DomainTests
@@ -11,7 +12,7 @@ namespace CQRSlite.Tests.DomainTests
 		[SetUp]
         public void Setup()
         {
-            _aggregate = new TestAggregate();
+            _aggregate = new TestAggregate(Guid.NewGuid());
         }
 
         [Test]

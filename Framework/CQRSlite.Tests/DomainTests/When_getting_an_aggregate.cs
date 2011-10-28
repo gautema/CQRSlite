@@ -47,7 +47,7 @@ namespace CQRSlite.Tests.DomainTests
         [Test]
 	    public void Should_track_changes()
 	    {
-            var agg = new TestAggregate();
+            var agg = new TestAggregate(Guid.NewGuid());
             _rep.Add(agg);
 	        var aggregate = _rep.Get(agg.Id);
             Assert.AreEqual(agg,aggregate);
@@ -64,6 +64,15 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
+        public void Should_throw_concurrency_exception_if_tracked()
+        {
+            var id = Guid.NewGuid();
+            _rep.Get(id);
+
+            Assert.Throws<ConcurrencyException>(() => _rep.Get(id, 100));
+        }
+
+        [Test]
         public void Should_get_correct_version()
         {
             var id = Guid.NewGuid();
@@ -71,5 +80,13 @@ namespace CQRSlite.Tests.DomainTests
 
             Assert.AreEqual(3,aggregate.Version);
         }
+
+        [Test]
+        public void Should_throw_concurrency_exception()
+        {
+            var id = Guid.NewGuid();
+            Assert.Throws<ConcurrencyException>(() => _rep.Get(id,1));
+        }
+
     }
 }

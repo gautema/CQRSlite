@@ -29,7 +29,7 @@ namespace CQRSlite.Tests.DomainTests
             var aggregate2 = new TestSnapshotAggregate();
             aggregate2.SetId(aggregate.Id);
             _rep.Add(aggregate);
-            Assert.Throws<TrackedAggregateAddedException>(() => _rep.Add(aggregate2));
+            Assert.Throws<ConcurrencyException>(() => _rep.Add(aggregate2));
         }
 
         [Test]

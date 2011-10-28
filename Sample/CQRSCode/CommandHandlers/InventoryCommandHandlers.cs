@@ -26,28 +26,28 @@ namespace CQRSCode.CommandHandlers
 
         public void Handle(DeactivateInventoryItem message)
         {
-            var item = _repository.Get(message.InventoryItemId);
+            var item = _repository.Get(message.InventoryItemId, message.ExpectedVersion);
             item.Deactivate();
             _session.Commit();
         }
 
         public void Handle(RemoveItemsFromInventory message)
         {
-            var item = _repository.Get(message.InventoryItemId);
+            var item = _repository.Get(message.InventoryItemId, message.ExpectedVersion);
             item.Remove(message.Count);
             _session.Commit();
         }
 
         public void Handle(CheckInItemsToInventory message)
         {
-            var item = _repository.Get(message.InventoryItemId);
+            var item = _repository.Get(message.InventoryItemId, message.ExpectedVersion);
             item.CheckIn(message.Count);
             _session.Commit();
         }
 
         public void Handle(RenameInventoryItem message)
         {
-            var item = _repository.Get(message.InventoryItemId);
+            var item = _repository.Get(message.InventoryItemId, message.ExpectedVersion);
             item.ChangeName(message.NewName);
             _session.Commit();
         }

@@ -1,10 +1,15 @@
 ﻿using System;
 using CQRSlite.Domain;
+using CQRSlite.Eventing;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
     public class TestAggregate : AggregateRoot
     {
+        public TestAggregate(Guid id)
+        {
+            ApplyChange(new TestAggregateCreated(id));
+        }
         public int I;
 
         public void DoSomething()
@@ -24,6 +29,16 @@ namespace CQRSlite.Tests.TestSubstitutes
 
     }
 
+    public class TestAggregateCreated : Event
+    {
+        private readonly Guid _id;
+
+        public TestAggregateCreated(Guid id)
+        {
+            _id = id;
+        }
+    }
+
     public class TestAggregateNoParameterLessConstructor : AggregateRoot
     {
         public TestAggregateNoParameterLessConstructor(int i, Guid? id = null)
@@ -35,11 +50,6 @@ namespace CQRSlite.Tests.TestSubstitutes
         public void DoSomething()
         {
             ApplyChange(new TestAggregateDidSomething());
-        }
-
-        public void SetVersion(int version)
-        {
-            Version = version;
         }
     }
 }
