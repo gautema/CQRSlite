@@ -8,46 +8,44 @@ namespace CQRSCode.CommandHandlers
     public class InventoryCommandHandlers : IHandles<CreateInventoryItem>, IHandles<DeactivateInventoryItem>, IHandles<RemoveItemsFromInventory>,
         IHandles<CheckInItemsToInventory>, IHandles<RenameInventoryItem>
     {
-        private readonly IRepository<InventoryItem> _repository;
         private readonly ISession _session;
 
-        public InventoryCommandHandlers(IRepository<InventoryItem> repository, ISession session)
+        public InventoryCommandHandlers(ISession session)
         {
-            _repository = repository;
             _session = session;
         }
 
         public void Handle(CreateInventoryItem message)
         {
             var item = new InventoryItem(message.InventoryItemId, message.Name);
-            _repository.Add(item);
+            _session.Add(item);
             _session.Commit();
         }
 
         public void Handle(DeactivateInventoryItem message)
         {
-            var item = _repository.Get(message.InventoryItemId, message.ExpectedVersion);
+            var item = _session.Get<InventoryItem>(message.InventoryItemId, message.ExpectedVersion);
             item.Deactivate();
             _session.Commit();
         }
 
         public void Handle(RemoveItemsFromInventory message)
         {
-            var item = _repository.Get(message.InventoryItemId, message.ExpectedVersion);
+            var item = _session.Get<InventoryItem>(message.InventoryItemId, message.ExpectedVersion);
             item.Remove(message.Count);
             _session.Commit();
         }
 
         public void Handle(CheckInItemsToInventory message)
         {
-            var item = _repository.Get(message.InventoryItemId, message.ExpectedVersion);
+            var item = _session.Get<InventoryItem>(message.InventoryItemId, message.ExpectedVersion);
             item.CheckIn(message.Count);
             _session.Commit();
         }
 
         public void Handle(RenameInventoryItem message)
         {
-            var item = _repository.Get(message.InventoryItemId, message.ExpectedVersion);
+            var item = _session.Get<InventoryItem>(message.InventoryItemId, message.ExpectedVersion);
             item.ChangeName(message.NewName);
             _session.Commit();
         }

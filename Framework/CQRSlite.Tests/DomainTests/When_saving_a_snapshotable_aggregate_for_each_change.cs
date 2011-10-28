@@ -11,24 +11,23 @@ namespace CQRSlite.Tests.DomainTests
     public class When_saving_a_snapshotable_aggregate_for_each_change
     {
         private TestInMemorySnapshotStore _snapshotStore;
-        private Repository<TestSnapshotAggregate> _rep;
+	    private ISession _session;
 
-		[SetUp]
+	    [SetUp]
         public void Setup()        
 		{
             IEventStore eventStore = new TestInMemoryEventStore();
             var eventpubliser = new TestEventPublisher();
             _snapshotStore = new TestInMemorySnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-            var session = new Session(eventStore, _snapshotStore, eventpubliser, snapshotStrategy);
-            _rep = new Repository<TestSnapshotAggregate>(session, eventStore, _snapshotStore, snapshotStrategy);
+            _session = new Session(eventStore, _snapshotStore, eventpubliser, snapshotStrategy);
             var aggregate = new TestSnapshotAggregate();
 
             for (int i = 0; i < 20; i++)
             {
-                _rep.Add(aggregate);
+                _session.Add(aggregate);
                 aggregate.DoSomething();
-                session.Commit();
+                _session.Commit();
             }
 
         }
@@ -48,7 +47,7 @@ namespace CQRSlite.Tests.DomainTests
         [Test]
         public void Should_get_aggregate_back_correct()
         {
-            Assert.AreEqual(20, _rep.Get(Guid.Empty).Number);
+            Assert.AreEqual(20, _session.Get<TestSnapshotAggregate>(Guid.Empty).Number);
         }
     }
 }

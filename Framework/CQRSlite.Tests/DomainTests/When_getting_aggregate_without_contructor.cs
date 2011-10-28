@@ -9,8 +9,8 @@ namespace CQRSlite.Tests.DomainTests
 	[TestFixture]
     public class When_getting_aggregate_without_contructor
     {
-        private Repository<TestAggregateNoParameterLessConstructor> _rep;
 	    private TestAggregateNoParameterLessConstructor _aggregate;
+	    private ISession _session;
 
 	    [SetUp]
         public void Setup()
@@ -18,9 +18,8 @@ namespace CQRSlite.Tests.DomainTests
             var eventStore = new TestEventStore();
             var eventPublisher = new TestEventPublisher();
 	        var snapshotStrategy = new DefaultSnapshotStrategy();
-            var session = new Session(eventStore, null, eventPublisher, snapshotStrategy);
-            _rep = new Repository<TestAggregateNoParameterLessConstructor>(session, eventStore, null, snapshotStrategy);
-            _aggregate = _rep.Get(Guid.NewGuid());
+            _session = new Session(eventStore, null, eventPublisher, snapshotStrategy);
+            _aggregate = _session.Get<TestAggregateNoParameterLessConstructor>(Guid.NewGuid());
         }
 
         [Test]

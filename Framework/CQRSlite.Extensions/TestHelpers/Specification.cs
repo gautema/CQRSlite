@@ -17,7 +17,6 @@ namespace CQRSlite.Extensions.TestHelpers
     {
 
         protected TAggregate Aggregate { get; set; }
-        protected IRepository<TAggregate> Repository { get; set; }
         protected ISession Session { get; set; }
         protected abstract IEnumerable<Event> Given();
         protected abstract TCommand When();
@@ -36,9 +35,8 @@ namespace CQRSlite.Extensions.TestHelpers
 
             var snapshotStrategy = new DefaultSnapshotStrategy();
             Session = new Session(eventstorage, snapshotstorage, eventpublisher, snapshotStrategy);
-            Repository = new Repository<TAggregate>(Session, eventstorage, snapshotstorage, snapshotStrategy);
 
-            Aggregate = Repository.Get(Guid.Empty);
+            Aggregate = Session.Get<TAggregate>(Guid.Empty);
 
             var handler = BuildHandler();
             handler.Handle(When());

@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.DomainTests
     [TestFixture]
     public class When_adding_aggregates_to_repository
     {
-        private Repository<TestSnapshotAggregate> _rep;
+        private Session _session;
 
         [SetUp]
         public void SetUp()
@@ -18,8 +18,7 @@ namespace CQRSlite.Tests.DomainTests
             var eventPublisher = new TestEventPublisher();
             var snapshotStore = new NullSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-            var session = new Session(eventStore, snapshotStore, eventPublisher, snapshotStrategy);
-            _rep = new Repository<TestSnapshotAggregate>(session, eventStore, snapshotStore, snapshotStrategy);
+            _session = new Session(eventStore, snapshotStore, eventPublisher, snapshotStrategy);
         }
 
         [Test]
@@ -28,16 +27,16 @@ namespace CQRSlite.Tests.DomainTests
             var aggregate = new TestSnapshotAggregate();
             var aggregate2 = new TestSnapshotAggregate();
             aggregate2.SetId(aggregate.Id);
-            _rep.Add(aggregate);
-            Assert.Throws<ConcurrencyException>(() => _rep.Add(aggregate2));
+            _session.Add(aggregate);
+            Assert.Throws<ConcurrencyException>(() => _session.Add(aggregate2));
         }
 
         [Test]
         public void Should_not_throw_if_object_already_tracked()
         {
             var aggregate = new TestSnapshotAggregate();
-            _rep.Add(aggregate);
-            _rep.Add(aggregate);
+            _session.Add(aggregate);
+            _session.Add(aggregate);
         }
     }
 }

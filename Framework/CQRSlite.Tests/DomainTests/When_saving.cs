@@ -14,8 +14,7 @@ namespace CQRSlite.Tests.DomainTests
         private TestEventStore _eventStore;
         private TestAggregateNoParameterLessConstructor _aggregate;
         private TestEventPublisher _eventPublisher;
-        private Repository<TestAggregateNoParameterLessConstructor> _rep;
-	    private Session _session;
+	    private ISession _session;
 
 	    [SetUp]
         public void Setup()
@@ -25,7 +24,6 @@ namespace CQRSlite.Tests.DomainTests
             var snapshotstore = new NullSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
 		    _session = new Session(_eventStore, snapshotstore, _eventPublisher, snapshotStrategy);
-            _rep = new Repository<TestAggregateNoParameterLessConstructor>(_session, _eventStore, snapshotstore, snapshotStrategy);
             _aggregate = new TestAggregateNoParameterLessConstructor(2);
 
         }
@@ -34,7 +32,7 @@ namespace CQRSlite.Tests.DomainTests
         public void Should_save_uncommited_changes()
         {
             _aggregate.DoSomething();
-            _rep.Add(_aggregate);
+            _session.Add(_aggregate);
             _session.Commit();
             Assert.AreEqual(1, _eventStore.SavedEvents.Count);
         }
@@ -43,7 +41,7 @@ namespace CQRSlite.Tests.DomainTests
         public void Should_mark_commited_after_commit()
         {
             _aggregate.DoSomething();
-            _rep.Add(_aggregate);
+            _session.Add(_aggregate);
             _session.Commit();
             Assert.AreEqual(0, _aggregate.GetUncommittedChanges().Count());
         }
@@ -52,7 +50,7 @@ namespace CQRSlite.Tests.DomainTests
         public void Should_publish_events()
         {
             _aggregate.DoSomething();
-            _rep.Add(_aggregate);
+            _session.Add(_aggregate);
             _session.Commit();
             Assert.AreEqual(1, _eventPublisher.Published);
         }
@@ -62,7 +60,7 @@ namespace CQRSlite.Tests.DomainTests
         {
             var agg = new TestAggregateNoParameterLessConstructor(1,Guid.Empty);
             agg.DoSomething();
-            _rep.Add(agg);
+            _session.Add(agg);
             _session.Commit();
             Assert.AreEqual(1, _eventStore.SavedEvents.Count);
         }
@@ -72,7 +70,7 @@ namespace CQRSlite.Tests.DomainTests
         {
             var agg = new TestAggregateNoParameterLessConstructor(1, Guid.Empty);
             agg.DoSomething();
-            _rep.Add(agg);
+            _session.Add(agg);
             _session.Commit();
             Assert.That(_eventStore.SavedEvents.First().TimeStamp, Is.InRange(DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddSeconds(1)));
         }

@@ -17,7 +17,7 @@ namespace CQRSTests
 
         protected override InventoryCommandHandlers BuildHandler()
         {
-            return new InventoryCommandHandlers(Repository, Session);
+            return new InventoryCommandHandlers(Session);
         }
 
         protected override IEnumerable<Event> Given()

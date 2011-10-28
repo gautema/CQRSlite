@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using CQRSlite.Eventing;
 using CQRSlite.Infrastructure;
 
@@ -23,7 +24,7 @@ namespace CQRSlite.Domain
             _trackedAggregates = new Dictionary<Guid, AggregateRoot>();
         }
 
-        public void Track(AggregateRoot aggregate)
+        public void Add<T>(T aggregate) where T : AggregateRoot
         {
             if (!IsTracked(aggregate.Id))
                 _trackedAggregates.Add(aggregate.Id, aggregate);
@@ -31,12 +32,22 @@ namespace CQRSlite.Domain
                 throw new ConcurrencyException();
         }
 
-        public T Get<T>(Guid id, int expectedVersion) where T : AggregateRoot
+        public T Get<T>(Guid id, int? expectedVersion = null) where T : AggregateRoot
         {
-            var trackedAggregate = (T)_trackedAggregates[id];
-            if(trackedAggregate.Version != expectedVersion && expectedVersion != -1)
+            if(IsTracked(id))
+            {
+                var trackedAggregate = (T)_trackedAggregates[id];
+                if (trackedAggregate.Version != expectedVersion && expectedVersion != null)
+                    throw new ConcurrencyException();
+                return trackedAggregate;
+            }
+            if (expectedVersion != null && _storage.GetVersion(id) != expectedVersion && expectedVersion != -1)
                 throw new ConcurrencyException();
-            return trackedAggregate;
+
+            var aggregate = LoadAggregate<T>(id);
+            Add(aggregate);
+
+            return aggregate;
         }
 
         public void Commit()
@@ -62,7 +73,7 @@ namespace CQRSlite.Domain
             }
         }
 
-        public bool IsTracked(Guid id)
+        private bool IsTracked(Guid id)
         {
             return _trackedAggregates.ContainsKey(id);
         }
@@ -74,6 +85,48 @@ namespace CQRSlite.Domain
             var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
             _snapshotStore.Save(snapshot);
+        }
+
+        private T LoadAggregate<T>(Guid id) where T : AggregateRoot
+        {
+            var aggregate = CreateAggregate<T>();
+            var snapshotVersion = TryRestoreAggregateFromSnapshot(id, aggregate);
+
+            var events = _storage.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
+            if (events.Count() == 0 && snapshotVersion == -1)
+                throw new AggregateNotFoundException();
+
+            aggregate.LoadFromHistory(events);
+            return aggregate;
+        }
+
+        private T CreateAggregate<T>()
+        {
+            T obj;
+            try
+            {
+                obj = (T)Activator.CreateInstance(typeof(T), true);
+            }
+            catch (MissingMethodException)
+            {
+                obj = (T)FormatterServices.GetUninitializedObject(typeof(T));
+            }
+            return obj;
+        }
+
+        private int TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate) 
+        {
+            var version = -1;
+            if (_snapshotStrategy.IsSnapshotable(typeof(T)) && _snapshotStore != null)
+            {
+                var snapshot = _snapshotStore.Get(id);
+                if (snapshot != null)
+                {
+                    aggregate.AsDynamic().Restore(snapshot);
+                    version = snapshot.Version;
+                }
+            }
+            return version;
         }
     }
 }
