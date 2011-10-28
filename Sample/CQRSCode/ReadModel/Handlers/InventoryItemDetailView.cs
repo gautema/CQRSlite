@@ -6,7 +6,7 @@ using CQRSlite;
 
 namespace CQRSCode.ReadModel.Handlers
 {
-    public class InvenotryItemDetailView : 
+    public class InventoryItemDetailView : 
         IHandles<InventoryItemCreated>, 
         IHandles<InventoryItemDeactivated>, 
         IHandles<InventoryItemRenamed>, 
@@ -15,7 +15,7 @@ namespace CQRSCode.ReadModel.Handlers
     {
         public void Handle(InventoryItemCreated message)
         {
-            InMemoryDatabase.Details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0,0));
+            InMemoryDatabase.Details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0, message.Version));
         }
 
         public void Handle(InventoryItemRenamed message)
