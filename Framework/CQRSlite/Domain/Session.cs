@@ -55,7 +55,6 @@ namespace CQRSlite.Domain
             return _trackedAggregates.ContainsKey(id);
         }
 
-
         public void Commit()
         {
             foreach (var aggregate in _trackedAggregates.Values)
@@ -118,7 +117,7 @@ namespace CQRSlite.Domain
         private int TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate) 
         {
             var version = -1;
-            if (_snapshotStrategy.IsSnapshotable(typeof(T)) && _snapshotStore != null)
+            if (_snapshotStrategy.IsSnapshotable(typeof(T)))
             {
                 var snapshot = _snapshotStore.Get(id);
                 if (snapshot != null)

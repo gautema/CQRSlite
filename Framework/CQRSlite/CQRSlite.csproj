@@ -69,6 +69,7 @@
     <Compile Include="Infrastructure\DelegateAdjuster.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Infrastructure\ISnapshotStrategy.cs" />
+    <Compile Include="Infrastructure\NullSnapshotStrategy.cs" />
     <Compile Include="Infrastructure\PrivateReflectionDynamicObject.cs" />
     <Compile Include="Infrastructure\PrivateReflectionDynamicObjectExtensions.cs" />
     <Compile Include="Infrastructure\DefaultSnapshotStrategy.cs" />
