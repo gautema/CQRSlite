@@ -20,36 +20,36 @@ namespace CQRSCode.CommandHandlers
 
         public void Handle(CreateInventoryItem message)
         {
-            var item = new InventoryItem(message.InventoryItemId, message.Name);
+            var item = new InventoryItem(message.AggregateId, message.Name);
             _repository.Save(item, -1);
         }
 
         public void Handle(DeactivateInventoryItem message)
         {
-            var item = _repository.Get(message.InventoryItemId);
+            var item = _repository.Get(message.AggregateId);
             item.Deactivate();
-            _repository.Save(item, message.OriginalVersion);
+            _repository.Save(item, message.ExpectedVersion);
         }
 
         public void Handle(RemoveItemsFromInventory message)
         {
-            var item = _repository.Get(message.InventoryItemId);
+            var item = _repository.Get(message.AggregateId);
             item.Remove(message.Count);
-            _repository.Save(item, message.OriginalVersion);
+            _repository.Save(item, message.ExpectedVersion);
         }
 
         public void Handle(CheckInItemsToInventory message)
         {
-            var item = _repository.Get(message.InventoryItemId);
+            var item = _repository.Get(message.AggregateId);
             item.CheckIn(message.Count);
-            _repository.Save(item, message.OriginalVersion);
+            _repository.Save(item, message.ExpectedVersion);
         }
 
         public void Handle(RenameInventoryItem message)
         {
-            var item = _repository.Get(message.InventoryItemId);
+            var item = _repository.Get(message.AggregateId);
             item.ChangeName(message.NewName);
-            _repository.Save(item, message.OriginalVersion);
+            _repository.Save(item, message.ExpectedVersion);
         }
     }
 }

@@ -1,6 +1,10 @@
-﻿namespace CQRSlite.Commanding
+﻿using System;
+
+namespace CQRSlite.Commanding
 {
-    public interface Command : Message
+    public class Command : Message
     {
+        public int ExpectedVersion { get; protected set; }
+        public Guid AggregateId { get; protected set; }
     }
 }
