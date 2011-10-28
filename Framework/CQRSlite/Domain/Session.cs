@@ -37,7 +37,7 @@ namespace CQRSlite.Domain
             if(IsTracked(id))
             {
                 var trackedAggregate = (T)_trackedAggregates[id];
-                if (trackedAggregate.Version != expectedVersion && expectedVersion != null)
+                if (expectedVersion != null && trackedAggregate.Version != expectedVersion)
                     throw new ConcurrencyException();
                 return trackedAggregate;
             }
