@@ -30,10 +30,16 @@ namespace CQRSlite.Domain
         {
             if (_session.IsTracked(id))
                 return _session.Get<T>(id, expectedVersion??-1);
-
             if (expectedVersion != null && _storage.GetVersion(id) != expectedVersion && expectedVersion != -1)
                 throw new ConcurrencyException();
             
+            var aggregate = LoadAggregate(id);
+            _session.Track(aggregate);
+            return aggregate;
+        }
+
+        private T LoadAggregate(Guid id)
+        {
             var aggregate = CreateAggregate();
             var snapshotVersion = TryRestoreAggregateFromSnapshot(id, aggregate);
 
@@ -42,7 +48,6 @@ namespace CQRSlite.Domain
                 throw new AggregateNotFoundException();
 
             aggregate.LoadFromHistory(events);
-            _session.Track(aggregate);
             return aggregate;
         }
 
