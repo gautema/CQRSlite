@@ -6,8 +6,12 @@ using CQRSlite;
 
 namespace CQRSCode.ReadModel.Handlers
 {
-    public class InvenotryItemDetailView : IHandles<InventoryItemCreated>, IHandles<InventoryItemDeactivated>, 
-        IHandles<InventoryItemRenamed>, IHandles<ItemsRemovedFromInventory>, IHandles<ItemsCheckedInToInventory>
+    public class InvenotryItemDetailView : 
+        IHandles<InventoryItemCreated>, 
+        IHandles<InventoryItemDeactivated>, 
+        IHandles<InventoryItemRenamed>, 
+        IHandles<ItemsRemovedFromInventory>,
+        IHandles<ItemsCheckedInToInventory>
     {
         public void Handle(InventoryItemCreated message)
         {

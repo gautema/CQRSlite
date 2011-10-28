@@ -5,8 +5,12 @@ using CQRSlite.Domain;
 
 namespace CQRSCode.CommandHandlers
 {
-    public class InventoryCommandHandlers : IHandles<CreateInventoryItem>, IHandles<DeactivateInventoryItem>, IHandles<RemoveItemsFromInventory>,
-        IHandles<CheckInItemsToInventory>, IHandles<RenameInventoryItem>
+    public class InventoryCommandHandlers : 
+        IHandles<CreateInventoryItem>, 
+        IHandles<DeactivateInventoryItem>, 
+        IHandles<RemoveItemsFromInventory>,
+        IHandles<CheckInItemsToInventory>, 
+        IHandles<RenameInventoryItem>
     {
         private readonly IRepository<InventoryItem> _repository;
         public InventoryCommandHandlers(IRepository<InventoryItem> repository)

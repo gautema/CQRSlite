@@ -5,7 +5,10 @@ using CQRSlite;
 
 namespace CQRSCode.ReadModel.Handlers
 {
-    public class InventoryListView : IHandles<InventoryItemCreated>, IHandles<InventoryItemRenamed>, IHandles<InventoryItemDeactivated>
+    public class InventoryListView : 
+        IHandles<InventoryItemCreated>, 
+        IHandles<InventoryItemRenamed>, 
+        IHandles<InventoryItemDeactivated>
     {
         public void Handle(InventoryItemCreated message)
         {
