@@ -43,13 +43,13 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldThrowConcurrencyException()
+        public void Should_throw_concurrency_exception()
         {
             Assert.Throws<ConcurrencyException>(() =>  _rep.Save(_aggregate, 1));
         }
         
         [Test]
-        public void ShouldPublishEvents()
+        public void Should_publish_events()
         {
             _aggregate.DoSomething();
             _rep.Save(_aggregate, 0);
@@ -57,7 +57,7 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldAddNewAggregate()
+        public void Should_add_new_aggregate()
         {
             var agg = new TestAggregateNoParameterLessConstructor(1,Guid.Empty);
             agg.DoSomething();
