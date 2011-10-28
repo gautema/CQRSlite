@@ -23,10 +23,14 @@ namespace CQRSlite.Domain
         public void Save(T aggregate, int expectedVersion)
         {
             if (_storage.GetVersion(aggregate.Id) != expectedVersion && expectedVersion != -1)
-            {
                 throw new ConcurrencyException();
-            }
+            SaveAndPublishUncommitedEvents(aggregate, expectedVersion);
+            TryMakeSnapshot(aggregate, expectedVersion);
+            aggregate.MarkChangesAsCommitted();
+        }
 
+        private void SaveAndPublishUncommitedEvents(T aggregate, int expectedVersion)
+        {
             var version = expectedVersion;
             foreach (var @event in aggregate.GetUncommittedChanges())
             {
@@ -36,23 +40,21 @@ namespace CQRSlite.Domain
                 _storage.Save(aggregate.Id, @event);
                 _publisher.Publish(@event);
             }
-
-            if (_snapshotStrategy.ShouldMakeSnapShot(aggregate, expectedVersion)) 
-                MakeSnapshot(aggregate, version);
-            aggregate.MarkChangesAsCommitted();
         }
 
-        private void MakeSnapshot(T aggregate, int version) 
+        private void TryMakeSnapshot(T aggregate, int expectedVersion) 
         {
+            if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate, expectedVersion))
+                return;
             var snapshot = aggregate.AsDynamic().GetSnapshot();
-            snapshot.RealObject.Version = version;
+            snapshot.RealObject.Version = expectedVersion + aggregate.GetUncommittedChanges().Count();
             _snapshotStore.Save(snapshot.RealObject);
         }
 
         public T Get(Guid id)
         {
             var aggregate = CreateAggregate();
-            var snapshotVersion = RestoreAggregateFromSnapshot(id, aggregate);
+            var snapshotVersion = TryRestoreAggregateFromSnapshot(id, aggregate);
 
             var events = _storage.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
             aggregate.LoadsFromHistory(events);
@@ -64,7 +66,7 @@ namespace CQRSlite.Domain
             return aggregate;
         }
 
-        private int RestoreAggregateFromSnapshot(Guid id, T aggregate)
+        private int TryRestoreAggregateFromSnapshot(Guid id, T aggregate)
         {
             var version = -1;
             if (_snapshotStrategy.IsSnapshotable(typeof(T)) && _snapshotStore != null)
