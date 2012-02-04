@@ -46,9 +46,9 @@ namespace CQRSlite.Domain
         {
             if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate, expectedVersion))
                 return;
-            var snapshot = aggregate.AsDynamic().GetSnapshot();
-            snapshot.RealObject.Version = expectedVersion + aggregate.GetUncommittedChanges().Count();
-            _snapshotStore.Save(snapshot.RealObject);
+            var snapshot = aggregate.MakeSnapshot();
+            snapshot.Version = expectedVersion + aggregate.GetUncommittedChanges().Count();
+            _snapshotStore.Save(snapshot);
         }
 
         public T Get(Guid id)
@@ -74,7 +74,7 @@ namespace CQRSlite.Domain
                 var snapshot = _snapshotStore.Get(id);
                 if(snapshot != null)
                 {
-                    aggregate.AsDynamic().Restore(snapshot);
+                    aggregate.RestoreFromSnapshot(snapshot);
                     version = snapshot.Version;
                 }
             }
