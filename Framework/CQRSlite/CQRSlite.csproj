@@ -66,12 +66,12 @@
     <Compile Include="Domain\ConcurrencyException.cs" />
     <Compile Include="Bus\InProcessBus.cs" />
     <Compile Include="Infrastructure\DefaultSnapshotStrategy.cs" />
-    <Compile Include="Infrastructure\DelegateAdjuster.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Domain\IRepository.cs" />
+    <Compile Include="Infrastructure\DelegateHelper.cs" />
     <Compile Include="Infrastructure\ISnapshotStrategy.cs" />
-    <Compile Include="Infrastructure\PrivateReflectionDynamicObject.cs" />
-    <Compile Include="Infrastructure\PrivateReflectionDynamicObjectExtensions.cs" />
+    <Compile Include="Infrastructure\ReflectionCacheKey.cs" />
+    <Compile Include="Infrastructure\ReflectionExtensions.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Config\BusRegisterer.cs" />
   </ItemGroup>
