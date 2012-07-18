@@ -1,4 +1,6 @@
-﻿namespace CQRSlite.Domain
+﻿using CQRSlite.Domain;
+
+namespace CQRSlite.Snapshotting
 {
     public abstract class SnapshotAggregateRoot<T>: AggregateRoot where T : Snapshot
     {

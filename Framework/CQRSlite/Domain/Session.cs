@@ -1,26 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using CQRSlite.Eventing;
-using CQRSlite.Infrastructure;
+using CQRSlite.Domain.Exception;
 
 namespace CQRSlite.Domain
 {
     public class Session : ISession
     {
-        private readonly IEventStore _storage;
-        private readonly ISnapshotStore _snapshotStore;
-        private readonly IEventPublisher _publisher;
-        private readonly ISnapshotStrategy _snapshotStrategy;
+        private readonly IRepository _storage;
         private readonly Dictionary<Guid, AggregateRoot> _trackedAggregates;
 
-        public Session(IEventStore storage, ISnapshotStore snapshotStore, IEventPublisher publisher, ISnapshotStrategy snapshotStrategy)
+        public Session(IRepository storage)
         {
             _storage = storage;
-            _snapshotStore = snapshotStore;
-            _publisher = publisher;
-            _snapshotStrategy = snapshotStrategy;
             _trackedAggregates = new Dictionary<Guid, AggregateRoot>();
         }
 
@@ -41,10 +32,8 @@ namespace CQRSlite.Domain
                     throw new ConcurrencyException();
                 return trackedAggregate;
             }
-            if (expectedVersion != null && _storage.GetVersion(id) != expectedVersion && expectedVersion != -1)
-                throw new ConcurrencyException();
 
-            var aggregate = LoadAggregate<T>(id);
+            var aggregate = _storage.Get<T>(id, expectedVersion);
             Add(aggregate);
 
             return aggregate;
@@ -59,74 +48,8 @@ namespace CQRSlite.Domain
         {
             foreach (var aggregate in _trackedAggregates.Values)
             {
-                SaveAndPublishUncommitedEvents(aggregate);
-                TryMakeSnapshot(aggregate);
-                aggregate.MarkChangesAsCommitted();
+                _storage.Save(aggregate);
             }
-        }
-
-        private void SaveAndPublishUncommitedEvents(AggregateRoot aggregate)
-        {
-            var i = 0;
-            foreach (var @event in aggregate.GetUncommittedChanges())
-            {
-                i++;
-                @event.Version = aggregate.Version + i;
-                @event.TimeStamp = DateTimeOffset.UtcNow;
-                _storage.Save(aggregate.Id, @event);
-                _publisher.Publish(@event);
-            }
-        }
-        
-        private void TryMakeSnapshot(AggregateRoot aggregate)
-        {
-            if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
-                return;
-            var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
-            snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
-            _snapshotStore.Save(snapshot);
-        }
-
-        private T LoadAggregate<T>(Guid id) where T : AggregateRoot
-        {
-            var aggregate = CreateAggregate<T>();
-            var snapshotVersion = TryRestoreAggregateFromSnapshot(id, aggregate);
-
-            var events = _storage.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
-            if (!events.Any() && snapshotVersion == -1)
-                throw new AggregateNotFoundException();
-
-            aggregate.LoadFromHistory(events);
-            return aggregate;
-        }
-
-        private T CreateAggregate<T>()
-        {
-            T obj;
-            try
-            {
-                obj = (T)Activator.CreateInstance(typeof(T), true);
-            }
-            catch (MissingMethodException)
-            {
-                obj = (T)FormatterServices.GetUninitializedObject(typeof(T));
-            }
-            return obj;
-        }
-
-        private int TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate) 
-        {
-            var version = -1;
-            if (_snapshotStrategy.IsSnapshotable(typeof(T)))
-            {
-                var snapshot = _snapshotStore.Get(id);
-                if (snapshot != null)
-                {
-                    aggregate.AsDynamic().Restore(snapshot);
-                    version = snapshot.Version;
-                }
-            }
-            return version;
         }
     }
 }

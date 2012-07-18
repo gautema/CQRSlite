@@ -4,7 +4,7 @@ using CQRSlite.Bus;
 using CQRSlite.Commanding;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
-using CQRSlite.Infrastructure;
+using CQRSlite.Snapshotting;
 using StructureMap;
 using StructureMap.Graph;
 

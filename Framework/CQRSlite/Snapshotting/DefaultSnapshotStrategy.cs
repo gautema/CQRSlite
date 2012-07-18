@@ -2,7 +2,7 @@
 using System.Linq;
 using CQRSlite.Domain;
 
-namespace CQRSlite.Infrastructure
+namespace CQRSlite.Snapshotting
 {
     public class DefaultSnapshotStrategy : ISnapshotStrategy
     {
