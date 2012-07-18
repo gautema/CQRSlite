@@ -54,7 +54,6 @@
     <Compile Include="Commanding\ICommandSender.cs" />
     <Compile Include="Domain\ISession.cs" />
     <Compile Include="Domain\Session.cs" />
-    <Compile Include="Domain\TrackedAggregateAddedException.cs" />
     <Compile Include="Eventing\IEventPublisher.cs" />
     <Compile Include="Eventing\IEventStore.cs" />
     <Compile Include="Bus\IHandleRegister.cs" />
