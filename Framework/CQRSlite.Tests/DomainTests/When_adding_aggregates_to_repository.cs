@@ -1,4 +1,5 @@
 ﻿using CQRSlite.Domain;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Eventing;
 using CQRSlite.Infrastructure;
 using CQRSlite.Tests.TestSubstitutes;

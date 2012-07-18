@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CQRSlite.Domain.Exception;
 
 namespace CQRSlite.Domain
 {

@@ -56,7 +56,6 @@
     <Compile Include="Domain\IAggregateStore.cs" />
     <Compile Include="Domain\ISession.cs" />
     <Compile Include="Domain\Session.cs" />
-    <Compile Include="Domain\TrackedAggregateAddedException.cs" />
     <Compile Include="Eventing\IEventPublisher.cs" />
     <Compile Include="Eventing\IEventStore.cs" />
     <Compile Include="Bus\IHandleRegister.cs" />
@@ -65,8 +64,8 @@
     <Compile Include="Domain\SnapshotAggregateRoot.cs" />
     <Compile Include="Eventing\NullSnapshotStore.cs" />
     <Compile Include="IHandles.cs" />
-    <Compile Include="Domain\AggregateNotFoundException.cs" />
-    <Compile Include="Domain\ConcurrencyException.cs" />
+    <Compile Include="Domain\Exception\AggregateNotFoundException.cs" />
+    <Compile Include="Domain\Exception\ConcurrencyException.cs" />
     <Compile Include="Bus\InProcessBus.cs" />
     <Compile Include="Infrastructure\DelegateAdjuster.cs" />
     <Compile Include="Eventing\Event.cs" />

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Eventing;
 using CQRSlite.Infrastructure;
 
