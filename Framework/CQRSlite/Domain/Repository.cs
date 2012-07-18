@@ -17,8 +17,11 @@ namespace CQRSlite.Domain
             _publisher = publisher;
         }
 
-        public void Save<T>(T aggregate) where T : AggregateRoot
+        public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
+            if (expectedVersion != null && _eventStore.GetVersion(aggregate.Id) != expectedVersion && expectedVersion != -1)
+                throw new ConcurrencyException();
+
             var i = 0;
             foreach (var @event in aggregate.GetUncommittedChanges())
             {
@@ -31,10 +34,8 @@ namespace CQRSlite.Domain
             aggregate.MarkChangesAsCommitted();
         }
 
-        public T Get<T>(Guid aggregateId, int? expectedVersion = null) where T : AggregateRoot
+        public T Get<T>(Guid aggregateId) where T : AggregateRoot
         {
-            if (expectedVersion != null && _eventStore.GetVersion(aggregateId) != expectedVersion && expectedVersion != -1)
-                throw new ConcurrencyException();
             return LoadAggregate<T>(aggregateId);
         }
 

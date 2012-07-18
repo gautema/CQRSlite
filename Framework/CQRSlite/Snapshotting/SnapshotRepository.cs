@@ -21,19 +21,19 @@ namespace CQRSlite.Snapshotting
             _eventStore = eventStore;
         }
 
-        public void Save<T>(T aggregate) where T : AggregateRoot
+        public void Save<T>(T aggregate, int? exectedVersion = null ) where T : AggregateRoot
         {
             TryMakeSnapshot(aggregate);
-            _repository.Save(aggregate);
+            _repository.Save(aggregate, exectedVersion);
         }
 
-        public T Get<T>(Guid aggregateId, int? exectedVersion = null) where T : AggregateRoot
+        public T Get<T>(Guid aggregateId) where T : AggregateRoot
         {
             var aggregate = AggregateActivator.CreateAggregate<T>();
             var snapshotVersion = TryRestoreAggregateFromSnapshot(aggregateId, aggregate);
             if(snapshotVersion == -1)
             {
-                return _repository.Get<T>(aggregateId, exectedVersion);
+                return _repository.Get<T>(aggregateId);
             }
             var events = _eventStore.Get(aggregateId, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
             aggregate.LoadFromHistory(events);

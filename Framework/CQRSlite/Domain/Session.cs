@@ -33,7 +33,9 @@ namespace CQRSlite.Domain
                 return trackedAggregate;
             }
 
-            var aggregate = _storage.Get<T>(id, expectedVersion);
+            var aggregate = _storage.Get<T>(id);
+            if (expectedVersion != null && aggregate.Version != expectedVersion)
+                throw new ConcurrencyException();
             Add(aggregate);
 
             return aggregate;
@@ -48,7 +50,7 @@ namespace CQRSlite.Domain
         {
             foreach (var aggregate in _trackedAggregates.Values)
             {
-                _storage.Save(aggregate);
+                _storage.Save(aggregate, aggregate.Version);
             }
         }
     }
