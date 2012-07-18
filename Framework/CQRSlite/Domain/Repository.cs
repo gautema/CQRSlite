@@ -1,10 +1,8 @@
 using System;
 using System.Linq;
-using System.Runtime.Serialization;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Eventing;
 using CQRSlite.Infrastructure;
-using CQRSlite.Snapshotting;
 
 namespace CQRSlite.Domain
 {
@@ -12,15 +10,11 @@ namespace CQRSlite.Domain
     {
         private readonly IEventStore _eventStore;
         private readonly IEventPublisher _publisher;
-        private readonly ISnapshotStore _snapshotStore;
-        private readonly ISnapshotStrategy _snapshotStrategy;
 
-        public Repository(IEventStore eventStore, IEventPublisher publisher, ISnapshotStore snapshotStore, ISnapshotStrategy snapshotStrategy)
+        public Repository(IEventStore eventStore, IEventPublisher publisher)
         {
             _eventStore = eventStore;
             _publisher = publisher;
-            _snapshotStore = snapshotStore;
-            _snapshotStrategy = snapshotStrategy;
         }
 
         public void Save<T>(T aggregate) where T : AggregateRoot
@@ -34,12 +28,13 @@ namespace CQRSlite.Domain
                 _eventStore.Save(aggregate.Id, @event);
                 _publisher.Publish(@event);
             }
-            TryMakeSnapshot(aggregate);
             aggregate.MarkChangesAsCommitted();
         }
 
-        public T Get<T>(Guid aggregateId) where T : AggregateRoot
+        public T Get<T>(Guid aggregateId, int? expectedVersion = null) where T : AggregateRoot
         {
+            if (expectedVersion != null && _eventStore.GetVersion(aggregateId) != expectedVersion && expectedVersion != -1)
+                throw new ConcurrencyException();
             return LoadAggregate<T>(aggregateId);
         }
 
@@ -51,38 +46,13 @@ namespace CQRSlite.Domain
         private T LoadAggregate<T>(Guid id) where T : AggregateRoot
         {
             var aggregate = AggregateActivator.CreateAggregate<T>();
-            var snapshotVersion = TryRestoreAggregateFromSnapshot(id, aggregate);
 
-            var events = _eventStore.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
-            if (!events.Any() && snapshotVersion == -1)
+            var events = _eventStore.Get(id, -1);
+            if (!events.Any())
                 throw new AggregateNotFoundException();
 
             aggregate.LoadFromHistory(events);
             return aggregate;
-        }
-
-        private int TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate)
-        {
-            var version = -1;
-            if (_snapshotStrategy.IsSnapshotable(typeof(T)))
-            {
-                var snapshot = _snapshotStore.Get(id);
-                if (snapshot != null)
-                {
-                    aggregate.AsDynamic().Restore(snapshot);
-                    version = snapshot.Version;
-                }
-            }
-            return version;
-        }
-
-        private void TryMakeSnapshot(AggregateRoot aggregate)
-        {
-            if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
-                return;
-            var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
-            snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
-            _snapshotStore.Save(snapshot);
         }
     }
 }

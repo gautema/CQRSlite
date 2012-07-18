@@ -20,7 +20,7 @@ namespace CQRSlite.Tests.DomainTests
             var eventPublisher = new TestEventPublisher();
             var snapshotStore = new NullSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-		    var session = new Session(new Repository(eventStore, eventPublisher, snapshotStore, snapshotStrategy));
+            var session = new Session(new Repository(eventStore, eventPublisher));//, snapshotStore, snapshotStrategy
             _aggregate = session.Get<TestSnapshotAggregate>(Guid.NewGuid());
         }
 

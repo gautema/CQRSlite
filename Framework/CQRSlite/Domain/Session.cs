@@ -32,10 +32,8 @@ namespace CQRSlite.Domain
                     throw new ConcurrencyException();
                 return trackedAggregate;
             }
-            if (expectedVersion != null && _storage.GetVersion(id) != expectedVersion && expectedVersion != -1)
-                throw new ConcurrencyException();
 
-            var aggregate = _storage.Get<T>(id);
+            var aggregate = _storage.Get<T>(id, expectedVersion);
             Add(aggregate);
 
             return aggregate;

@@ -21,7 +21,7 @@ namespace CQRSlite.Tests.DomainTests
             var eventpubliser = new TestEventPublisher();
             _snapshotStore = new TestInMemorySnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-            _session = new Session(new Repository(eventStore, eventpubliser,_snapshotStore, snapshotStrategy));
+            _session = new Session(new Repository(eventStore, eventpubliser));//,_snapshotStore, snapshotStrategy
             var aggregate = new TestSnapshotAggregate();
 
             for (int i = 0; i < 20; i++)
