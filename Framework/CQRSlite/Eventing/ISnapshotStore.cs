@@ -1,5 +1,4 @@
 ﻿using System;
-using CQRSlite.Domain;
 using CQRSlite.Snapshotting;
 
 namespace CQRSlite.Eventing

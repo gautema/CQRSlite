@@ -55,7 +55,6 @@
     <Compile Include="DomainTests\When_getting_an_aggregate_with_snapshot.cs" />
     <Compile Include="DomainTests\When_saving_a_snapshotable_aggregate.cs" />
     <Compile Include="DomainTests\When_saving_a_snapshotable_aggregate_for_each_change.cs" />
-    <Compile Include="EventingTests\When_saving_to_null_snapshot_store.cs" />
     <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
     <Compile Include="BusTests\When_sending_command.cs" />
     <Compile Include="TestSubstitutes\TestEventStore.cs" />

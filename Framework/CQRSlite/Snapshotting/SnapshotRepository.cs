@@ -31,6 +31,12 @@ namespace CQRSlite.Snapshotting
         {
             var aggregate = AggregateActivator.CreateAggregate<T>();
             var snapshotVersion = TryRestoreAggregateFromSnapshot(aggregateId, aggregate);
+            if(snapshotVersion == -1)
+            {
+                return _repository.Get<T>(aggregateId, exectedVersion);
+            }
+            var events = _eventStore.Get(aggregateId, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
+            aggregate.LoadFromHistory(events);
 
             return aggregate;
         }

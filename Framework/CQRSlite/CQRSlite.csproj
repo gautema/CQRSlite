@@ -63,7 +63,6 @@
     <Compile Include="Infrastructure\AggregateActivator.cs" />
     <Compile Include="Snapshotting\Snapshot.cs" />
     <Compile Include="Snapshotting\SnapshotAggregateRoot.cs" />
-    <Compile Include="Eventing\NullSnapshotStore.cs" />
     <Compile Include="IHandles.cs" />
     <Compile Include="Domain\Exception\AggregateNotFoundException.cs" />
     <Compile Include="Domain\Exception\ConcurrencyException.cs" />
