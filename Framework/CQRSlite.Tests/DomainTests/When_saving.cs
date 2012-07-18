@@ -23,7 +23,8 @@ namespace CQRSlite.Tests.DomainTests
             _eventPublisher = new TestEventPublisher();
             var snapshotstore = new NullSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-		    _session = new Session(_eventStore, snapshotstore, _eventPublisher, snapshotStrategy);
+		    _session = new Session(new AggregateStore(_eventStore, _eventPublisher, snapshotstore, snapshotStrategy));
+
             _aggregate = new TestAggregateNoParameterLessConstructor(2);
 
         }

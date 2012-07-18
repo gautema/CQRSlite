@@ -20,7 +20,7 @@ namespace CQRSlite.Tests.DomainTests
             var eventpubliser = new TestEventPublisher();
             _snapshotStore = new TestInMemorySnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-            _session = new Session(eventStore, _snapshotStore, eventpubliser, snapshotStrategy);
+            _session = new Session(new AggregateStore(eventStore, eventpubliser,_snapshotStore, snapshotStrategy));
             var aggregate = new TestSnapshotAggregate();
 
             for (int i = 0; i < 20; i++)
