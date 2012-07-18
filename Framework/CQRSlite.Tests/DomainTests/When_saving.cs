@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CQRSlite.Domain;
-using CQRSlite.Eventing;
-using CQRSlite.Snapshotting;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
@@ -15,13 +14,15 @@ namespace CQRSlite.Tests.DomainTests
         private TestAggregateNoParameterLessConstructor _aggregate;
         private TestEventPublisher _eventPublisher;
 	    private ISession _session;
+	    private Repository _rep;
 
 	    [SetUp]
         public void Setup()
         {
             _eventStore = new TestEventStore();
             _eventPublisher = new TestEventPublisher();
-            _session = new Session(new Repository(_eventStore, _eventPublisher));
+	        _rep = new Repository(_eventStore, _eventPublisher);
+            _session = new Session(_rep);
 
             _aggregate = new TestAggregateNoParameterLessConstructor(2);
 
@@ -82,6 +83,12 @@ namespace CQRSlite.Tests.DomainTests
             _session.Add(agg);
             _session.Commit();
             Assert.That(_eventStore.SavedEvents.First().Version, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void ShouldThrowConcurrencyException()
+        {
+            Assert.Throws<ConcurrencyException>(() => _rep.Save(_aggregate, 1));
         }
     }
 }
