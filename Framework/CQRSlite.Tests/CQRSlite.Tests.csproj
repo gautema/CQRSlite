@@ -62,7 +62,7 @@
     <Compile Include="TestSubstitutes\TestHandleRegistrer.cs" />
     <Compile Include="TestSubstitutes\TestCommands.cs" />
     <Compile Include="TestSubstitutes\TestServiceLocator.cs" />
-    <Compile Include="ConfigTests\When_registering.cs" />
+    <Compile Include="ConfigTests\When_registering_handlers.cs" />
     <Compile Include="DomainTests\When_replaying_events.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DomainTests\When_saving.cs" />

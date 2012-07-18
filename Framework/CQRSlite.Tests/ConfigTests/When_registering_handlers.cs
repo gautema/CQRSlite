@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using CQRSlite.Config;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
@@ -7,7 +6,7 @@ using NUnit.Framework;
 namespace CQRSlite.Tests.ConfigTests
 {
 	[TestFixture]
-    public class When_registering
+    public class When_registering_handlers
     {
         private BusRegisterer _register;
         private TestServiceLocator _locator;
