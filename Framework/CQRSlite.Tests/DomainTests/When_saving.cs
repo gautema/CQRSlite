@@ -75,5 +75,15 @@ namespace CQRSlite.Tests.DomainTests
             _session.Commit();
             Assert.That(_eventStore.SavedEvents.First().TimeStamp, Is.InRange(DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddSeconds(1)));
         }
+
+        [Test]
+        public void Should_set_version()
+        {
+            var agg = new TestAggregateNoParameterLessConstructor(1, Guid.Empty);
+            agg.DoSomething();
+            _session.Add(agg);
+            _session.Commit();
+            Assert.That(_eventStore.SavedEvents.First().Version, Is.EqualTo(1));
+        }
     }
 }
