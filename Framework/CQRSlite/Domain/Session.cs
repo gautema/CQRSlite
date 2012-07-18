@@ -93,7 +93,7 @@ namespace CQRSlite.Domain
             var snapshotVersion = TryRestoreAggregateFromSnapshot(id, aggregate);
 
             var events = _storage.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
-            if (events.Count() == 0 && snapshotVersion == -1)
+            if (!events.Any() && snapshotVersion == -1)
                 throw new AggregateNotFoundException();
 
             aggregate.LoadFromHistory(events);
