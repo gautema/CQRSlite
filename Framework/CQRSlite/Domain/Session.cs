@@ -6,10 +6,10 @@ namespace CQRSlite.Domain
 {
     public class Session : ISession
     {
-        private readonly IAggregateStore _storage;
+        private readonly IRepository _storage;
         private readonly Dictionary<Guid, AggregateRoot> _trackedAggregates;
 
-        public Session(IAggregateStore storage)
+        public Session(IRepository storage)
         {
             _storage = storage;
             _trackedAggregates = new Dictionary<Guid, AggregateRoot>();

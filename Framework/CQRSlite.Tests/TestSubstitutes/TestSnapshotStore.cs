@@ -1,6 +1,7 @@
 ﻿using System;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
+using CQRSlite.Snapshotting;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {

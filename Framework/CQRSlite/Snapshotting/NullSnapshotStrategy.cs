@@ -1,7 +1,7 @@
 using System;
 using CQRSlite.Domain;
 
-namespace CQRSlite.Infrastructure
+namespace CQRSlite.Snapshotting
 {
     public class NullSnapshotStrategy : ISnapshotStrategy
     {

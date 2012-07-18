@@ -4,17 +4,18 @@ using System.Runtime.Serialization;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Eventing;
 using CQRSlite.Infrastructure;
+using CQRSlite.Snapshotting;
 
 namespace CQRSlite.Domain
 {
-    public class AggregateStore : IAggregateStore
+    public class Repository : IRepository
     {
         private readonly IEventStore _eventStore;
         private readonly IEventPublisher _publisher;
         private readonly ISnapshotStore _snapshotStore;
         private readonly ISnapshotStrategy _snapshotStrategy;
 
-        public AggregateStore(IEventStore eventStore, IEventPublisher publisher, ISnapshotStore snapshotStore, ISnapshotStrategy snapshotStrategy)
+        public Repository(IEventStore eventStore, IEventPublisher publisher, ISnapshotStore snapshotStore, ISnapshotStrategy snapshotStrategy)
         {
             _eventStore = eventStore;
             _publisher = publisher;
@@ -49,7 +50,7 @@ namespace CQRSlite.Domain
 
         private T LoadAggregate<T>(Guid id) where T : AggregateRoot
         {
-            var aggregate = CreateAggregate<T>();
+            var aggregate = AggregateActivator.CreateAggregate<T>();
             var snapshotVersion = TryRestoreAggregateFromSnapshot(id, aggregate);
 
             var events = _eventStore.Get(id, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
@@ -59,21 +60,6 @@ namespace CQRSlite.Domain
             aggregate.LoadFromHistory(events);
             return aggregate;
         }
-
-        private T CreateAggregate<T>()
-        {
-            T obj;
-            try
-            {
-                obj = (T)Activator.CreateInstance(typeof(T), true);
-            }
-            catch (MissingMethodException)
-            {
-                obj = (T)FormatterServices.GetUninitializedObject(typeof(T));
-            }
-            return obj;
-        }
-
 
         private int TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate)
         {
