@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
 
@@ -10,17 +10,20 @@ namespace CQRSlite.Caching
     {
         private readonly IRepository _repository;
         private readonly IEventStore _eventStore;
-        private readonly Dictionary<Guid, AggregateRoot> _trackedAggregates;
+        private readonly MemoryCache _cache;
 
         public CachingRepository(IRepository repository, IEventStore eventStore)
         {
             _repository = repository;
             _eventStore = eventStore;
-            _trackedAggregates = new Dictionary<Guid, AggregateRoot>();
+            _cache = MemoryCache.Default;
         }
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
+            if (!IsTracked(aggregate.Id))
+                _cache.Add(aggregate.Id.ToString(), aggregate, new CacheItemPolicy());
+            
             _repository.Save(aggregate,expectedVersion);
         }
 
@@ -29,7 +32,7 @@ namespace CQRSlite.Caching
             T aggregate;
             if (IsTracked(aggregateId))
             {
-                aggregate = (T)_trackedAggregates[aggregateId];
+                aggregate = (T)_cache.Get(aggregateId.ToString());
                 var events = _eventStore.Get(aggregateId, aggregate.Version).Where(desc => desc.Version > aggregate.Version);
                 aggregate.LoadFromHistory(events);
                 
@@ -37,14 +40,14 @@ namespace CQRSlite.Caching
             }
 
             aggregate = _repository.Get<T>(aggregateId);
-            _trackedAggregates.Add(aggregateId,aggregate);
+            _cache.Add(aggregateId.ToString(), aggregate, new CacheItemPolicy());
 
             return aggregate;
         }
 
         private bool IsTracked(Guid id)
         {
-            return _trackedAggregates.ContainsKey(id);
+            return _cache.Contains(id.ToString());
         }
     }
 }
