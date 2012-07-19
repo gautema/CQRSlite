@@ -5,12 +5,11 @@ namespace CQRSCode.Commands
 {
     public class RenameInventoryItem : Command 
 	{
-        public readonly Guid InventoryItemId;
         public readonly string NewName;
 
-        public RenameInventoryItem(Guid inventoryItemId, string newName, int originalVersion)
+        public RenameInventoryItem(Guid id, string newName, int originalVersion)
         {
-            InventoryItemId = inventoryItemId;
+            Id = id;
             NewName = newName;
             ExpectedVersion = originalVersion;
         }

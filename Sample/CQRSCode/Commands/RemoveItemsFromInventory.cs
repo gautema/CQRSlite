@@ -5,12 +5,11 @@ namespace CQRSCode.Commands
 {
     public class RemoveItemsFromInventory : Command 
 	{
-		public Guid InventoryItemId;
 		public readonly int Count;
 
-	    public RemoveItemsFromInventory(Guid inventoryItemId, int count, int originalVersion)
-        {
-			InventoryItemId = inventoryItemId;
+	    public RemoveItemsFromInventory(Guid id, int count, int originalVersion)
+	    {
+	        Id = id;
 			Count = count;
             ExpectedVersion = originalVersion;
         }

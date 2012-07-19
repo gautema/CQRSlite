@@ -5,12 +5,11 @@ namespace CQRSCode.Commands
 {
     public class CreateInventoryItem : Command 
 	{
-        public readonly Guid InventoryItemId;
         public readonly string Name;
 	    
-        public CreateInventoryItem(Guid inventoryItemId, string name)
+        public CreateInventoryItem(Guid id, string name)
         {
-            InventoryItemId = inventoryItemId;
+            Id = id;
             Name = name;
         }
     }

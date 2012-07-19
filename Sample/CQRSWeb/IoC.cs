@@ -4,7 +4,6 @@ using CQRSlite.Bus;
 using CQRSlite.Commanding;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
-using CQRSlite.Snapshotting;
 using StructureMap;
 using StructureMap.Graph;
 
@@ -18,8 +17,8 @@ namespace CQRSWeb {
                             x.For<IEventPublisher>().Use(y => y.GetInstance<InProcessBus>());
                             x.For<IHandleRegister>().Use(y => y.GetInstance<InProcessBus>());
                             x.For<ISession>().HybridHttpOrThreadLocalScoped().Use<Session>();
-                            x.For<ISnapshotStrategy>().Use<NullSnapshotStrategy>();
                             x.For<IEventStore>().Singleton().Use<EventStore>();
+                            x.For<IRepository>().HybridHttpOrThreadLocalScoped().Use<Repository>();
 
                             x.Scan(s =>
                             {

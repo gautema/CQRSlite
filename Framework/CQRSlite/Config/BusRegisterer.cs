@@ -24,7 +24,7 @@ namespace CQRSlite.Config
                 var executorTypes = executorsAssembly
                     .GetTypes()
                     .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
-                    .Where(e => e.Interfaces != null && e.Interfaces.Count() > 0);
+                    .Where(e => e.Interfaces != null && e.Interfaces.Any());
 
                 foreach (var executorType in executorTypes)
                     foreach (var @interface in executorType.Interfaces)
@@ -41,8 +41,7 @@ namespace CQRSlite.Config
                 .Where(mi => mi.Name == "RegisterHandler")
                 .Where(mi => mi.IsGenericMethod)
                 .Where(mi => mi.GetGenericArguments().Count() == 1)
-                .Where(mi => mi.GetParameters().Count() == 1)
-                .Single()
+                .Single(mi => mi.GetParameters().Count() == 1)
                 .MakeGenericMethod(commandType);
 
             var del = new Action<dynamic>(x =>
@@ -51,7 +50,7 @@ namespace CQRSlite.Config
                                                   handler.Handle(x);
                                               });
             
-            registerExecutorMethod.Invoke(bus, new[] { del });
+            registerExecutorMethod.Invoke(bus, new object[] { del });
         }
 
         private static IEnumerable<Type> ResolveMessageHandlerInterface(Type type)
