@@ -52,6 +52,7 @@
     <Compile Include="Domain\AggregateRoot.cs" />
     <Compile Include="Commanding\Command.cs" />
     <Compile Include="Commanding\ICommandSender.cs" />
+    <Compile Include="Domain\Exception\MissingParameterLessConstructorException.cs" />
     <Compile Include="Domain\Repository.cs" />
     <Compile Include="Domain\IRepository.cs" />
     <Compile Include="Domain\ISession.cs" />

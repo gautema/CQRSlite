@@ -1,7 +1,6 @@
 ﻿using System;
 using CQRSlite.Domain;
-using CQRSlite.Infrastructure;
-using CQRSlite.Snapshotting;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
@@ -10,7 +9,6 @@ namespace CQRSlite.Tests.DomainTests
 	[TestFixture]
     public class When_getting_aggregate_without_contructor
     {
-	    private TestAggregateNoParameterLessConstructor _aggregate;
 	    private ISession _session;
 
 	    [SetUp]
@@ -18,23 +16,13 @@ namespace CQRSlite.Tests.DomainTests
         {
             var eventStore = new TestEventStore();
             var eventPublisher = new TestEventPublisher();
-	        var snapshotStrategy = new DefaultSnapshotStrategy();
             _session = new Session(new Repository(eventStore, eventPublisher));
-            _aggregate = _session.Get<TestAggregateNoParameterLessConstructor>(Guid.NewGuid());//, null, snapshotStrategy
         }
 
         [Test]
-        public void Should_create_aggregate()
+        public void Should_throw_missing_parameterless_constructor_exception()
         {
-            Assert.That(_aggregate, Is.Not.Null);
+            Assert.Throws<MissingParameterLessConstructorException>(() => _session.Get<TestAggregateNoParameterLessConstructor>(Guid.NewGuid()));
         }
-
-        [Test]
-        public void Should_playback_events()
-        {
-            Assert.That(_aggregate.Version,Is.EqualTo(3));
-        }
-
-
     }
 }

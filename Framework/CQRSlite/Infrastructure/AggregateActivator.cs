@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.Serialization;
+using CQRSlite.Domain.Exception;
 
 namespace CQRSlite.Infrastructure
 {
@@ -14,7 +14,7 @@ namespace CQRSlite.Infrastructure
             }
             catch (MissingMethodException)
             {
-                obj = (T)FormatterServices.GetUninitializedObject(typeof(T));
+                throw new MissingParameterLessConstructorException();
             }
             return obj;
         }
