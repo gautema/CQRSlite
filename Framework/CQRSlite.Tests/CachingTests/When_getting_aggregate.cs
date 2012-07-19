@@ -37,5 +37,13 @@ namespace CQRSlite.Tests.CachingTests
             var aggregate = _rep.Get<TestAggregate>(_aggregate.Id);
             Assert.That(aggregate.Version, Is.EqualTo(3));
         }
+
+        [Test]
+        public void Should_get_same_aggregate_from_different_cache_repository()
+        {
+            var rep = new CachingRepository(new TestRepository(), new TestEventStore());
+            var aggregate = rep.Get<TestAggregate>(_aggregate.Id);
+            Assert.That(aggregate, Is.EqualTo(_aggregate));
+        }
     }
 }
