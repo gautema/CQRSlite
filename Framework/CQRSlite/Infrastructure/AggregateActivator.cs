@@ -7,16 +7,14 @@ namespace CQRSlite.Infrastructure
     {
         public static T CreateAggregate<T>()
         {
-            T obj;
             try
             {
-                obj = (T)Activator.CreateInstance(typeof(T), true);
+               return (T)Activator.CreateInstance(typeof(T), true);
             }
             catch (MissingMethodException)
             {
                 throw new MissingParameterLessConstructorException();
             }
-            return obj;
         }
     }
 }
