@@ -1,15 +1,15 @@
 ﻿using System;
 using CQRSlite.Domain;
-using CQRSlite.Infrastructure;
 using CQRSlite.Snapshotting;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
-namespace CQRSlite.Tests.DomainTests
+namespace CQRSlite.Tests.SnapshottingTests
 {
 	[TestFixture]
-    public class When_getting_an_aggregate_with_snapshot
+    public class When_getting_snapshotable_aggreate
     {
+        private TestSnapshotStore _snapshotStore;
         private TestSnapshotAggregate _aggregate;
 
 		[SetUp]
@@ -17,16 +17,22 @@ namespace CQRSlite.Tests.DomainTests
         {
             var eventStore = new TestEventStore();
             var eventPublisher = new TestEventPublisher();
-            var snapshotStore = new TestSnapshotStore();
+            _snapshotStore = new TestSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-		    var snapshotRepository = new SnapshotRepository(snapshotStore, snapshotStrategy, new Repository(eventStore, eventPublisher), eventStore);
-            var session = new Session(snapshotRepository);
+		    var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(eventStore, eventPublisher), eventStore);
+            var session = new Session(repository);
 
             _aggregate = session.Get<TestSnapshotAggregate>(Guid.NewGuid());
         }
 
         [Test]
-        public void Should_restore()
+        public void Should_ask_for_snapshot()
+        {
+            Assert.True(_snapshotStore.VerifyGet);
+        }
+
+        [Test]
+        public void Should_run_restore_method()
         {
             Assert.True(_aggregate.Restored);
         }

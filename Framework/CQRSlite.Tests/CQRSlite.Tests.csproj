@@ -46,20 +46,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusTests\When_publishing_events.cs" />
+    <Compile Include="CachingTests\When_getting_aggregate.cs" />
+    <Compile Include="CachingTests\When_saving_aggregate.cs" />
     <Compile Include="DomainTests\When_adding_aggregates_to_repository.cs" />
     <Compile Include="DomainTests\When_getting_aggregate_without_contructor.cs" />
     <Compile Include="TestSubstitutes\TestInMemoryEventStore.cs" />
     <Compile Include="TestSubstitutes\TestInMemorySnapshotStore.cs" />
-    <Compile Include="DomainTests\When_getting_a_snapshot_aggregate_with_no_snapshot.cs" />
-    <Compile Include="DomainTests\When_getting_snapshotable_aggreate.cs" />
-    <Compile Include="DomainTests\When_getting_an_aggregate_with_snapshot.cs" />
-    <Compile Include="DomainTests\When_saving_a_snapshotable_aggregate.cs" />
-    <Compile Include="DomainTests\When_saving_a_snapshotable_aggregate_for_each_change.cs" />
+    <Compile Include="SnapshottingTests\When_getting_a_snapshot_aggregate_with_no_snapshot.cs" />
+    <Compile Include="SnapshottingTests\When_getting_snapshotable_aggreate.cs" />
+    <Compile Include="SnapshottingTests\When_getting_an_aggregate_with_snapshot.cs" />
+    <Compile Include="SnapshottingTests\When_saving_a_snapshotable_aggregate.cs" />
+    <Compile Include="SnapshottingTests\When_saving_a_snapshotable_aggregate_for_each_change.cs" />
     <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
     <Compile Include="BusTests\When_sending_command.cs" />
     <Compile Include="TestSubstitutes\TestEventStore.cs" />
     <Compile Include="TestSubstitutes\TestHandleRegistrer.cs" />
     <Compile Include="TestSubstitutes\TestCommands.cs" />
+    <Compile Include="TestSubstitutes\TestRepository.cs" />
     <Compile Include="TestSubstitutes\TestServiceLocator.cs" />
     <Compile Include="ConfigTests\When_registering_handlers.cs" />
     <Compile Include="DomainTests\When_replaying_events.cs" />

@@ -48,6 +48,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\CachingRepository.cs" />
     <Compile Include="Config\IServiceLocator.cs" />
     <Compile Include="Domain\AggregateRoot.cs" />
     <Compile Include="Commanding\Command.cs" />

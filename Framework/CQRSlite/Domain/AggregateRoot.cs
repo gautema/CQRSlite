@@ -5,7 +5,7 @@ using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Domain
 {
-    public abstract class AggregateRoot
+    public abstract class   AggregateRoot
     {
         private readonly List<Event> _changes = new List<Event>();
 

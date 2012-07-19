@@ -41,11 +41,6 @@ namespace CQRSlite.Snapshotting
             return aggregate;
         }
 
-        public int GetVersion(Guid aggregateId)
-        {
-            return _repository.GetVersion(aggregateId);
-        }
-
         private int TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate)
         {
             var version = -1;

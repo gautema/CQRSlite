@@ -1,12 +1,11 @@
 using System;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
-using CQRSlite.Infrastructure;
 using CQRSlite.Snapshotting;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
-namespace CQRSlite.Tests.DomainTests
+namespace CQRSlite.Tests.SnapshottingTests
 {
 	[TestFixture]
     public class When_getting_a_snapshot_aggregate_with_no_snapshot

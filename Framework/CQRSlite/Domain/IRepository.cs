@@ -6,6 +6,5 @@ namespace CQRSlite.Domain
     {
         void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot;
         T Get<T>(Guid aggregateId) where T : AggregateRoot;
-        int GetVersion(Guid aggregateId);
     }
 }

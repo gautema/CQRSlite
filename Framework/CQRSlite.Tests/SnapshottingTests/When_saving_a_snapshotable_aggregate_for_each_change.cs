@@ -5,7 +5,7 @@ using CQRSlite.Snapshotting;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
-namespace CQRSlite.Tests.DomainTests
+namespace CQRSlite.Tests.SnapshottingTests
 {
 	[TestFixture]
     public class When_saving_a_snapshotable_aggregate_for_each_change
