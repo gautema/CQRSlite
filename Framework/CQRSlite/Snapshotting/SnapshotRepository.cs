@@ -21,7 +21,7 @@ namespace CQRSlite.Snapshotting
             _eventStore = eventStore;
         }
 
-        public void Save<T>(T aggregate, int? exectedVersion = null ) where T : AggregateRoot
+        public void Save<T>(T aggregate, int? exectedVersion = null) where T : AggregateRoot
         {
             TryMakeSnapshot(aggregate);
             _repository.Save(aggregate, exectedVersion);
