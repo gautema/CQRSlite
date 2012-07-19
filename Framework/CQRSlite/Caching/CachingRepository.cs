@@ -11,18 +11,20 @@ namespace CQRSlite.Caching
         private readonly IRepository _repository;
         private readonly IEventStore _eventStore;
         private readonly MemoryCache _cache;
+        private readonly Func<CacheItemPolicy> _policyFactory;
 
         public CachingRepository(IRepository repository, IEventStore eventStore)
         {
             _repository = repository;
             _eventStore = eventStore;
             _cache = MemoryCache.Default;
+            _policyFactory = () => new CacheItemPolicy {SlidingExpiration = new TimeSpan(0, 1, 0, 0)};
         }
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
             if (!IsTracked(aggregate.Id))
-                _cache.Add(aggregate.Id.ToString(), aggregate, new CacheItemPolicy());
+                _cache.Add(aggregate.Id.ToString(), aggregate, _policyFactory.Invoke());
             
             _repository.Save(aggregate,expectedVersion);
         }
@@ -40,7 +42,7 @@ namespace CQRSlite.Caching
             }
 
             aggregate = _repository.Get<T>(aggregateId);
-            _cache.Add(aggregateId.ToString(), aggregate, new CacheItemPolicy());
+            _cache.Add(aggregateId.ToString(), aggregate, _policyFactory.Invoke());
 
             return aggregate;
         }
