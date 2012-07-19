@@ -3,7 +3,7 @@ using CQRSlite.Domain.Exception;
 
 namespace CQRSlite.Infrastructure
 {
-    public static class AggregateActivator
+    internal static class AggregateActivator
     {
         public static T CreateAggregate<T>()
         {
