@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.Caching;
 using CQRSlite.Domain;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Eventing;
 
 namespace CQRSlite.Caching
@@ -35,7 +36,9 @@ namespace CQRSlite.Caching
             if (IsTracked(aggregateId))
             {
                 aggregate = (T)_cache.Get(aggregateId.ToString());
-                var events = _eventStore.Get(aggregateId, aggregate.Version).Where(desc => desc.Version > aggregate.Version);
+                var events = _eventStore.Get(aggregateId, aggregate.Version);
+                if(events.First().Version != aggregate.Version + 1)
+                    throw new EventsOutOfOrderException();
                 aggregate.LoadFromHistory(events);
                 
                 return aggregate;

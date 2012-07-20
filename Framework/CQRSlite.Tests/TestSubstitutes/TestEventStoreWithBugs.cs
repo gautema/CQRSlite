@@ -1,15 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using CQRSlite.Eventing;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
-    public class TestEventStore : IEventStore
+    public class TestEventStoreWithBugs : IEventStore
     {
-        public TestEventStore()
+        public TestEventStoreWithBugs()
         {
-            SavedEvents = new List<Event>();   
+            SavedEvents = new List<Event>();
         }
         public IEnumerable<Event> Get(Guid aggregateId, int version)
         {
@@ -20,10 +19,10 @@ namespace CQRSlite.Tests.TestSubstitutes
 
             return new List<Event>
                 {
-                    new TestAggregateDidSomething {Id = aggregateId, Version = 1},
-                    new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 2},
+                    new TestAggregateDidSomething {Id = aggregateId, Version = 2},
+                    new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 1},
                     new TestAggregateDidSomething {Id = aggregateId, Version = 3},
-                }.Where(x => x.Version > version);
+                };
 
         }
 

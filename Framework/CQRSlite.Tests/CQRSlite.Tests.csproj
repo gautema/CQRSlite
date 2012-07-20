@@ -47,9 +47,12 @@
   <ItemGroup>
     <Compile Include="BusTests\When_publishing_events.cs" />
     <Compile Include="CachingTests\When_getting_aggregate.cs" />
+    <Compile Include="CachingTests\When_getting_wrong_events_from_event_store.cs" />
     <Compile Include="CachingTests\When_saving_aggregate.cs" />
+    <Compile Include="DomainTests\When_getting_events_out_of_order.cs" />
     <Compile Include="DomainTests\When_adding_aggregates_to_repository.cs" />
     <Compile Include="DomainTests\When_getting_aggregate_without_contructor.cs" />
+    <Compile Include="TestSubstitutes\TestEventStoreWithBugs.cs" />
     <Compile Include="TestSubstitutes\TestInMemoryEventStore.cs" />
     <Compile Include="TestSubstitutes\TestInMemorySnapshotStore.cs" />
     <Compile Include="SnapshottingTests\When_getting_a_snapshot_aggregate_with_no_snapshot.cs" />

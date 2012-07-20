@@ -39,11 +39,6 @@ namespace CQRSlite.Domain
             return LoadAggregate<T>(aggregateId);
         }
 
-        public int GetVersion(Guid aggregateId)
-        {
-            return _eventStore.GetVersion(aggregateId);
-        }
-
         private T LoadAggregate<T>(Guid id) where T : AggregateRoot
         {
             var aggregate = AggregateActivator.CreateAggregate<T>();

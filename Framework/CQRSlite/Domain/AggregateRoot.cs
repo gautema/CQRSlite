@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Eventing;
 using CQRSlite.Infrastructure;
 
@@ -25,7 +26,12 @@ namespace CQRSlite.Domain
 
         public void LoadFromHistory(IEnumerable<Event> history)
         {
-            foreach (var e in history) ApplyChange(e, false);
+            foreach (var e in history)
+            {
+                if (e.Version != Version + 1)
+                    throw new EventsOutOfOrderException();
+                ApplyChange(e, false);
+            }
         }
 
         protected void ApplyChange(Event @event)

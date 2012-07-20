@@ -11,7 +11,7 @@ namespace CQRSlite.Tests.TestSubstitutes
         {
             ApplyChange(new TestAggregateCreated(id));
         }
-        public int I;
+        public int DidSomethingCount;
 
         public void DoSomething()
         {
@@ -25,7 +25,7 @@ namespace CQRSlite.Tests.TestSubstitutes
 
         public void Apply(TestAggregateDidSomething e)
         {
-            I++;
+            DidSomethingCount++;
         }
 
     }

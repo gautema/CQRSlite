@@ -30,7 +30,7 @@ namespace CQRSlite.Tests.DomainTests
         public void Should_apply_events()
         {
             var aggregate = _session.Get<TestAggregate>(Guid.NewGuid());
-            Assert.AreEqual(2,aggregate.I);
+            Assert.AreEqual(2,aggregate.DidSomethingCount);
         }
 
         [Test]
@@ -82,6 +82,5 @@ namespace CQRSlite.Tests.DomainTests
             var id = Guid.NewGuid();
             Assert.Throws<ConcurrencyException>(() => _session.Get<TestAggregate>(id, 1));
         }
-
     }
 }

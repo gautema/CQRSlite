@@ -19,14 +19,14 @@ namespace CQRSlite.Tests.DomainTests
         public void Should_call_apply_if_exist()
         {
             _aggregate.DoSomething();
-            Assert.AreEqual(1, _aggregate.I);
+            Assert.AreEqual(1, _aggregate.DidSomethingCount);
         }
 
         [Test]
         public void Should_not_fail_apply_if_dont_exist()
         {
             _aggregate.DoSomethingElse();
-            Assert.AreEqual(0, _aggregate.I);
+            Assert.AreEqual(0, _aggregate.DidSomethingCount);
         }
     }
 }
