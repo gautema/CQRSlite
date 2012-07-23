@@ -63,7 +63,7 @@
     <Compile Include="Eventing\IEventPublisher.cs" />
     <Compile Include="Eventing\IEventStore.cs" />
     <Compile Include="Bus\IHandleRegister.cs" />
-    <Compile Include="Eventing\ISnapshotStore.cs" />
+    <Compile Include="Snapshotting\ISnapshotStore.cs" />
     <Compile Include="Infrastructure\AggregateActivator.cs" />
     <Compile Include="Snapshotting\Snapshot.cs" />
     <Compile Include="Snapshotting\SnapshotAggregateRoot.cs" />

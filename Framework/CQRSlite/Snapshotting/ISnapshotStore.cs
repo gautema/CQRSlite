@@ -1,7 +1,6 @@
 ﻿using System;
-using CQRSlite.Snapshotting;
 
-namespace CQRSlite.Eventing
+namespace CQRSlite.Snapshotting
 {
     public interface ISnapshotStore
     {
