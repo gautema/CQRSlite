@@ -15,7 +15,10 @@ namespace CQRSlite.Domain
 
         public IEnumerable<Event> GetUncommittedChanges()
         {
-            return _changes;
+            lock (_changes)
+            {
+                return _changes.ToArray();
+            }
         }
 
         public void MarkChangesAsCommitted()
@@ -41,15 +44,18 @@ namespace CQRSlite.Domain
 
         private void ApplyChange(Event @event, bool isNew)
         {
-            Id = @event.Id;
-            this.AsDynamic().Apply(@event);
-            if(isNew)
+            lock (_changes)
             {
-                _changes.Add(@event);
-            }
-            else
-            {
-                Version++;
+                Id = @event.Id;
+                this.AsDynamic().Apply(@event);
+                if (isNew)
+                {
+                    _changes.Add(@event);
+                }
+                else
+                {
+                    Version++;
+                }
             }
         }
     }

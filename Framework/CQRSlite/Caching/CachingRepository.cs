@@ -24,30 +24,36 @@ namespace CQRSlite.Caching
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
-            if (!IsTracked(aggregate.Id))
-                _cache.Add(aggregate.Id.ToString(), aggregate, _policyFactory.Invoke());
-            
-            _repository.Save(aggregate,expectedVersion);
+            lock (_policyFactory)
+            {
+                if (!IsTracked(aggregate.Id))
+                    _cache.Add(aggregate.Id.ToString(), aggregate, _policyFactory.Invoke());
+
+                _repository.Save(aggregate, expectedVersion);
+            }
         }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
         {
-            T aggregate;
-            if (IsTracked(aggregateId))
+            lock (_policyFactory)
             {
-                aggregate = (T)_cache.Get(aggregateId.ToString());
-                var events = _eventStore.Get(aggregateId, aggregate.Version);
-                if(events.Any() && events.First().Version != aggregate.Version + 1)
-                    throw new EventsOutOfOrderException();
-                aggregate.LoadFromHistory(events);
-                
+                T aggregate;
+                if (IsTracked(aggregateId))
+                {
+                    aggregate = (T) _cache.Get(aggregateId.ToString());
+                    var events = _eventStore.Get(aggregateId, aggregate.Version);
+                    if (events.Any() && events.First().Version != aggregate.Version + 1)
+                        throw new EventsOutOfOrderException();
+                    aggregate.LoadFromHistory(events);
+
+                    return aggregate;
+                }
+
+                aggregate = _repository.Get<T>(aggregateId);
+                _cache.Add(aggregateId.ToString(), aggregate, _policyFactory.Invoke());
+
                 return aggregate;
             }
-
-            aggregate = _repository.Get<T>(aggregateId);
-            _cache.Add(aggregateId.ToString(), aggregate, _policyFactory.Invoke());
-
-            return aggregate;
         }
 
         private bool IsTracked(Guid id)

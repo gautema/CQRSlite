@@ -31,9 +31,9 @@ namespace CQRSlite.Tests.TestSubstitutes
         {
             return aggregateId == Guid.Empty ? 0 : 2;
         }
-        public void Save(Guid aggregateId, Event eventDescriptor)
+        public void Save(Guid aggregateId, Event @event)
         {
-            SavedEvents.Add(eventDescriptor);
+            SavedEvents.Add(@event);
         }
 
         public List<Event> SavedEvents { get; set; }
