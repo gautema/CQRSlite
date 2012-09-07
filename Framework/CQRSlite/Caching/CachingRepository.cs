@@ -37,7 +37,7 @@ namespace CQRSlite.Caching
             {
                 aggregate = (T)_cache.Get(aggregateId.ToString());
                 var events = _eventStore.Get(aggregateId, aggregate.Version);
-                if(events.First().Version != aggregate.Version + 1)
+                if(events.Any() && events.First().Version != aggregate.Version + 1)
                     throw new EventsOutOfOrderException();
                 aggregate.LoadFromHistory(events);
                 

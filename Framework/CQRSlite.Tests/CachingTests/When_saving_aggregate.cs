@@ -18,6 +18,7 @@ namespace CQRSlite.Tests.CachingTests
             _testRep = new TestRepository();
             _rep = new CachingRepository(_testRep, new TestEventStore());
             _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid());
+            _aggregate.DoSomething();
             _rep.Save(_aggregate,-1);
         }
 
