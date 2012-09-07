@@ -49,10 +49,20 @@ namespace CQRSlite.Tests.CachingTests
                                           _rep2.Save(aggregate);
                                       }
                                   });
+            var t3 = new Task(() =>
+                                  {
+                                      for (var i = 0; i < 100; i++)
+                                      {
+                                          var aggregate = _rep2.Get<TestAggregate>(_aggregate.Id);
+                                          aggregate.DoSomething();
+                                          _rep2.Save(aggregate);
+                                      }
+                                  });
             t1.Start();
             t2.Start();
+            t3.Start();
 
-            Task.WaitAll(new[] {t1,t2});
+            Task.WaitAll(new[] {t1,t2, t3});
         }
 
         [Test]
@@ -64,7 +74,7 @@ namespace CQRSlite.Tests.CachingTests
         [Test]
         public void Should_save_all_events()
         {
-            Assert.That(_testStore.Events.Count(), Is.EqualTo(201));
+            Assert.That(_testStore.Events.Count(), Is.EqualTo(301));
         }
     }
 }
