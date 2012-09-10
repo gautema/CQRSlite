@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CQRSlite.Contracts.Bus.Events;
+using CQRSlite.Contracts.Infrastructure.Repositories;
 using CQRSlite.Contracts.Snapshots;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Factories;

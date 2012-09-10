@@ -57,8 +57,8 @@
     <Compile Include="Domain\Exception\EventsOutOfOrderException.cs" />
     <Compile Include="Domain\Exception\MissingParameterLessConstructorException.cs" />
     <Compile Include="Infrastructure\Repositories\Domain\Repository.cs" />
-    <Compile Include="Infrastructure\Repositories\IRepository.cs" />
-    <Compile Include="Infrastructure\Repositories\ISession.cs" />
+    <Compile Include="Contracts\Infrastructure\Repositories\IRepository.cs" />
+    <Compile Include="Contracts\Infrastructure\Repositories\ISession.cs" />
     <Compile Include="Infrastructure\Repositories\Domain\Session.cs" />
     <Compile Include="Contracts\Bus\Events\IEventPublisher.cs" />
     <Compile Include="Contracts\Bus\Events\IEventStore.cs" />

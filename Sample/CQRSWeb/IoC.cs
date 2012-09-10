@@ -5,6 +5,7 @@ using CQRSlite.Bus;
 using CQRSlite.Contracts.Bus;
 using CQRSlite.Contracts.Bus.Commands;
 using CQRSlite.Contracts.Bus.Events;
+using CQRSlite.Contracts.Infrastructure.Repositories;
 using CQRSlite.Domain;
 using CQRSlite.Infrastructure.Repositories;
 using CQRSlite.Infrastructure.Repositories.Domain;

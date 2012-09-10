@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CQRSlite.Contracts.Infrastructure.Repositories;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.Caching;
 using CQRSlite.Contracts.Bus.Events;
+using CQRSlite.Contracts.Infrastructure.Repositories;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Infrastructure.Repositories.Domain;

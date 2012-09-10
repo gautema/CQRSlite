@@ -4,6 +4,7 @@ using System.Linq;
 using CQRSlite.Contracts.Bus.Events;
 using CQRSlite.Contracts.Bus.Handlers;
 using CQRSlite.Contracts.Bus.Messages;
+using CQRSlite.Contracts.Infrastructure.Repositories;
 using CQRSlite.Contracts.Snapshots;
 using CQRSlite.Domain;
 using CQRSlite.Infrastructure.Repositories.Domain;

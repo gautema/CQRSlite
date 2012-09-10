@@ -1,6 +1,7 @@
 ﻿using CQRSCode.WriteModel.Commands;
 using CQRSCode.WriteModel.Domain;
 using CQRSlite.Contracts.Bus.Handlers;
+using CQRSlite.Contracts.Infrastructure.Repositories;
 using CQRSlite.Domain;
 using CQRSlite.Infrastructure.Repositories.Domain;
 
