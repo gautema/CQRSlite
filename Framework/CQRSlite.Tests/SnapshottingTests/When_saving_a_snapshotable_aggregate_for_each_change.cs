@@ -24,7 +24,7 @@ namespace CQRSlite.Tests.SnapshottingTests
 	        _session = new Session(repository);
             var aggregate = new TestSnapshotAggregate();
 
-            for (int i = 0; i < 20; i++)
+            for (var i = 0; i < 20; i++)
             {
                 _session.Add(aggregate);
                 aggregate.DoSomething();

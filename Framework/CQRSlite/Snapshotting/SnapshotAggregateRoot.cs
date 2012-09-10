@@ -14,6 +14,7 @@ namespace CQRSlite.Snapshotting
         public void Restore(T snapshot)
         {
             Id = snapshot.Id;
+            Version = snapshot.Version;
             RestoreFromSnapshot(snapshot);
         }
 

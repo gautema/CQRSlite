@@ -7,19 +7,20 @@ namespace CQRSlite.Domain
     public class Session : ISession
     {
         private readonly IRepository _storage;
-        private readonly Dictionary<Guid, AggregateRoot> _trackedAggregates;
+        private readonly Dictionary<Guid, AggregateDescriptor> _trackedAggregates;
 
         public Session(IRepository storage)
         {
             _storage = storage;
-            _trackedAggregates = new Dictionary<Guid, AggregateRoot>();
+            _trackedAggregates = new Dictionary<Guid, AggregateDescriptor>();
         }
 
         public void Add<T>(T aggregate) where T : AggregateRoot
         {
             if (!IsTracked(aggregate.Id))
-                _trackedAggregates.Add(aggregate.Id, aggregate);
-            else if (_trackedAggregates[aggregate.Id] != aggregate)
+                _trackedAggregates.Add(aggregate.Id,
+                                       new AggregateDescriptor {Aggregate = aggregate, Version = aggregate.Version});
+            else if (_trackedAggregates[aggregate.Id].Aggregate != aggregate)
                 throw new ConcurrencyException();
         }
 
@@ -27,7 +28,7 @@ namespace CQRSlite.Domain
         {
             if(IsTracked(id))
             {
-                var trackedAggregate = (T)_trackedAggregates[id];
+                var trackedAggregate = (T)_trackedAggregates[id].Aggregate;
                 if (expectedVersion != null && trackedAggregate.Version != expectedVersion)
                     throw new ConcurrencyException();
                 return trackedAggregate;
@@ -48,10 +49,17 @@ namespace CQRSlite.Domain
 
         public void Commit()
         {
-            foreach (var aggregate in _trackedAggregates.Values)
+            foreach (var descriptor in _trackedAggregates.Values)
             {
-                _storage.Save(aggregate, aggregate.Version);
+                _storage.Save(descriptor.Aggregate, descriptor.Version);
             }
+            _trackedAggregates.Clear();
+        }
+
+        private class AggregateDescriptor
+        {
+            public AggregateRoot Aggregate { get; set; }
+            public int Version { get; set; }
         }
     }
 }

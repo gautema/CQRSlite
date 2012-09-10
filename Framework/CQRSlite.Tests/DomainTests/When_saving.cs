@@ -86,9 +86,14 @@ namespace CQRSlite.Tests.DomainTests
         }
 
         [Test]
-        public void ShouldThrowConcurrencyException()
+        public void Should_clear_tracked_aggregates()
         {
-            Assert.Throws<ConcurrencyException>(() => _rep.Save(_aggregate, 1));
+            var agg = new TestAggregate(Guid.NewGuid());
+            _session.Add(agg);
+            agg.DoSomething();
+            _session.Commit();
+
+            Assert.Throws<AggregateNotFoundException>(() => _session.Get<TestAggregate>(agg.Id));
         }
     }
 }
