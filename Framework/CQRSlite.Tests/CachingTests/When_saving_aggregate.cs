@@ -1,5 +1,5 @@
 ﻿using System;
-using CQRSlite.Caching;
+using CQRSlite.Cache;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
@@ -8,7 +8,7 @@ namespace CQRSlite.Tests.CachingTests
     [TestFixture]
     public class When_saving_aggregate
     {
-        private CachingRepository _rep;
+        private CacheRepository _rep;
         private TestAggregate _aggregate;
         private TestRepository _testRep;
 
@@ -16,7 +16,7 @@ namespace CQRSlite.Tests.CachingTests
         public void Setup()
         {
             _testRep = new TestRepository();
-            _rep = new CachingRepository(_testRep, new TestEventStore());
+            _rep = new CacheRepository(_testRep, new TestEventStore());
             _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid());
             _aggregate.DoSomething();
             _rep.Save(_aggregate,-1);

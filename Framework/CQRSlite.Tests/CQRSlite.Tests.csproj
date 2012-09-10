@@ -65,7 +65,7 @@
     <Compile Include="TestSubstitutes\TestEventPublisher.cs" />
     <Compile Include="BusTests\When_sending_command.cs" />
     <Compile Include="TestSubstitutes\TestEventStore.cs" />
-    <Compile Include="TestSubstitutes\TestHandleRegistrer.cs" />
+    <Compile Include="TestSubstitutes\TestHandleRegistrar.cs" />
     <Compile Include="TestSubstitutes\TestCommands.cs" />
     <Compile Include="TestSubstitutes\TestRepository.cs" />
     <Compile Include="TestSubstitutes\TestServiceLocator.cs" />

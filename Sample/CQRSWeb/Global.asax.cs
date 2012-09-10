@@ -2,8 +2,9 @@
 using System.Web.Routing;
 using CQRSCode.ReadModel;
 using CQRSlite;
-using CQRSlite.Config;
-using CQRSlite.Handlers;
+using CQRSlite.Bus;
+using CQRSlite.Contracts.Config;
+using CQRSlite.Contracts.Handlers;
 
 namespace CQRSWeb
 {	
@@ -38,7 +39,7 @@ namespace CQRSWeb
 
         private void RegisterHandlers(IServiceLocator serviceLocator)
         {
-            var registerer = new BusRegisterer(serviceLocator);
+            var registerer = new BusRegistrar(serviceLocator);
 			registerer.Register(typeof(HandlesCommand<>), typeof(HandlesEvent<>), typeof(ReadModelFacade));
         }
     }

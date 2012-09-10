@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CQRSlite.Commanding;
-using CQRSlite.Domain;
-using CQRSlite.Eventing;
-using CQRSlite.Handlers;
-using CQRSlite.Snapshotting;
+using CQRSlite.Contracts.Domain;
+using CQRSlite.Contracts.Events;
+using CQRSlite.Contracts.Handlers;
+using CQRSlite.Contracts.Messages;
+using CQRSlite.Contracts.Snapshots;
+using CQRSlite.Snapshots;
 using NUnit.Framework;
 
 namespace CQRSlite.Extensions.TestHelpers

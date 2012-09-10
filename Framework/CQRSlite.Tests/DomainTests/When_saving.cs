@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using CQRSlite.Domain;
-using CQRSlite.Domain.Exception;
+using CQRSlite.Contracts.Domain;
+using CQRSlite.Contracts.Domain.Exception;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 

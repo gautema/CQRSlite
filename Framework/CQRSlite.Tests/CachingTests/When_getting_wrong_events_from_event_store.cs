@@ -1,6 +1,6 @@
 ﻿using System;
-using CQRSlite.Caching;
-using CQRSlite.Domain.Exception;
+using CQRSlite.Cache;
+using CQRSlite.Contracts.Domain.Exception;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
@@ -9,13 +9,13 @@ namespace CQRSlite.Tests.CachingTests
     [TestFixture]
     public class When_getting_earlier_than_expected_events_from_event_store
     {
-        private CachingRepository _rep;
+        private CacheRepository _rep;
         private TestAggregate _aggregate;
 
         [SetUp]
         public void Setup()
         {
-            _rep = new CachingRepository(new TestRepository(), new TestEventStoreWithBugs());
+            _rep = new CacheRepository(new TestRepository(), new TestEventStoreWithBugs());
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid());
         }
 

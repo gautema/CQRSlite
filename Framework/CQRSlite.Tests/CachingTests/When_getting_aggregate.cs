@@ -1,5 +1,5 @@
 ﻿using System;
-using CQRSlite.Caching;
+using CQRSlite.Cache;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
@@ -8,13 +8,13 @@ namespace CQRSlite.Tests.CachingTests
     [TestFixture]
     public class When_getting_aggregate
     {
-        private CachingRepository _rep;
+        private CacheRepository _rep;
         private TestAggregate _aggregate;
 
         [SetUp]
         public void Setup()
         {
-            _rep = new CachingRepository(new TestRepository(), new TestEventStore());
+            _rep = new CacheRepository(new TestRepository(), new TestEventStore());
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid());
         }
 
@@ -41,7 +41,7 @@ namespace CQRSlite.Tests.CachingTests
         [Test]
         public void Should_get_same_aggregate_from_different_cache_repository()
         {
-            var rep = new CachingRepository(new TestRepository(), new TestEventStore());
+            var rep = new CacheRepository(new TestRepository(), new TestEventStore());
             var aggregate = rep.Get<TestAggregate>(_aggregate.Id);
             Assert.That(aggregate, Is.EqualTo(_aggregate));
         }

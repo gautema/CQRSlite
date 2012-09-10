@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
-using CQRSlite.Caching;
-using CQRSlite.Domain;
+using CQRSlite.Cache;
+using CQRSlite.Contracts.Domain;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 
@@ -12,8 +12,8 @@ namespace CQRSlite.Tests.CachingTests
 {
     public class When_saving_same_aggregate_in_parallel
     {
-        private CachingRepository _rep1;
-        private CachingRepository _rep2;
+        private CacheRepository _rep1;
+        private CacheRepository _rep2;
         private TestAggregate _aggregate;
         private TestInMemoryEventStore _testStore;
 
@@ -24,8 +24,8 @@ namespace CQRSlite.Tests.CachingTests
             MemoryCache.Default.Remove(Guid.Empty.ToString());
 
             _testStore = new TestInMemoryEventStore();
-            _rep1 = new CachingRepository(new Repository(_testStore,new TestEventPublisher()), _testStore);
-            _rep2 = new CachingRepository(new Repository(_testStore,new TestEventPublisher()), _testStore);
+            _rep1 = new CacheRepository(new Repository(_testStore,new TestEventPublisher()), _testStore);
+            _rep2 = new CacheRepository(new Repository(_testStore,new TestEventPublisher()), _testStore);
 
             _aggregate = new TestAggregate(Guid.NewGuid());
             _rep1.Save(_aggregate);

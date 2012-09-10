@@ -1,5 +1,5 @@
-using CQRSlite.Commanding;
-using CQRSlite.Handlers;
+using CQRSlite.Contracts.Handlers;
+using CQRSlite.Contracts.Messages;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {

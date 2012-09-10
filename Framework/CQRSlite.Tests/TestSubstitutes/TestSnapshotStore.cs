@@ -1,5 +1,6 @@
 ﻿using System;
-using CQRSlite.Snapshotting;
+using CQRSlite.Contracts.Snapshots;
+using CQRSlite.Snapshots;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-using CQRSlite.Eventing;
+using CQRSlite.Contracts.Messages;
 
 namespace CQRSCode.ReadModel.Events
 {

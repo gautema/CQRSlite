@@ -1,9 +1,9 @@
 ﻿using System;
-using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
 using CQRSCode.ReadModel.Events;
+using CQRSCode.ReadModel.Infrastructure;
 using CQRSlite;
-using CQRSlite.Handlers;
+using CQRSlite.Contracts.Handlers;
 
 namespace CQRSCode.ReadModel.Handlers
 {

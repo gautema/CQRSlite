@@ -1,7 +1,7 @@
 using System;
-using CQRSlite.Domain;
-using CQRSlite.Eventing;
-using CQRSlite.Snapshotting;
+using CQRSlite.Contracts.Domain;
+using CQRSlite.Contracts.Snapshots;
+using CQRSlite.Snapshots;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;
 

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using CQRSlite.Bus;
-using CQRSlite.Config;
+using CQRSlite.Contracts.Bus;
+using CQRSlite.Contracts.Config;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
@@ -15,8 +16,8 @@ namespace CQRSlite.Tests.TestSubstitutes
 
         public object GetService(Type type)
         {
-            if(type == typeof(IHandleRegister))
-                return new TestHandleRegistrer();
+            if(type == typeof(IHandleRegistrar))
+                return new TestHandleRegistrar();
             if (type == typeof(TestAggregateDidSomethingHandler))
             {
                 var handler = new TestAggregateDidSomethingHandler();
