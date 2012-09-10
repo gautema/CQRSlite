@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CQRSlite.Bus;
 using CQRSlite.Contracts.Bus;
 using CQRSlite.Contracts.Infrastructure.DI;
 

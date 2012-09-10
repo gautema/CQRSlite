@@ -1,5 +1,7 @@
 ﻿using System;
-using CQRSlite.Contracts.Domain;
+using CQRSlite.Domain;
+using CQRSlite.Infrastructure.Repositories;
+using CQRSlite.Infrastructure.Repositories.Domain;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{B8A193A0-0649-4A91-AD4C-DD87794D5836}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{2D2585B3-9047-41C0-BB5E-13342F1A6549}"
@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite", "Framework\CQRSl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Tests", "Framework\CQRSlite.Tests\CQRSlite.Tests.csproj", "{420F0A58-CB69-4517-9251-6F92911C3A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Extensions", "Framework\CQRSlite.Extensions\CQRSlite.Extensions.csproj", "{8E96F332-4D60-42E5-A264-5707A68A297A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Tests.Extensions", "Framework\CQRSlite.Tests.Extensions\CQRSlite.Tests.Extensions.csproj", "{8E96F332-4D60-42E5-A264-5707A68A297A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSWeb", "Sample\CQRSWeb\CQRSWeb.csproj", "{7D917143-64CF-4492-A2F6-B1D5B95136F6}"
 EndProject

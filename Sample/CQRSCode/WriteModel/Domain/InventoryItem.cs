@@ -1,6 +1,6 @@
 ﻿using System;
 using CQRSCode.ReadModel.Events;
-using CQRSlite.Contracts.Domain;
+using CQRSlite.Domain;
 
 namespace CQRSCode.WriteModel.Domain
 {

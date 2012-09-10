@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using CQRSlite.Contracts.Domain;
 using CQRSlite.Contracts.Snapshots;
+using CQRSlite.Domain;
 
 namespace CQRSlite.Snapshots
 {

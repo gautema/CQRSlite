@@ -1,6 +1,6 @@
 ﻿using System;
 using CQRSlite.Contracts.Bus.Messages;
-using CQRSlite.Contracts.Domain;
+using CQRSlite.Domain;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {

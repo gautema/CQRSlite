@@ -1,4 +1,4 @@
-﻿using CQRSlite.Contracts.Domain;
+﻿using CQRSlite.Domain;
 
 namespace CQRSlite.Snapshots
 {
