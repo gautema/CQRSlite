@@ -1,7 +1,7 @@
 using System;
 using CQRSlite.Commanding;
 
-namespace CQRSCode.Commands
+namespace CQRSCode.WriteModel.Commands
 {
     public class RemoveItemsFromInventory : Command 
 	{

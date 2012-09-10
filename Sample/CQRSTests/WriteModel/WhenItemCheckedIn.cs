@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CQRSCode.CommandHandlers;
-using CQRSCode.Commands;
-using CQRSCode.Domain;
-using CQRSCode.Events;
+using CQRSCode.ReadModel.Events;
+using CQRSCode.WriteModel.Commands;
+using CQRSCode.WriteModel.Domain;
+using CQRSCode.WriteModel.Handlers;
 using CQRSlite.Eventing;
 using CQRSlite.Extensions.TestHelpers;
 using NUnit.Framework;
 
-namespace CQRSTests
+namespace CQRSTests.WriteModel
 {
     public class When_item_checked_in : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
     {

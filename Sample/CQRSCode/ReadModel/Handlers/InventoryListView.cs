@@ -1,6 +1,6 @@
-﻿using CQRSCode.Events;
-using CQRSCode.Infrastructure;
+﻿using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
+using CQRSCode.ReadModel.Events;
 using CQRSlite.Handlers;
 
 namespace CQRSCode.ReadModel.Handlers

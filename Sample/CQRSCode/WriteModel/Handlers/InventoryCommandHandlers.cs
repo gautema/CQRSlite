@@ -1,9 +1,9 @@
-﻿using CQRSCode.Commands;
-using CQRSCode.Domain;
+﻿using CQRSCode.WriteModel.Commands;
+using CQRSCode.WriteModel.Domain;
 using CQRSlite.Domain;
 using CQRSlite.Handlers;
 
-namespace CQRSCode.CommandHandlers
+namespace CQRSCode.WriteModel.Handlers
 {
     public class InventoryCommandHandlers : HandlesCommand<CreateInventoryItem>,
 											HandlesCommand<DeactivateInventoryItem>,

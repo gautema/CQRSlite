@@ -1,7 +1,7 @@
 ﻿using System;
 using CQRSlite.Eventing;
 
-namespace CQRSCode.Events
+namespace CQRSCode.ReadModel.Events
 {
     public class ItemsRemovedFromInventory : Event
     {

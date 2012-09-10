@@ -1,7 +1,7 @@
 ﻿using System;
-using CQRSCode.Events;
 using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
+using CQRSCode.ReadModel.Events;
 using CQRSlite;
 using CQRSlite.Handlers;
 

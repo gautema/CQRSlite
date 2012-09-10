@@ -1,8 +1,8 @@
 ﻿using System;
-using CQRSCode.Events;
+using CQRSCode.ReadModel.Events;
 using CQRSlite.Domain;
 
-namespace CQRSCode.Domain
+namespace CQRSCode.WriteModel.Domain
 {
     public class InventoryItem : AggregateRoot
     {

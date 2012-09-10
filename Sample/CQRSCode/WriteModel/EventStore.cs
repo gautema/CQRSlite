@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CQRSlite.Eventing;
 
-namespace CQRSCode.Domain
+namespace CQRSCode.WriteModel
 {
     public class EventStore : IEventStore
     {

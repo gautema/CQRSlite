@@ -1,5 +1,6 @@
-using CQRSCode.Domain;
 using CQRSCode.ReadModel;
+using CQRSCode.WriteModel;
+using CQRSCode.WriteModel.Domain;
 using CQRSlite.Bus;
 using CQRSlite.Commanding;
 using CQRSlite.Domain;
