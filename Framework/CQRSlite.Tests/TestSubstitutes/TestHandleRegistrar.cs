@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using CQRSlite.Bus;
 using CQRSlite.Contracts.Bus;
-using CQRSlite.Contracts.Messages;
+using CQRSlite.Contracts.Bus.Messages;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
-    public class TestHandleRegistrar : IHandleRegistrar
+    public class TestHandleRegistrar : IHandlerRegistrar
     {
         public static IList<TestHandlerListItem> HandlerList = new List<TestHandlerListItem>();
 

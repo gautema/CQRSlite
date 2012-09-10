@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CQRSlite.Contracts.Bus;
-using CQRSlite.Contracts.Config;
-using CQRSlite.Contracts.Handlers;
+using CQRSlite.Contracts.Bus.Handlers;
+using CQRSlite.Contracts.Infrastructure.DI;
 
 namespace CQRSlite.Bus
 {
@@ -19,7 +19,7 @@ namespace CQRSlite.Bus
 
         public void Register(params Type[] typesFromAssemblyContainingMessages)
         {
-            var bus = _serviceLocator.GetService<IHandleRegistrar>();
+            var bus = _serviceLocator.GetService<IHandlerRegistrar>();
             
             foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
             {
@@ -35,7 +35,7 @@ namespace CQRSlite.Bus
             }
         }
 
-        private void InvokeHandler(Type @interface, IHandleRegistrar bus, Type executorType) {
+        private void InvokeHandler(Type @interface, IHandlerRegistrar bus, Type executorType) {
             var commandType = @interface.GetGenericArguments()[0];
 
             var registerExecutorMethod = bus

@@ -1,6 +1,6 @@
 using System;
 
-namespace CQRSlite.Contracts.Messages
+namespace CQRSlite.Contracts.Bus.Messages
 {
 	public class Event : Message
 	{

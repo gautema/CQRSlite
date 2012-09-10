@@ -1,9 +1,8 @@
 using System;
 using System.Linq;
+using CQRSlite.Contracts.Bus.Events;
 using CQRSlite.Contracts.Domain.Exception;
 using CQRSlite.Contracts.Domain.Factories;
-using CQRSlite.Contracts.Events;
-using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Contracts.Domain
 {
@@ -42,7 +41,7 @@ namespace CQRSlite.Contracts.Domain
 
         private T LoadAggregate<T>(Guid id) where T : AggregateRoot
         {
-            var aggregate = AggregateActivator.CreateAggregate<T>();
+            var aggregate = AggregateFactory.CreateAggregate<T>();
 
             var events = _eventStore.Get(id, -1);
             if (!events.Any())

@@ -3,7 +3,7 @@ using CQRSCode.ReadModel.Dtos;
 using CQRSCode.ReadModel.Events;
 using CQRSCode.ReadModel.Infrastructure;
 using CQRSlite;
-using CQRSlite.Contracts.Handlers;
+using CQRSlite.Contracts.Bus.Handlers;
 
 namespace CQRSCode.ReadModel.Handlers
 {

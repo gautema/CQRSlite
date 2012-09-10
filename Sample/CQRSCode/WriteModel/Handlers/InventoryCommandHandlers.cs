@@ -1,7 +1,7 @@
 ﻿using CQRSCode.WriteModel.Commands;
 using CQRSCode.WriteModel.Domain;
+using CQRSlite.Contracts.Bus.Handlers;
 using CQRSlite.Contracts.Domain;
-using CQRSlite.Contracts.Handlers;
 
 namespace CQRSCode.WriteModel.Handlers
 {

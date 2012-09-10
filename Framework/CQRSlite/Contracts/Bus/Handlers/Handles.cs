@@ -1,6 +1,6 @@
-﻿using CQRSlite.Contracts.Messages;
+﻿using CQRSlite.Contracts.Bus.Messages;
 
-namespace CQRSlite.Contracts.Handlers
+namespace CQRSlite.Contracts.Bus.Handlers
 {
 	public interface Handles<T> where T: Message
     {

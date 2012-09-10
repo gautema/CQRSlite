@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CQRSlite.Contracts.Bus.Events;
+using CQRSlite.Contracts.Bus.Handlers;
+using CQRSlite.Contracts.Bus.Messages;
 using CQRSlite.Contracts.Domain;
-using CQRSlite.Contracts.Events;
-using CQRSlite.Contracts.Handlers;
-using CQRSlite.Contracts.Messages;
 using CQRSlite.Contracts.Snapshots;
 using CQRSlite.Snapshots;
 using NUnit.Framework;

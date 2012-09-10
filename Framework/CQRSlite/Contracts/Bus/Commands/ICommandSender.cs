@@ -1,6 +1,6 @@
-﻿using CQRSlite.Contracts.Messages;
+﻿using CQRSlite.Contracts.Bus.Messages;
 
-namespace CQRSlite.Contracts.Commands
+namespace CQRSlite.Contracts.Bus.Commands
 {
     public interface ICommandSender
     {

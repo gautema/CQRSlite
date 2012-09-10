@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.Caching;
+using CQRSlite.Contracts.Bus.Events;
 using CQRSlite.Contracts.Domain;
 using CQRSlite.Contracts.Domain.Exception;
-using CQRSlite.Contracts.Events;
 
 namespace CQRSlite.Cache
 {

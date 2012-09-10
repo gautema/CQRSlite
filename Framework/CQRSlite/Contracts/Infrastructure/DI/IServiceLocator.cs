@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CQRSlite.Contracts.Config
+namespace CQRSlite.Contracts.Infrastructure.DI
 {
     public interface IServiceLocator 
 	{

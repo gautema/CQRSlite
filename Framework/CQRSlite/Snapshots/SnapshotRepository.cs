@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using CQRSlite.Contracts.Bus.Events;
 using CQRSlite.Contracts.Domain;
 using CQRSlite.Contracts.Domain.Factories;
-using CQRSlite.Contracts.Events;
 using CQRSlite.Contracts.Snapshots;
 using CQRSlite.Infrastructure.Misc;
 
@@ -31,7 +31,7 @@ namespace CQRSlite.Snapshots
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
         {
-            var aggregate = AggregateActivator.CreateAggregate<T>();
+            var aggregate = AggregateFactory.CreateAggregate<T>();
             var snapshotVersion = TryRestoreAggregateFromSnapshot(aggregateId, aggregate);
             if(snapshotVersion == -1)
             {

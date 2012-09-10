@@ -1,6 +1,6 @@
-﻿using CQRSlite.Contracts.Messages;
+﻿using CQRSlite.Contracts.Bus.Messages;
 
-namespace CQRSlite.Contracts.Events
+namespace CQRSlite.Contracts.Bus.Events
 {
     public interface IEventPublisher
     {

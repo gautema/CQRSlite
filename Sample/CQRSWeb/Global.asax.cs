@@ -3,8 +3,8 @@ using System.Web.Routing;
 using CQRSCode.ReadModel;
 using CQRSlite;
 using CQRSlite.Bus;
-using CQRSlite.Contracts.Config;
-using CQRSlite.Contracts.Handlers;
+using CQRSlite.Contracts.Bus.Handlers;
+using CQRSlite.Contracts.Infrastructure.DI;
 
 namespace CQRSWeb
 {	

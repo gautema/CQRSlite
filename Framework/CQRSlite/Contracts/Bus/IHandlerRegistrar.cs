@@ -1,9 +1,9 @@
 ﻿using System;
-using CQRSlite.Contracts.Messages;
+using CQRSlite.Contracts.Bus.Messages;
 
 namespace CQRSlite.Contracts.Bus
 {
-    public interface IHandleRegistrar
+    public interface IHandlerRegistrar
     {
         void RegisterHandler<T>(Action<T> handler) where T : Message;
     }

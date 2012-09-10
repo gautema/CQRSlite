@@ -1,6 +1,6 @@
 ﻿using System;
+using CQRSlite.Contracts.Bus.Events;
 using CQRSlite.Contracts.Domain;
-using CQRSlite.Contracts.Events;
 using CQRSlite.Snapshots;
 using CQRSlite.Tests.TestSubstitutes;
 using NUnit.Framework;

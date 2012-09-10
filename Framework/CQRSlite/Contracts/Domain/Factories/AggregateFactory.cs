@@ -3,7 +3,7 @@ using CQRSlite.Contracts.Domain.Exception;
 
 namespace CQRSlite.Contracts.Domain.Factories
 {
-    internal static class AggregateActivator
+    internal static class AggregateFactory
     {
         public static T CreateAggregate<T>()
         {

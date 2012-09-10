@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CQRSlite.Contracts.Events;
-using CQRSlite.Contracts.Messages;
+using CQRSlite.Contracts.Bus.Events;
+using CQRSlite.Contracts.Bus.Messages;
 
 namespace CQRSCode.WriteModel
 {
