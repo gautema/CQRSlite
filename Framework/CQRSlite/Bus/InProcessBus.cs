@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using CQRSlite.Commanding;
-using CQRSlite.Eventing;
+using CQRSlite.Contracts.Bus;
+using CQRSlite.Contracts.Bus.Commands;
+using CQRSlite.Contracts.Bus.Events;
+using CQRSlite.Contracts.Bus.Messages;
 using CQRSlite.Infrastructure;
+using CQRSlite.Infrastructure.Misc;
 
 namespace CQRSlite.Bus
 {
-    public class InProcessBus : ICommandSender, IEventPublisher, IHandleRegister
+    public class InProcessBus : ICommandSender, IEventPublisher, IHandlerRegistrar
     {
         private readonly Dictionary<Type, List<Action<Message>>> _routes = new Dictionary<Type, List<Action<Message>>>();
 

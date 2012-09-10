@@ -1,9 +1,14 @@
-using CQRSCode.Domain;
 using CQRSCode.ReadModel;
+using CQRSCode.WriteModel;
+using CQRSCode.WriteModel.Domain;
 using CQRSlite.Bus;
-using CQRSlite.Commanding;
+using CQRSlite.Contracts.Bus;
+using CQRSlite.Contracts.Bus.Commands;
+using CQRSlite.Contracts.Bus.Events;
+using CQRSlite.Contracts.Infrastructure.Repositories;
 using CQRSlite.Domain;
-using CQRSlite.Eventing;
+using CQRSlite.Infrastructure.Repositories;
+using CQRSlite.Infrastructure.Repositories.Domain;
 using StructureMap;
 using StructureMap.Graph;
 
@@ -15,9 +20,9 @@ namespace CQRSWeb {
                             x.For<InProcessBus>().Singleton().Use<InProcessBus>();
                             x.For<ICommandSender>().Use(y => y.GetInstance<InProcessBus>());
                             x.For<IEventPublisher>().Use(y => y.GetInstance<InProcessBus>());
-                            x.For<IHandleRegister>().Use(y => y.GetInstance<InProcessBus>());
+                            x.For<IHandlerRegistrar>().Use(y => y.GetInstance<InProcessBus>());
                             x.For<ISession>().HybridHttpOrThreadLocalScoped().Use<Session>();
-                            x.For<IEventStore>().Singleton().Use<EventStore>();
+                            x.For<IEventStore>().Singleton().Use<InMemoryEventStore>();
                             x.For<IRepository>().HybridHttpOrThreadLocalScoped().Use<Repository>();
 
                             x.Scan(s =>

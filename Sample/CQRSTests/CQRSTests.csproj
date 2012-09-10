@@ -46,12 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WhenItemCheckedIn.cs" />
+    <Compile Include="WriteModel\WhenItemCheckedIn.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\CQRSlite.Extensions\CQRSlite.Extensions.csproj">
+    <ProjectReference Include="..\..\Framework\CQRSlite.Tests.Extensions\CQRSlite.Tests.Extensions.csproj">
       <Project>{8E96F332-4D60-42E5-A264-5707A68A297A}</Project>
-      <Name>CQRSlite.Extensions</Name>
+      <Name>CQRSlite.Tests.Extensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Framework\CQRSlite\CQRSlite.csproj">
       <Project>{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}</Project>

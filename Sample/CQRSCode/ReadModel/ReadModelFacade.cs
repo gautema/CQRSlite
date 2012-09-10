@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
+using CQRSCode.ReadModel.Infrastructure;
 
 namespace CQRSCode.ReadModel
 {

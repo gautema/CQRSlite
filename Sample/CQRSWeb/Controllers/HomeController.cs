@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Web.Mvc;
-using CQRSCode.Commands;
 using CQRSCode.ReadModel;
-using CQRSlite.Commanding;
+using CQRSCode.WriteModel.Commands;
+using CQRSlite.Contracts.Bus.Commands;
 
 namespace CQRSWeb.Controllers
 {
@@ -20,7 +20,6 @@ namespace CQRSWeb.Controllers
         public ActionResult Index()
         {
             ViewData.Model = _readmodel.GetInventoryItems();
-
             return View();
         }
 
@@ -39,7 +38,6 @@ namespace CQRSWeb.Controllers
         public ActionResult Add(string name)
         {
             _commandSender.Send(new CreateInventoryItem(Guid.NewGuid(), name));
-
             return RedirectToAction("Index");
         }
 
@@ -52,9 +50,7 @@ namespace CQRSWeb.Controllers
         [HttpPost]
         public ActionResult ChangeName(Guid id, string name, int version)
         {
-            var command = new RenameInventoryItem(id, name, version);
-            _commandSender.Send(command);
-
+            _commandSender.Send(new RenameInventoryItem(id, name, version));
             return RedirectToAction("Index");
         }
 
