@@ -1,12 +1,15 @@
 ﻿using CQRSCode.Commands;
 using CQRSCode.Domain;
-using CQRSlite;
 using CQRSlite.Domain;
+using CQRSlite.Handlers;
 
 namespace CQRSCode.CommandHandlers
 {
-    public class InventoryCommandHandlers : IHandles<CreateInventoryItem>, IHandles<DeactivateInventoryItem>, IHandles<RemoveItemsFromInventory>,
-        IHandles<CheckInItemsToInventory>, IHandles<RenameInventoryItem>
+    public class InventoryCommandHandlers : HandlesCommand<CreateInventoryItem>,
+											HandlesCommand<DeactivateInventoryItem>,
+											HandlesCommand<RemoveItemsFromInventory>,
+											HandlesCommand<CheckInItemsToInventory>,
+											HandlesCommand<RenameInventoryItem>
     {
         private readonly ISession _session;
 

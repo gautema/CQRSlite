@@ -4,6 +4,7 @@ using System.Linq;
 using CQRSlite.Commanding;
 using CQRSlite.Domain;
 using CQRSlite.Eventing;
+using CQRSlite.Handlers;
 using CQRSlite.Snapshotting;
 using NUnit.Framework;
 
@@ -12,7 +13,7 @@ namespace CQRSlite.Extensions.TestHelpers
 	[TestFixture]
     public abstract class Specification<TAggregate, THandler, TCommand> 
         where TAggregate: AggregateRoot
-        where THandler : class, IHandles<TCommand>
+        where THandler : class, HandlesCommand<TCommand>
         where TCommand : Command
     {
 

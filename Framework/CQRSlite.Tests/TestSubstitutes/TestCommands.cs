@@ -1,4 +1,5 @@
 using CQRSlite.Commanding;
+using CQRSlite.Handlers;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
@@ -7,7 +8,7 @@ namespace CQRSlite.Tests.TestSubstitutes
 
     }
 
-    public class TestAggregateDoSomethingHandler : IHandles<TestAggregateDoSomething> 
+    public class TestAggregateDoSomethingHandler : HandlesCommand<TestAggregateDoSomething> 
     {
         public void Handle(TestAggregateDoSomething message)
         {
@@ -16,7 +17,7 @@ namespace CQRSlite.Tests.TestSubstitutes
 
         public int TimesRun { get; set; }
     }
-    public class TestAggregateDoSomethingElseHandler : IHandles<TestAggregateDoSomething>
+	public class TestAggregateDoSomethingElseHandler : HandlesCommand<TestAggregateDoSomething>
     {
         public void Handle(TestAggregateDoSomething message)
         {

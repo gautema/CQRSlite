@@ -1,11 +1,13 @@
 ﻿using CQRSCode.Events;
 using CQRSCode.Infrastructure;
 using CQRSCode.ReadModel.Dtos;
-using CQRSlite;
+using CQRSlite.Handlers;
 
 namespace CQRSCode.ReadModel.Handlers
 {
-    public class InventoryListView : IHandles<InventoryItemCreated>, IHandles<InventoryItemRenamed>, IHandles<InventoryItemDeactivated>
+	public class InventoryListView : HandlesEvent<InventoryItemCreated>,
+										HandlesEvent<InventoryItemRenamed>,
+										HandlesEvent<InventoryItemDeactivated>
     {
         public void Handle(InventoryItemCreated message)
         {

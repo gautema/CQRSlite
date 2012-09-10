@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CQRSlite.Bus;
+using CQRSlite.Handlers;
 
 namespace CQRSlite.Config
 {
@@ -57,7 +58,8 @@ namespace CQRSlite.Config
         {
             return type
                 .GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandles<>));
+                .Where(i => i.IsGenericType && ((i.GetGenericTypeDefinition() == typeof(HandlesCommand<>))
+												 || i.GetGenericTypeDefinition() == typeof(HandlesEvent<>)));
         }
 
     }

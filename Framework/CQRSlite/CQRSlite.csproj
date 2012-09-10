@@ -63,11 +63,13 @@
     <Compile Include="Eventing\IEventPublisher.cs" />
     <Compile Include="Eventing\IEventStore.cs" />
     <Compile Include="Bus\IHandleRegister.cs" />
+    <Compile Include="Handlers\HandlesCommand.cs" />
+    <Compile Include="Handlers\HandlesEvent.cs" />
     <Compile Include="Snapshotting\ISnapshotStore.cs" />
     <Compile Include="Infrastructure\AggregateActivator.cs" />
     <Compile Include="Snapshotting\Snapshot.cs" />
     <Compile Include="Snapshotting\SnapshotAggregateRoot.cs" />
-    <Compile Include="IHandles.cs" />
+    <Compile Include="Handlers\Handles.cs" />
     <Compile Include="Domain\Exception\AggregateNotFoundException.cs" />
     <Compile Include="Domain\Exception\ConcurrencyException.cs" />
     <Compile Include="Bus\InProcessBus.cs" />

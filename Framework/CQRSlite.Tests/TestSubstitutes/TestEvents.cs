@@ -1,4 +1,5 @@
 ﻿using CQRSlite.Eventing;
+using CQRSlite.Handlers;
 
 namespace CQRSlite.Tests.TestSubstitutes
 {
@@ -11,7 +12,7 @@ namespace CQRSlite.Tests.TestSubstitutes
 
     }
 
-    public class TestAggregateDidSomethingHandler : IHandles<TestAggregateDidSomething>
+    public class TestAggregateDidSomethingHandler : HandlesEvent<TestAggregateDidSomething>
     {
         public void Handle(TestAggregateDidSomething message)
         {
