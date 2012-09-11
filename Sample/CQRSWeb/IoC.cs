@@ -1,14 +1,9 @@
 using CQRSCode.ReadModel;
 using CQRSCode.WriteModel;
-using CQRSCode.WriteModel.Domain;
 using CQRSlite.Bus;
-using CQRSlite.Contracts.Bus;
-using CQRSlite.Contracts.Bus.Commands;
-using CQRSlite.Contracts.Bus.Events;
-using CQRSlite.Contracts.Infrastructure.Repositories;
+using CQRSlite.Commands;
 using CQRSlite.Domain;
-using CQRSlite.Infrastructure.Repositories;
-using CQRSlite.Infrastructure.Repositories.Domain;
+using CQRSlite.Events;
 using StructureMap;
 using StructureMap.Graph;
 

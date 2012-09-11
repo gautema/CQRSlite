@@ -1,6 +1,6 @@
 ﻿using System;
+using CQRSlite.Cache;
 using CQRSlite.Domain.Exception;
-using CQRSlite.Infrastructure.Repositories.Cache;
 using CQRSlite.Tests.Substitutes;
 using NUnit.Framework;
 

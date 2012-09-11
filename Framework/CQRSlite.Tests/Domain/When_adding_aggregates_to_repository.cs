@@ -1,5 +1,5 @@
-﻿using CQRSlite.Domain.Exception;
-using CQRSlite.Infrastructure.Repositories.Domain;
+﻿using CQRSlite.Domain;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
 using NUnit.Framework;
 

@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
-using CQRSlite.Infrastructure.Repositories.Cache;
-using CQRSlite.Infrastructure.Repositories.Domain;
+using CQRSlite.Cache;
+using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
 using NUnit.Framework;
 

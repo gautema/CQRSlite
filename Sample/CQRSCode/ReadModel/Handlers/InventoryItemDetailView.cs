@@ -3,15 +3,15 @@ using CQRSCode.ReadModel.Dtos;
 using CQRSCode.ReadModel.Events;
 using CQRSCode.ReadModel.Infrastructure;
 using CQRSlite;
-using CQRSlite.Contracts.Bus.Handlers;
+using CQRSlite.Messages;
 
 namespace CQRSCode.ReadModel.Handlers
 {
-    public class InventoryItemDetailView : HandlesEvent<InventoryItemCreated>,
-											HandlesEvent<InventoryItemDeactivated>,
-											HandlesEvent<InventoryItemRenamed>,
-											HandlesEvent<ItemsRemovedFromInventory>,
-											HandlesEvent<ItemsCheckedInToInventory>
+    public class InventoryItemDetailView : IEventHandler<InventoryItemCreated>,
+											IEventHandler<InventoryItemDeactivated>,
+											IEventHandler<InventoryItemRenamed>,
+											IEventHandler<ItemsRemovedFromInventory>,
+											IEventHandler<ItemsCheckedInToInventory>
     {
         public void Handle(InventoryItemCreated message)
         {

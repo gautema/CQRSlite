@@ -1,5 +1,5 @@
-﻿using CQRSlite.Contracts.Bus.Handlers;
-using CQRSlite.Contracts.Bus.Messages;
+﻿using CQRSlite.Events;
+using CQRSlite.Messages;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -12,7 +12,7 @@ namespace CQRSlite.Tests.Substitutes
 
     }
 
-    public class TestAggregateDidSomethingHandler : HandlesEvent<TestAggregateDidSomething>
+    public class TestAggregateDidSomethingHandler : IEventHandler<TestAggregateDidSomething>
     {
         public void Handle(TestAggregateDidSomething message)
         {

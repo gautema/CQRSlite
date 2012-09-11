@@ -5,7 +5,7 @@ using CQRSCode.ReadModel.Events;
 using CQRSCode.WriteModel.Commands;
 using CQRSCode.WriteModel.Domain;
 using CQRSCode.WriteModel.Handlers;
-using CQRSlite.Contracts.Bus.Messages;
+using CQRSlite.Events;
 using CQRSlite.Tests.Extensions.TestHelpers;
 using NUnit.Framework;
 

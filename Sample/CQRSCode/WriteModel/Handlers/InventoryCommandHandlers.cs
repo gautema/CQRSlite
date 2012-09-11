@@ -1,17 +1,15 @@
 ﻿using CQRSCode.WriteModel.Commands;
 using CQRSCode.WriteModel.Domain;
-using CQRSlite.Contracts.Bus.Handlers;
-using CQRSlite.Contracts.Infrastructure.Repositories;
 using CQRSlite.Domain;
-using CQRSlite.Infrastructure.Repositories.Domain;
+using CQRSlite.Messages;
 
 namespace CQRSCode.WriteModel.Handlers
 {
-    public class InventoryCommandHandlers : HandlesCommand<CreateInventoryItem>,
-											HandlesCommand<DeactivateInventoryItem>,
-											HandlesCommand<RemoveItemsFromInventory>,
-											HandlesCommand<CheckInItemsToInventory>,
-											HandlesCommand<RenameInventoryItem>
+    public class InventoryCommandHandlers : ICommandHandler<CreateInventoryItem>,
+											ICommandHandler<DeactivateInventoryItem>,
+											ICommandHandler<RemoveItemsFromInventory>,
+											ICommandHandler<CheckInItemsToInventory>,
+											ICommandHandler<RenameInventoryItem>
     {
         private readonly ISession _session;
 

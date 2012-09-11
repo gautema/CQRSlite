@@ -1,5 +1,6 @@
 ﻿using System;
 using CQRSlite.Bus;
+using CQRSlite.Config;
 using CQRSlite.Tests.Substitutes;
 using NUnit.Framework;
 

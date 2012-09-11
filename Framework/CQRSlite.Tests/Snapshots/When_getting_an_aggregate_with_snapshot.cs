@@ -1,6 +1,5 @@
 ﻿using System;
-using CQRSlite.Infrastructure.Repositories.Domain;
-using CQRSlite.Infrastructure.Repositories.Snapshots;
+using CQRSlite.Domain;
 using CQRSlite.Snapshots;
 using CQRSlite.Tests.Substitutes;
 using NUnit.Framework;

@@ -1,5 +1,5 @@
 ﻿using System;
-using CQRSlite.Infrastructure.Repositories.Cache;
+using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
 using NUnit.Framework;
 

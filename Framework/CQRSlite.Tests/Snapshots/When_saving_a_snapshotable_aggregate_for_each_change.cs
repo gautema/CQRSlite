@@ -1,8 +1,6 @@
 ﻿using System;
-using CQRSlite.Contracts.Bus.Events;
-using CQRSlite.Contracts.Infrastructure.Repositories;
-using CQRSlite.Infrastructure.Repositories.Domain;
-using CQRSlite.Infrastructure.Repositories.Snapshots;
+using CQRSlite.Domain;
+using CQRSlite.Events;
 using CQRSlite.Snapshots;
 using CQRSlite.Tests.Substitutes;
 using NUnit.Framework;

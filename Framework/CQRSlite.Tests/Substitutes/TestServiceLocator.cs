@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using CQRSlite.Contracts.Bus;
-using CQRSlite.Contracts.Infrastructure.DI;
+using CQRSlite.Bus;
+using CQRSlite.Config;
 
 namespace CQRSlite.Tests.Substitutes
 {

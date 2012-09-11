@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using CQRSlite.Contracts.Bus;
-using CQRSlite.Contracts.Bus.Commands;
-using CQRSlite.Contracts.Bus.Events;
-using CQRSlite.Contracts.Bus.Messages;
+using CQRSlite.Commands;
+using CQRSlite.Events;
 using CQRSlite.Infrastructure;
-using CQRSlite.Infrastructure.Misc;
+using CQRSlite.Messages;
 
 namespace CQRSlite.Bus
 {

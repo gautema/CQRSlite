@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CQRSlite.Contracts.Bus.Events;
-using CQRSlite.Contracts.Bus.Handlers;
-using CQRSlite.Contracts.Bus.Messages;
-using CQRSlite.Contracts.Infrastructure.Repositories;
-using CQRSlite.Contracts.Snapshots;
+using CQRSlite.Commands;
 using CQRSlite.Domain;
-using CQRSlite.Infrastructure.Repositories.Domain;
-using CQRSlite.Infrastructure.Repositories.Snapshots;
+using CQRSlite.Events;
+using CQRSlite.Messages;
 using CQRSlite.Snapshots;
 using NUnit.Framework;
 
@@ -17,7 +13,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 	[TestFixture]
     public abstract class Specification<TAggregate, THandler, TCommand> 
         where TAggregate: AggregateRoot
-        where THandler : class, HandlesCommand<TCommand>
+        where THandler : class, ICommandHandler<TCommand>
         where TCommand : Command
     {
 

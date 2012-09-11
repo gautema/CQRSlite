@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CQRSlite.Contracts.Bus.Messages;
 using CQRSlite.Domain.Exception;
-using CQRSlite.Infrastructure.Misc;
+using CQRSlite.Events;
+using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Domain
 {

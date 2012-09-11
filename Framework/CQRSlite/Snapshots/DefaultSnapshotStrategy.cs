@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using CQRSlite.Contracts.Snapshots;
 using CQRSlite.Domain;
 
 namespace CQRSlite.Snapshots

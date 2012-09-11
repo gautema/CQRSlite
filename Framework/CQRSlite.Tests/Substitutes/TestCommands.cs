@@ -1,5 +1,5 @@
-using CQRSlite.Contracts.Bus.Handlers;
-using CQRSlite.Contracts.Bus.Messages;
+using CQRSlite.Commands;
+using CQRSlite.Messages;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -8,7 +8,7 @@ namespace CQRSlite.Tests.Substitutes
 
     }
 
-    public class TestAggregateDoSomethingHandler : HandlesCommand<TestAggregateDoSomething> 
+    public class TestAggregateDoSomethingHandler : ICommandHandler<TestAggregateDoSomething> 
     {
         public void Handle(TestAggregateDoSomething message)
         {
@@ -17,7 +17,7 @@ namespace CQRSlite.Tests.Substitutes
 
         public int TimesRun { get; set; }
     }
-	public class TestAggregateDoSomethingElseHandler : HandlesCommand<TestAggregateDoSomething>
+	public class TestAggregateDoSomethingElseHandler : ICommandHandler<TestAggregateDoSomething>
     {
         public void Handle(TestAggregateDoSomething message)
         {

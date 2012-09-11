@@ -1,5 +1,5 @@
 using System;
-using CQRSlite.Contracts.Bus.Messages;
+using CQRSlite.Commands;
 
 namespace CQRSCode.WriteModel.Commands
 {
