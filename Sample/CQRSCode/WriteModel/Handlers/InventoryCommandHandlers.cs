@@ -1,5 +1,6 @@
 ﻿using CQRSCode.WriteModel.Commands;
 using CQRSCode.WriteModel.Domain;
+using CQRSlite.Commands;
 using CQRSlite.Domain;
 using CQRSlite.Messages;
 

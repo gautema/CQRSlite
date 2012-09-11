@@ -63,8 +63,8 @@
     <Compile Include="Events\IEventPublisher.cs" />
     <Compile Include="Events\IEventStore.cs" />
     <Compile Include="Bus\IHandlerRegistrar.cs" />
-    <Compile Include="Messages\ICommandHandler.cs" />
-    <Compile Include="Messages\HandlesEvent.cs" />
+    <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="Events\HandlesEvent.cs" />
     <Compile Include="Snapshots\ISnapshotStore.cs" />
     <Compile Include="Domain\Factories\AggregateFactory.cs" />
     <Compile Include="Snapshots\Snapshot.cs" />
