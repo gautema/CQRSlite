@@ -1,6 +1,6 @@
-using CQRSlite.Events;
+using CQRSlite.Messages;
 
-namespace CQRSlite.Messages
+namespace CQRSlite.Events
 {
 	public interface IEventHandler<T> : IHandler<T> where T : Event
 	{
