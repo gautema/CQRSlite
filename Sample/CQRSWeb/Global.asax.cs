@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 using CQRSCode.ReadModel;
+using CQRSCode.WriteModel.Handlers;
 using CQRSlite;
 using CQRSlite.Bus;
 using CQRSlite.Config;
@@ -39,8 +40,8 @@ namespace CQRSWeb
 
         private void RegisterHandlers(IServiceLocator serviceLocator)
         {
-            var registerer = new BusRegistrar(serviceLocator);
-			registerer.Register(typeof(ICommandHandler<>), typeof(IEventHandler<>), typeof(ReadModelFacade));
+            var registrar = new BusRegistrar(serviceLocator);
+			registrar.Register(typeof(InventoryCommandHandlers));
         }
     }
 }
