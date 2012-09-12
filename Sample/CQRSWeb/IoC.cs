@@ -23,7 +23,6 @@ namespace CQRSWeb {
                             x.Scan(s =>
                             {
                                 s.TheCallingAssembly();
-                                s.AssemblyContainingType<InProcessBus>();
                                 s.AssemblyContainingType<ReadModelFacade>();
                                 s.Convention<FirstInterfaceConvention>();
                             });
