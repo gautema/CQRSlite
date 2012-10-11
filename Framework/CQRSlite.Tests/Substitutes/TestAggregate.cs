@@ -5,7 +5,7 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestAggregate : AggregateRoot
     {
-        private TestAggregate(){}
+        private TestAggregate() { }
         public TestAggregate(Guid id)
         {
             Id = id;

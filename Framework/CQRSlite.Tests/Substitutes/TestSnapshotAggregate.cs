@@ -9,6 +9,7 @@ namespace CQRSlite.Tests.Substitutes
         {
             Id = Guid.NewGuid();
         }
+
         public bool Restored { get; private set; }
         public bool Loaded { get; private set; }
         public int Number { get; private set; }
@@ -33,11 +34,6 @@ namespace CQRSlite.Tests.Substitutes
         public void DoSomething()
         {
             ApplyChange(new TestAggregateDidSomething());
-        }
-
-        public void SetId(Guid id)
-        {
-            Id = id;
         }
     }
 

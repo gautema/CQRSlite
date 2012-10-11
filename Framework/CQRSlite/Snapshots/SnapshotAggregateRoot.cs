@@ -1,5 +1,4 @@
-﻿using System;
-using CQRSlite.Domain;
+﻿using CQRSlite.Domain;
 
 namespace CQRSlite.Snapshots
 {
