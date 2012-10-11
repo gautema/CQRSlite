@@ -24,7 +24,7 @@ namespace CQRSlite.Tests.Domain
 	        _rep = new Repository(_eventStore, _eventPublisher);
             _session = new Session(_rep);
 
-            _aggregate = new TestAggregateNoParameterLessConstructor(2);
+            _aggregate = new TestAggregateNoParameterLessConstructor(2,Guid.NewGuid());
 
         }
 
@@ -99,7 +99,7 @@ namespace CQRSlite.Tests.Domain
         [Test]
         public void Should_clear_tracked_aggregates()
         {
-            var agg = new TestAggregate(Guid.NewGuid());
+            var agg = new TestAggregate(Guid.Empty);
             _session.Add(agg);
             agg.DoSomething();
             _session.Commit();

@@ -1,9 +1,14 @@
-﻿using CQRSlite.Domain;
+﻿using System;
+using CQRSlite.Domain;
 
 namespace CQRSlite.Snapshots
 {
     public abstract class SnapshotAggregateRoot<T>: AggregateRoot where T : Snapshot
     {
+        protected SnapshotAggregateRoot(Guid id) : base(id)
+        {
+        }
+
         public T GetSnapshot()
         {
             var snapshot = CreateSnapshot();

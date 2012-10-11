@@ -6,8 +6,8 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestAggregate : AggregateRoot
     {
-        private TestAggregate(){}
-        public TestAggregate(Guid id)
+        private TestAggregate() : base(Guid.Empty){}
+        public TestAggregate(Guid id) : base(id)
         {
             ApplyChange(new TestAggregateCreated(id));
         }
@@ -46,10 +46,8 @@ namespace CQRSlite.Tests.Substitutes
 
     public class TestAggregateNoParameterLessConstructor : AggregateRoot
     {
-        public TestAggregateNoParameterLessConstructor(int i, Guid? id = null)
+        public TestAggregateNoParameterLessConstructor(int i, Guid id) : base(id)
         {
-            if (id != null)
-                Id = id.Value;
         }
 
         public void DoSomething()
