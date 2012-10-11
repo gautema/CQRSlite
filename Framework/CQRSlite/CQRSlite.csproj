@@ -79,7 +79,7 @@
     <Compile Include="Infrastructure\PrivateReflectionDynamicObject.cs" />
     <Compile Include="Infrastructure\PrivateReflectionDynamicObjectExtensions.cs" />
     <Compile Include="Snapshots\DefaultSnapshotStrategy.cs" />
-    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\IMessage.cs" />
     <Compile Include="Config\BusRegistrar.cs" />
     <Compile Include="Snapshots\SnapshotRepository.cs" />
   </ItemGroup>
