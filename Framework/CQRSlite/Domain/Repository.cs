@@ -21,7 +21,8 @@ namespace CQRSlite.Domain
         {
             if (expectedVersion != null && _eventStore.GetVersion(aggregate.Id) != expectedVersion)
                 throw new ConcurrencyException();
-
+            if (aggregate.Id == Guid.Empty)
+                throw new AggregateMissingIdException();
             var i = 0;
             foreach (var @event in aggregate.GetUncommittedChanges())
             {

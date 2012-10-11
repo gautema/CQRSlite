@@ -24,7 +24,7 @@ namespace CQRSlite.Tests.Domain
 	        _rep = new Repository(_eventStore, _eventPublisher);
             _session = new Session(_rep);
 
-            _aggregate = new TestAggregateNoParameterLessConstructor(2,Guid.NewGuid());
+            _aggregate = new TestAggregateNoParameterLessConstructor(2);
 
         }
 
@@ -58,7 +58,7 @@ namespace CQRSlite.Tests.Domain
         [Test]
         public void Should_add_new_aggregate()
         {
-            var agg = new TestAggregateNoParameterLessConstructor(1,Guid.Empty);
+            var agg = new TestAggregateNoParameterLessConstructor(1);
             agg.DoSomething();
             _session.Add(agg);
             _session.Commit();
@@ -68,7 +68,7 @@ namespace CQRSlite.Tests.Domain
         [Test]
         public void Should_set_date()
         {
-            var agg = new TestAggregateNoParameterLessConstructor(1, Guid.Empty);
+            var agg = new TestAggregateNoParameterLessConstructor(1);
             agg.DoSomething();
             _session.Add(agg);
             _session.Commit();
@@ -78,7 +78,7 @@ namespace CQRSlite.Tests.Domain
         [Test]
         public void Should_set_version()
         {
-            var agg = new TestAggregateNoParameterLessConstructor(1, Guid.Empty);
+            var agg = new TestAggregateNoParameterLessConstructor(1);
             agg.DoSomething();
             _session.Add(agg);
             _session.Commit();
@@ -99,7 +99,7 @@ namespace CQRSlite.Tests.Domain
         [Test]
         public void Should_clear_tracked_aggregates()
         {
-            var agg = new TestAggregate(Guid.Empty);
+            var agg = new TestAggregate(_eventStore.EmptyGuid);
             _session.Add(agg);
             agg.DoSomething();
             _session.Commit();

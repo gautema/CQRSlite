@@ -9,11 +9,15 @@ namespace CQRSlite.Tests.Substitutes
     {
         public TestEventStore()
         {
+            EmptyGuid = Guid.NewGuid();
             SavedEvents = new List<IEvent>();   
         }
+
+        public Guid EmptyGuid { get; private set; }
+
         public IEnumerable<IEvent> Get(Guid aggregateId, int version)
         {
-            if (aggregateId == Guid.Empty)
+            if (aggregateId == EmptyGuid || aggregateId == Guid.Empty)
             {
                 return new List<IEvent>();
             }

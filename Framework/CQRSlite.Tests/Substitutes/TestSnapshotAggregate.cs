@@ -5,9 +5,9 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestSnapshotAggregate : SnapshotAggregateRoot<TestSnapshotAggregateSnapshot>
     {
-        public TestSnapshotAggregate() : base(Guid.NewGuid())
+        public TestSnapshotAggregate()
         {
-            
+            Id = Guid.NewGuid();
         }
         public bool Restored { get; private set; }
         public bool Loaded { get; private set; }

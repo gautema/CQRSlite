@@ -8,11 +8,6 @@ namespace CQRSlite.Domain
 {
     public abstract class AggregateRoot
     {
-        protected AggregateRoot(Guid id)
-        {
-            Id = id;
-        }
-
         private readonly List<IEvent> _changes = new List<IEvent>();
 
         public Guid Id { get; protected set; }

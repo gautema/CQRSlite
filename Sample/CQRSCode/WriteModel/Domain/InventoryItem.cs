@@ -43,8 +43,8 @@ namespace CQRSCode.WriteModel.Domain
             ApplyChange(new InventoryItemDeactivated(Id));
         }
 
-        private InventoryItem() : base(Guid.Empty){}
-        public InventoryItem(Guid id, string name) : base(Guid.NewGuid())
+        private InventoryItem(){}
+        public InventoryItem(Guid id, string name)
         {
             ApplyChange(new InventoryItemCreated(id, name));
         }
