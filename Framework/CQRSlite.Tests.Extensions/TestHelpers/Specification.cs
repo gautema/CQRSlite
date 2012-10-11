@@ -14,18 +14,18 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
     public abstract class Specification<TAggregate, THandler, TCommand> 
         where TAggregate: AggregateRoot
         where THandler : class, ICommandHandler<TCommand>
-        where TCommand : Command
+        where TCommand : ICommand
     {
 
         protected TAggregate Aggregate { get; set; }
         protected ISession Session { get; set; }
-        protected abstract IEnumerable<Event> Given();
+        protected abstract IEnumerable<IEvent> Given();
         protected abstract TCommand When();
         protected abstract THandler BuildHandler();
 
         protected Snapshot Snapshot { get; set; }
-        protected IList<Event> EventDescriptors { get; set; }
-        protected IList<Event> PublishedEvents { get; set; }
+        protected IList<IEvent> EventDescriptors { get; set; }
+        protected IList<IEvent> PublishedEvents { get; set; }
 		
 		[SetUp]
         public void Run()
@@ -71,31 +71,31 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
     internal class SpecEventPublisher : IEventPublisher {
         public SpecEventPublisher()
         {
-            PublishedEvents = new List<Event>();
+            PublishedEvents = new List<IEvent>();
         }
 
-        public void Publish<T>(T @event) where T : Event
+        public void Publish<T>(T @event) where T : IEvent
         {
             PublishedEvents.Add(@event);
         }
 
-        public IList<Event> PublishedEvents { get; set; }
+        public IList<IEvent> PublishedEvents { get; set; }
     }
 
     internal class SpecEventStorage : IEventStore {
-        public SpecEventStorage(IList<Event> events)
+        public SpecEventStorage(IList<IEvent> events)
         {
             Events = events;
         }
 
-        public IList<Event> Events { get; set; }
+        public IList<IEvent> Events { get; set; }
 
-        public void Save(Guid aggregateId, Event @event)
+        public void Save(Guid aggregateId, IEvent @event)
         {
             Events.Add(@event);
         }
 
-        public IEnumerable<Event> Get(Guid aggregateId, int fromVersion)
+        public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)
         {
             return Events;
         }

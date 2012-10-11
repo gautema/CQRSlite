@@ -1,11 +1,13 @@
+using System;
 using CQRSlite.Commands;
 using CQRSlite.Messages;
 
 namespace CQRSlite.Tests.Substitutes
 {
-    public class TestAggregateDoSomething : Command
+    public class TestAggregateDoSomething : ICommand
     {
-
+        public Guid Id { get; set; }
+        public int ExpectedVersion { get; set; }
     }
 
     public class TestAggregateDoSomethingHandler : ICommandHandler<TestAggregateDoSomething> 

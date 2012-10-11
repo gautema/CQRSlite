@@ -5,6 +5,6 @@ namespace CQRSlite.Bus
 {
     public interface IHandlerRegistrar
     {
-        void RegisterHandler<T>(Action<T> handler) where T : Message;
+        void RegisterHandler<T>(Action<T> handler) where T : IMessage;
     }
 }

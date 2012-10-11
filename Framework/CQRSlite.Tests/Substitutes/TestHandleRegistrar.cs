@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.Substitutes
     {
         public static IList<TestHandlerListItem> HandlerList = new List<TestHandlerListItem>();
 
-        public void RegisterHandler<T>(Action<T> handler) where T : Message
+        public void RegisterHandler<T>(Action<T> handler) where T : IMessage
         {
             HandlerList.Add(new TestHandlerListItem {Type = typeof(T),Handler = handler});
         }

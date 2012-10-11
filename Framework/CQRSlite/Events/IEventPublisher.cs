@@ -2,6 +2,6 @@
 {
     public interface IEventPublisher
     {
-        void Publish<T>(T @event) where T : Event;
+        void Publish<T>(T @event) where T : IEvent;
     }
 }

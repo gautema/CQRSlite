@@ -9,16 +9,16 @@ namespace CQRSlite.Tests.Substitutes
     {
         public TestEventStore()
         {
-            SavedEvents = new List<Event>();   
+            SavedEvents = new List<IEvent>();   
         }
-        public IEnumerable<Event> Get(Guid aggregateId, int version)
+        public IEnumerable<IEvent> Get(Guid aggregateId, int version)
         {
             if (aggregateId == Guid.Empty)
             {
-                return new List<Event>();
+                return new List<IEvent>();
             }
 
-            return new List<Event>
+            return new List<IEvent>
                 {
                     new TestAggregateDidSomething {Id = aggregateId, Version = 1},
                     new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 2},
@@ -31,11 +31,11 @@ namespace CQRSlite.Tests.Substitutes
         {
             return aggregateId == Guid.Empty ? 0 : 2;
         }
-        public void Save(Guid aggregateId, Event @event)
+        public void Save(Guid aggregateId, IEvent @event)
         {
             SavedEvents.Add(@event);
         }
 
-        public List<Event> SavedEvents { get; set; }
+        public List<IEvent> SavedEvents { get; set; }
     }
 }

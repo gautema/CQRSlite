@@ -1,15 +1,20 @@
-﻿using CQRSlite.Events;
+﻿using System;
+using CQRSlite.Events;
 using CQRSlite.Messages;
 
 namespace CQRSlite.Tests.Substitutes
 {
-    public class TestAggregateDidSomething : Event
+    public class TestAggregateDidSomething : IEvent
     {
-        
+        public Guid Id { get; set; }
+        public int Version { get; set; }
+        public DateTimeOffset TimeStamp { get; set; }
     }
-    public class TestAggregateDidSomeethingElse : Event
+    public class TestAggregateDidSomeethingElse : IEvent
     {
-
+        public Guid Id { get; set; }
+        public int Version { get; set; }
+        public DateTimeOffset TimeStamp { get; set; }
     }
 
     public class TestAggregateDidSomethingHandler : IEventHandler<TestAggregateDidSomething>

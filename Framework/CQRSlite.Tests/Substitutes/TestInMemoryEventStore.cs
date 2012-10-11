@@ -7,14 +7,14 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestInMemoryEventStore : IEventStore 
     {
-        public readonly List<Event> Events = new List<Event>();
+        public readonly List<IEvent> Events = new List<IEvent>();
 
-        public void Save(Guid aggregateId, Event @event)
+        public void Save(Guid aggregateId, IEvent @event)
         {
             Events.Add(@event);
         }
 
-        public IEnumerable<Event> Get(Guid aggregateId, int fromVersion)
+        public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)
         {
             return Events.Where(x => x.Version > fromVersion).OrderBy(x => x.Version);
         }

@@ -20,10 +20,10 @@ namespace CQRSTests.WriteModel
             return new InventoryCommandHandlers(Session);
         }
 
-        protected override IEnumerable<Event> Given()
+        protected override IEnumerable<IEvent> Given()
         {
             _guid = Guid.NewGuid();
-            return new List<Event> { new InventoryItemCreated(_guid, "Jadda"){Version = 1}, new ItemsCheckedInToInventory(_guid, 2){Version = 2} };
+            return new List<IEvent> { new InventoryItemCreated(_guid, "Jadda"){Version = 1}, new ItemsCheckedInToInventory(_guid, 2){Version = 2} };
         }
 
         protected override CheckInItemsToInventory When()

@@ -52,7 +52,7 @@
     <Compile Include="Cache\CacheRepository.cs" />
     <Compile Include="Config\IServiceLocator.cs" />
     <Compile Include="Domain\AggregateRoot.cs" />
-    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandSender.cs" />
     <Compile Include="Domain\Exception\EventsOutOfOrderException.cs" />
     <Compile Include="Domain\Exception\MissingParameterLessConstructorException.cs" />
@@ -64,7 +64,7 @@
     <Compile Include="Events\IEventStore.cs" />
     <Compile Include="Bus\IHandlerRegistrar.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
-    <Compile Include="Events\HandlesEvent.cs" />
+    <Compile Include="Events\IEventHandler.cs" />
     <Compile Include="Snapshots\ISnapshotStore.cs" />
     <Compile Include="Domain\Factories\AggregateFactory.cs" />
     <Compile Include="Snapshots\Snapshot.cs" />
@@ -74,7 +74,7 @@
     <Compile Include="Domain\Exception\ConcurrencyException.cs" />
     <Compile Include="Bus\InProcessBus.cs" />
     <Compile Include="Infrastructure\DelegateAdjuster.cs" />
-    <Compile Include="Events\Event.cs" />
+    <Compile Include="Events\IEvent.cs" />
     <Compile Include="Snapshots\ISnapshotStrategy.cs" />
     <Compile Include="Infrastructure\PrivateReflectionDynamicObject.cs" />
     <Compile Include="Infrastructure\PrivateReflectionDynamicObjectExtensions.cs" />

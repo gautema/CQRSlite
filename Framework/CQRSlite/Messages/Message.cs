@@ -1,6 +1,6 @@
 namespace CQRSlite.Messages
 {
-	public interface Message
+	public interface IMessage
 	{
 	}
 }

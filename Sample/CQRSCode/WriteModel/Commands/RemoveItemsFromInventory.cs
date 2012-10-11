@@ -3,7 +3,7 @@ using CQRSlite.Commands;
 
 namespace CQRSCode.WriteModel.Commands
 {
-    public class RemoveItemsFromInventory : Command 
+    public class RemoveItemsFromInventory : ICommand 
 	{
 		public readonly int Count;
 
@@ -13,5 +13,8 @@ namespace CQRSCode.WriteModel.Commands
 			Count = count;
             ExpectedVersion = originalVersion;
         }
+
+        public Guid Id { get; set; }
+        public int ExpectedVersion { get; set; }
 	}
 }

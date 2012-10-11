@@ -3,7 +3,7 @@ using CQRSlite.Commands;
 
 namespace CQRSCode.WriteModel.Commands
 {
-    public class RenameInventoryItem : Command 
+    public class RenameInventoryItem : ICommand 
 	{
         public readonly string NewName;
 
@@ -13,5 +13,8 @@ namespace CQRSCode.WriteModel.Commands
             NewName = newName;
             ExpectedVersion = originalVersion;
         }
-    }
+
+        public Guid Id { get; set; }
+        public int ExpectedVersion { get; set; }
+	}
 }

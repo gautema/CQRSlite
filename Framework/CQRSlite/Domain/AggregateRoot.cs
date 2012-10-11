@@ -8,12 +8,12 @@ namespace CQRSlite.Domain
 {
     public abstract class AggregateRoot
     {
-        private readonly List<Event> _changes = new List<Event>();
+        private readonly List<IEvent> _changes = new List<IEvent>();
 
         public Guid Id { get; protected set; }
         public int Version { get; protected set; }
 
-        public IEnumerable<Event> GetUncommittedChanges()
+        public IEnumerable<IEvent> GetUncommittedChanges()
         {
             lock (_changes)
             {
@@ -27,7 +27,7 @@ namespace CQRSlite.Domain
             _changes.Clear();
         }
 
-        public void LoadFromHistory(IEnumerable<Event> history)
+        public void LoadFromHistory(IEnumerable<IEvent> history)
         {
             foreach (var e in history)
             {
@@ -37,12 +37,12 @@ namespace CQRSlite.Domain
             }
         }
 
-        protected void ApplyChange(Event @event)
+        protected void ApplyChange(IEvent @event)
         {
             ApplyChange(@event, true);
         }
 
-        private void ApplyChange(Event @event, bool isNew)
+        private void ApplyChange(IEvent @event, bool isNew)
         {
             lock (_changes)
             {
