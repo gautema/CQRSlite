@@ -90,7 +90,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public IList<IEvent> Events { get; set; }
 
-        public void Save(Guid aggregateId, IEvent @event)
+        public void Save(IEvent @event)
         {
             Events.Add(@event);
         }

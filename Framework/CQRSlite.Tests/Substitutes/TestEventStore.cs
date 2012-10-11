@@ -35,7 +35,7 @@ namespace CQRSlite.Tests.Substitutes
         {
             return SavedEvents.Count(x => x.Id == aggregateId);
         }
-        public void Save(Guid aggregateId, IEvent @event)
+        public void Save(IEvent @event)
         {
             SavedEvents.Add(@event);
         }

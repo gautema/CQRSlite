@@ -25,14 +25,14 @@ namespace CQRSCode.WriteModel
             return events.Max(x => x.Version);
         }
 
-        public void Save(Guid aggregateId, IEvent @event)
+        public void Save(IEvent @event)
         {
             List<IEvent> list;
-            _inMemoryDB.TryGetValue(aggregateId, out list);
+            _inMemoryDB.TryGetValue(@event.Id, out list);
             if(list == null)
             {
                 list = new List<IEvent>();
-                _inMemoryDB.Add(aggregateId, list);
+                _inMemoryDB.Add(@event.Id, list);
             }
             list.Add(@event);
         }

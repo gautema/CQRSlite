@@ -31,7 +31,7 @@ namespace CQRSlite.Domain
                 i++;
                 @event.Version = aggregate.Version + i;
                 @event.TimeStamp = DateTimeOffset.UtcNow;
-                _eventStore.Save(aggregate.Id, @event);
+                _eventStore.Save(@event);
                 _publisher.Publish(@event);
             }
             aggregate.MarkChangesAsCommitted();

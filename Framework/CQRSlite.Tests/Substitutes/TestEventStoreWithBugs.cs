@@ -29,7 +29,7 @@ namespace CQRSlite.Tests.Substitutes
         {
             return aggregateId == Guid.Empty ? 0 : 2;
         }
-        public void Save(Guid aggregateId, IEvent eventDescriptor)
+        public void Save(IEvent eventDescriptor)
         {
         }
 

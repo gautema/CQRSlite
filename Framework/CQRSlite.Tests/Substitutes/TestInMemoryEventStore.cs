@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.Substitutes
     {
         public readonly List<IEvent> Events = new List<IEvent>();
 
-        public void Save(Guid aggregateId, IEvent @event)
+        public void Save(IEvent @event)
         {
             Events.Add(@event);
         }
