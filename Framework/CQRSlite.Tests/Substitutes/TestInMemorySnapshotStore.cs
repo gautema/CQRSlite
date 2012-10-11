@@ -19,7 +19,7 @@ namespace CQRSlite.Tests.Substitutes
         }
 
         private Snapshot _snapshot;
-        public int SavedVersion { get; set; }
-        public bool FirstSaved { get; set; }
+        public int SavedVersion { get; private set; }
+        public bool FirstSaved { get; private set; }
     }
 }

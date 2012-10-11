@@ -1,6 +1,5 @@
 ﻿using System;
 using CQRSlite.Events;
-using CQRSlite.Messages;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -27,6 +26,6 @@ namespace CQRSlite.Tests.Substitutes
             }
         }
 
-        public int TimesRun { get; set; }
+        public int TimesRun { get; private set; }
     }
 }

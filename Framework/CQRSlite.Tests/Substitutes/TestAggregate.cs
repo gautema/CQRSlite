@@ -1,6 +1,5 @@
 ﻿using System;
 using CQRSlite.Domain;
-using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -28,31 +27,5 @@ namespace CQRSlite.Tests.Substitutes
             DidSomethingCount++;
         }
 
-    }
-
-    public class TestAggregateCreated : IEvent
-    {
-        private readonly Guid _id;
-
-        public TestAggregateCreated(Guid id)
-        {
-            _id = id;
-        }
-
-        public Guid Id { get; set; }
-        public int Version { get; set; }
-        public DateTimeOffset TimeStamp { get; set; }
-    }
-
-    public class TestAggregateNoParameterLessConstructor : AggregateRoot
-    {
-        public TestAggregateNoParameterLessConstructor(int i, Guid id) : base(id)
-        {
-        }
-
-        public void DoSomething()
-        {
-            ApplyChange(new TestAggregateDidSomething());
-        }
     }
 }

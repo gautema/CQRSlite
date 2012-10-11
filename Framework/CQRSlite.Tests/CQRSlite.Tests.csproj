@@ -55,6 +55,8 @@
     <Compile Include="Domain\When_adding_aggregates_to_repository.cs" />
     <Compile Include="Domain\When_getting_aggregate_without_contructor.cs" />
     <Compile Include="Domain\When_saving_stale_data.cs" />
+    <Compile Include="Substitutes\TestAggregateCreated.cs" />
+    <Compile Include="Substitutes\TestAggregateNoParameterLessConstructor.cs" />
     <Compile Include="Substitutes\TestEventStoreWithBugs.cs" />
     <Compile Include="Substitutes\TestInMemoryEventStore.cs" />
     <Compile Include="Substitutes\TestInMemorySnapshotStore.cs" />

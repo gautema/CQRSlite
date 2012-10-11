@@ -9,9 +9,9 @@ namespace CQRSlite.Tests.Substitutes
         {
             
         }
-        public bool Restored { get; set; }
-        public bool Loaded { get; set; }
-        public int Number { get; set; }
+        public bool Restored { get; private set; }
+        public bool Loaded { get; private set; }
+        public int Number { get; private set; }
 
         protected override TestSnapshotAggregateSnapshot CreateSnapshot()
         {

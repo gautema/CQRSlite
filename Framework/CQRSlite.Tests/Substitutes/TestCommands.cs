@@ -1,6 +1,5 @@
 using System;
 using CQRSlite.Commands;
-using CQRSlite.Messages;
 
 namespace CQRSlite.Tests.Substitutes
 {

@@ -8,7 +8,6 @@ namespace CQRSlite.Tests.Substitutes
     {
         public TestEventStoreWithBugs()
         {
-            SavedEvents = new List<IEvent>();
         }
         public IEnumerable<IEvent> Get(Guid aggregateId, int version)
         {
@@ -32,9 +31,7 @@ namespace CQRSlite.Tests.Substitutes
         }
         public void Save(Guid aggregateId, IEvent eventDescriptor)
         {
-            SavedEvents.Add(eventDescriptor);
         }
 
-        public List<IEvent> SavedEvents { get; set; }
     }
 }

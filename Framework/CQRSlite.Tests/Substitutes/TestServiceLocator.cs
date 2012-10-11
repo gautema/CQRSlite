@@ -7,7 +7,7 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestServiceLocator : IServiceLocator
     {
-        public List<dynamic> Handlers = new List<dynamic>();
+        public readonly List<dynamic> Handlers = new List<dynamic>();
         public T GetService<T>()
         {
             return (T)GetService(typeof(T));

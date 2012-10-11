@@ -8,6 +8,6 @@ namespace CQRSlite.Tests.Substitutes
             Published++;
         }
 
-        public int Published { get; set; }
+        public int Published { get; private set; }
     }
 }
