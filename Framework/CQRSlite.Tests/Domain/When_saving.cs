@@ -80,9 +80,12 @@ namespace CQRSlite.Tests.Domain
         {
             var agg = new TestAggregateNoParameterLessConstructor(1);
             agg.DoSomething();
+            agg.DoSomething();
             _session.Add(agg);
             _session.Commit();
             Assert.That(_eventStore.SavedEvents.First().Version, Is.EqualTo(1));
+            Assert.That(_eventStore.SavedEvents.Last().Version, Is.EqualTo(2));
+
         }
 
         [Test]

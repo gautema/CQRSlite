@@ -54,6 +54,7 @@
     <Compile Include="Domain\When_getting_events_out_of_order.cs" />
     <Compile Include="Domain\When_adding_aggregates_to_repository.cs" />
     <Compile Include="Domain\When_getting_aggregate_without_contructor.cs" />
+    <Compile Include="Domain\When_saving_events_without_id.cs" />
     <Compile Include="Domain\When_saving_stale_data.cs" />
     <Compile Include="Substitutes\TestAggregateCreated.cs" />
     <Compile Include="Substitutes\TestAggregateNoParameterLessConstructor.cs" />
