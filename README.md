@@ -15,7 +15,7 @@ The project should compile without any setup in .NET 4.0 or Mono 2.10.4.
 ##Features
 
 * Command sending and event publishing
-* Session with aggregate tracking
+* Unit of work through session with aggregate tracking
 * Repository for getting and saving aggregates
 * Optimistic concurrency checking
 * In process bus with autoregistration of handlers
