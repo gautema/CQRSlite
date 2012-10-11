@@ -29,7 +29,7 @@ namespace CQRSlite.Tests.Substitutes
 
         public int GetVersion(Guid aggregateId)
         {
-            return aggregateId == Guid.Empty ? 0 : 2;
+            return SavedEvents.Count(x => x.Id == aggregateId);
         }
         public void Save(Guid aggregateId, IEvent @event)
         {

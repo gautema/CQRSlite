@@ -86,6 +86,17 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Test]
+        public void Should_set_id()
+        {
+            var id = Guid.NewGuid();
+            var agg = new TestAggregateNoParameterLessConstructor(1, id);
+            agg.DoSomething();
+            _session.Add(agg);
+            _session.Commit();
+            Assert.That(_eventStore.SavedEvents.First().Id, Is.EqualTo(id));
+        }
+
+        [Test]
         public void Should_clear_tracked_aggregates()
         {
             var agg = new TestAggregate(Guid.NewGuid());

@@ -26,6 +26,7 @@ namespace CQRSlite.Domain
             foreach (var @event in aggregate.GetUncommittedChanges())
             {
                 i++;
+                @event.Id = aggregate.Id;
                 @event.Version = aggregate.Version + i;
                 @event.TimeStamp = DateTimeOffset.UtcNow;
                 _eventStore.Save(aggregate.Id, @event);

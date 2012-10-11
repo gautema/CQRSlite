@@ -46,7 +46,6 @@ namespace CQRSlite.Domain
         {
             lock (_changes)
             {
-                Id = @event.Id;
                 this.AsDynamic().Apply(@event);
                 if (isNew)
                 {
@@ -54,6 +53,7 @@ namespace CQRSlite.Domain
                 }
                 else
                 {
+                    Id = @event.Id;
                     Version++;
                 }
             }
