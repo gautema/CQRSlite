@@ -6,12 +6,12 @@ namespace CQRSlite.Domain
 {
     public class Session : ISession
     {
-        private readonly IRepository _storage;
+        private readonly IRepository _repository;
         private readonly Dictionary<Guid, AggregateDescriptor> _trackedAggregates;
 
-        public Session(IRepository storage)
+        public Session(IRepository repository)
         {
-            _storage = storage;
+            _repository = repository;
             _trackedAggregates = new Dictionary<Guid, AggregateDescriptor>();
         }
 
@@ -34,7 +34,7 @@ namespace CQRSlite.Domain
                 return trackedAggregate;
             }
 
-            var aggregate = _storage.Get<T>(id);
+            var aggregate = _repository.Get<T>(id);
             if (expectedVersion != null && aggregate.Version != expectedVersion)
                 throw new ConcurrencyException();
             Add(aggregate);
@@ -51,7 +51,7 @@ namespace CQRSlite.Domain
         {
             foreach (var descriptor in _trackedAggregates.Values)
             {
-                _storage.Save(descriptor.Aggregate, descriptor.Version);
+                _repository.Save(descriptor.Aggregate, descriptor.Version);
             }
             _trackedAggregates.Clear();
         }
