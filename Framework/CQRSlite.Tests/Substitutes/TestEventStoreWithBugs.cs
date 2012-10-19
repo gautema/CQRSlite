@@ -25,7 +25,7 @@ namespace CQRSlite.Tests.Substitutes
 
         }
 
-        public int GetVersion(Guid aggregateId)
+        public int GetVersion(Guid aggregateId, int? expectedVersion)
         {
             return aggregateId == Guid.Empty ? 0 : 2;
         }

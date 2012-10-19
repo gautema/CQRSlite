@@ -16,7 +16,7 @@ namespace CQRSCode.WriteModel
             return events.Where(x => x.Version > fromVersion);
         }
 
-        public int GetVersion(Guid aggregateId)
+        public int GetVersion(Guid aggregateId, int? expectedVersion)
         {
             List<IEvent> events;
             _inMemoryDB.TryGetValue(aggregateId, out events);

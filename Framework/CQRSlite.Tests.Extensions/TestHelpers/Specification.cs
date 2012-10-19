@@ -100,7 +100,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             return Events;
         }
 
-        public int GetVersion(Guid aggregateId)
+        public int GetVersion(Guid aggregateId, int? expectedVersion)
         {
             return Events.Max(x => x.Version);
         }

@@ -31,7 +31,7 @@ namespace CQRSlite.Tests.Substitutes
 
         }
 
-        public int GetVersion(Guid aggregateId)
+        public int GetVersion(Guid aggregateId, int? expectedVersion)
         {
             return SavedEvents.Count(x => x.Id == aggregateId);
         }

@@ -7,6 +7,6 @@ namespace CQRSlite.Events
     {
         void Save(IEvent @event);
         IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion);
-        int GetVersion(Guid aggregateId);
+        int GetVersion(Guid aggregateId, int? expectedVersion);
     }
 }
