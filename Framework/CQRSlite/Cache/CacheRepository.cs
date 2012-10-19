@@ -21,11 +21,15 @@ namespace CQRSlite.Cache
             _repository = repository;
             _eventStore = eventStore;
             _cache = MemoryCache.Default;
-            _policyFactory = () => new CacheItemPolicy { SlidingExpiration = new TimeSpan(0, 1, 0, 0), RemovedCallback = x =>
-                                                                                                                             {
-                                                                                                                                 object o;
-                                                                                                                                 _locks.TryRemove(x.CacheItem.Key, out o);
-                                                                                                                             } };
+            _policyFactory = () => new CacheItemPolicy
+                                       {
+                                           SlidingExpiration = new TimeSpan(0,0,15,0),
+                                           RemovedCallback = x =>
+                                                                 {
+                                                                     object o;
+                                                                     _locks.TryRemove(x.CacheItem.Key, out o);
+                                                                 }
+                                       };
         }
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
