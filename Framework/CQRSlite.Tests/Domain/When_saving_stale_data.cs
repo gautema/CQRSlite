@@ -24,13 +24,15 @@ namespace CQRSlite.Tests.Domain
             _session = new Session(_rep);
 
             _aggregate = new TestAggregate(Guid.NewGuid());
+            _aggregate.DoSomething();
+            _rep.Save(_aggregate);
 
         }
 
         [Test]
         public void Should_throw_concurrency_exception_from_repository()
         {
-            Assert.Throws<ConcurrencyException>(() => _rep.Save(_aggregate, 1));
+            Assert.Throws<ConcurrencyException>(() => _rep.Save(_aggregate, 0));
         }
 
         [Test]

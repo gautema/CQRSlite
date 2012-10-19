@@ -41,7 +41,7 @@ namespace CQRSlite.Tests.Cache
         [Test]
         public void Should_get_same_aggregate_from_different_cache_repository()
         {
-            var rep = new CacheRepository(new TestRepository(), new TestEventStore());
+            var rep = new CacheRepository(new TestRepository(), new TestInMemoryEventStore());
             var aggregate = rep.Get<TestAggregate>(_aggregate.Id);
             Assert.That(aggregate, Is.EqualTo(_aggregate));
         }

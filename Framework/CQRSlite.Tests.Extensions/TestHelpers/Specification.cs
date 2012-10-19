@@ -97,12 +97,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)
         {
-            return Events;
-        }
-
-        public int GetVersion(Guid aggregateId, int? expectedVersion)
-        {
-            return Events.Max(x => x.Version);
+            return Events.Where(x => x.Version > fromVersion);
         }
     }
 }

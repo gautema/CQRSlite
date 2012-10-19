@@ -16,7 +16,7 @@ namespace CQRSlite.Tests.Cache
         public void Setup()
         {
             _testRep = new TestRepository();
-            _rep = new CacheRepository(_testRep, new TestEventStore());
+            _rep = new CacheRepository(_testRep, new TestInMemoryEventStore());
             _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid());
             _aggregate.DoSomething();
             _rep.Save(_aggregate,-1);

@@ -10,7 +10,7 @@ namespace CQRSlite.Tests.Domain
 	[TestFixture]
     public class When_saving
     {
-        private TestEventStore _eventStore;
+        private TestInMemoryEventStore _eventStore;
         private TestAggregateNoParameterLessConstructor _aggregate;
         private TestEventPublisher _eventPublisher;
 	    private ISession _session;
@@ -19,7 +19,7 @@ namespace CQRSlite.Tests.Domain
 	    [SetUp]
         public void Setup()
         {
-            _eventStore = new TestEventStore();
+            _eventStore = new TestInMemoryEventStore();
             _eventPublisher = new TestEventPublisher();
 	        _rep = new Repository(_eventStore, _eventPublisher);
             _session = new Session(_rep);
@@ -34,7 +34,7 @@ namespace CQRSlite.Tests.Domain
             _aggregate.DoSomething();
             _session.Add(_aggregate);
             _session.Commit();
-            Assert.AreEqual(1, _eventStore.SavedEvents.Count);
+            Assert.AreEqual(1, _eventStore.Events.Count);
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace CQRSlite.Tests.Domain
             agg.DoSomething();
             _session.Add(agg);
             _session.Commit();
-            Assert.AreEqual(1, _eventStore.SavedEvents.Count);
+            Assert.AreEqual(1, _eventStore.Events.Count);
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace CQRSlite.Tests.Domain
             agg.DoSomething();
             _session.Add(agg);
             _session.Commit();
-            Assert.That(_eventStore.SavedEvents.First().TimeStamp, Is.InRange(DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddSeconds(1)));
+            Assert.That(_eventStore.Events.First().TimeStamp, Is.InRange(DateTimeOffset.UtcNow.AddSeconds(-1), DateTimeOffset.UtcNow.AddSeconds(1)));
         }
 
         [Test]
@@ -83,8 +83,8 @@ namespace CQRSlite.Tests.Domain
             agg.DoSomething();
             _session.Add(agg);
             _session.Commit();
-            Assert.That(_eventStore.SavedEvents.First().Version, Is.EqualTo(1));
-            Assert.That(_eventStore.SavedEvents.Last().Version, Is.EqualTo(2));
+            Assert.That(_eventStore.Events.First().Version, Is.EqualTo(1));
+            Assert.That(_eventStore.Events.Last().Version, Is.EqualTo(2));
 
         }
 
@@ -96,16 +96,17 @@ namespace CQRSlite.Tests.Domain
             agg.DoSomething();
             _session.Add(agg);
             _session.Commit();
-            Assert.That(_eventStore.SavedEvents.First().Id, Is.EqualTo(id));
+            Assert.That(_eventStore.Events.First().Id, Is.EqualTo(id));
         }
 
         [Test]
         public void Should_clear_tracked_aggregates()
         {
-            var agg = new TestAggregate(_eventStore.EmptyGuid);
+            var agg = new TestAggregate(Guid.NewGuid());
             _session.Add(agg);
             agg.DoSomething();
             _session.Commit();
+            _eventStore.Events.Clear();
 
             Assert.Throws<AggregateNotFoundException>(() => _session.Get<TestAggregate>(agg.Id));
         }

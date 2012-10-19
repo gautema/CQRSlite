@@ -14,7 +14,7 @@ namespace CQRSlite.Tests.Snapshots
 		[SetUp]
         public void Setup()
         {
-            var eventStore = new TestEventStore();
+            var eventStore = new TestInMemoryEventStore();
             var eventPublisher = new TestEventPublisher();
             var snapshotStore = new TestSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();

@@ -16,15 +16,6 @@ namespace CQRSCode.WriteModel
             return events.Where(x => x.Version > fromVersion);
         }
 
-        public int GetVersion(Guid aggregateId, int? expectedVersion)
-        {
-            List<IEvent> events;
-            _inMemoryDB.TryGetValue(aggregateId, out events);
-            if (events == null)
-                return 0;
-            return events.Max(x => x.Version);
-        }
-
         public void Save(IEvent @event)
         {
             List<IEvent> list;

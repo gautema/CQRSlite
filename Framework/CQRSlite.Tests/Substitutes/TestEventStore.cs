@@ -10,7 +10,7 @@ namespace CQRSlite.Tests.Substitutes
         public TestEventStore()
         {
             EmptyGuid = Guid.NewGuid();
-            SavedEvents = new List<IEvent>();   
+            SavedEvents = new List<IEvent>();
         }
 
         public Guid EmptyGuid { get; private set; }
@@ -31,15 +31,11 @@ namespace CQRSlite.Tests.Substitutes
 
         }
 
-        public int GetVersion(Guid aggregateId, int? expectedVersion)
-        {
-            return SavedEvents.Count(x => x.Id == aggregateId);
-        }
         public void Save(IEvent @event)
         {
             SavedEvents.Add(@event);
         }
 
-        public List<IEvent> SavedEvents { get; set; }
+        private List<IEvent> SavedEvents { get; set; }
     }
 }

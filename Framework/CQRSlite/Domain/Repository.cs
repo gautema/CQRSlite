@@ -19,7 +19,7 @@ namespace CQRSlite.Domain
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
-            if (expectedVersion != null && _eventStore.GetVersion(aggregate.Id, expectedVersion) != expectedVersion)
+            if (expectedVersion != null && _eventStore.Get(aggregate.Id, expectedVersion.Value).Any())
                 throw new ConcurrencyException();
             var i = 0;
             foreach (var @event in aggregate.GetUncommittedChanges())
