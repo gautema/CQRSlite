@@ -34,5 +34,13 @@ namespace CQRSlite.Tests.Cache
         {
             Assert.That(_testRep.Saved, Is.EqualTo(_aggregate));
         }
+
+        [Test]
+        public void Should_not_cache_empty_id()
+        {
+            var aggregate = new TestAggregate(Guid.Empty);
+            _rep.Save(aggregate);
+            Assert.That(_rep.Get<TestAggregate>(Guid.Empty), Is.Not.EqualTo(aggregate));
+        }
     }
 }

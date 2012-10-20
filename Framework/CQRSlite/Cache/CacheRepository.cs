@@ -37,7 +37,7 @@ namespace CQRSlite.Cache
             var idstring = aggregate.Id.ToString();
             lock (_locks.GetOrAdd(idstring, _ => new object()))
             {
-                if (!IsTracked(aggregate.Id))
+                if (aggregate.Id != Guid.Empty && !IsTracked(aggregate.Id))
                     _cache.Add(idstring, aggregate, _policyFactory.Invoke());
                 _repository.Save(aggregate, expectedVersion);
             }
