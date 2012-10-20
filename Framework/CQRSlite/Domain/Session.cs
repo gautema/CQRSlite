@@ -21,7 +21,7 @@ namespace CQRSlite.Domain
                 _trackedAggregates.Add(aggregate.Id,
                                        new AggregateDescriptor {Aggregate = aggregate, Version = aggregate.Version});
             else if (_trackedAggregates[aggregate.Id].Aggregate != aggregate)
-                throw new ConcurrencyException();
+                throw new ConcurrencyException(aggregate.Id);
         }
 
         public T Get<T>(Guid id, int? expectedVersion = null) where T : AggregateRoot
@@ -30,13 +30,13 @@ namespace CQRSlite.Domain
             {
                 var trackedAggregate = (T)_trackedAggregates[id].Aggregate;
                 if (expectedVersion != null && trackedAggregate.Version != expectedVersion)
-                    throw new ConcurrencyException();
+                    throw new ConcurrencyException(trackedAggregate.Id);
                 return trackedAggregate;
             }
 
             var aggregate = _repository.Get<T>(id);
             if (expectedVersion != null && aggregate.Version != expectedVersion)
-                throw new ConcurrencyException();
+                throw new ConcurrencyException(id);
             Add(aggregate);
 
             return aggregate;

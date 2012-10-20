@@ -13,7 +13,7 @@ namespace CQRSlite.Domain.Factories
             }
             catch (MissingMethodException)
             {
-                throw new MissingParameterLessConstructorException();
+                throw new MissingParameterLessConstructorException(typeof(T));
             }
         }
     }
