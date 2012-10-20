@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
@@ -20,7 +21,9 @@ namespace CQRSlite.Tests.Cache
         public void Setup()
         {
             // This will clear the cache between runs.
-            MemoryCache.Default.Remove(Guid.Empty.ToString());
+            var cacheKeys = MemoryCache.Default.Select(kvp => kvp.Key).ToList();
+            foreach (var cacheKey in cacheKeys)
+                MemoryCache.Default.Remove(cacheKey);
 
             _testStore = new TestInMemoryEventStore();
             _rep1 = new CacheRepository(new Repository(_testStore,new TestEventPublisher()), _testStore);
