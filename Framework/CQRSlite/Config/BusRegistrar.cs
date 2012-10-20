@@ -5,7 +5,6 @@ using System.Reflection;
 using CQRSlite.Bus;
 using CQRSlite.Commands;
 using CQRSlite.Events;
-using CQRSlite.Messages;
 
 namespace CQRSlite.Config
 {
