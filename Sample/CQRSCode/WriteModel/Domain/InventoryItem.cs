@@ -46,6 +46,7 @@ namespace CQRSCode.WriteModel.Domain
         private InventoryItem(){}
         public InventoryItem(Guid id, string name)
         {
+            Id = id;
             ApplyChange(new InventoryItemCreated(id, name));
         }
     }

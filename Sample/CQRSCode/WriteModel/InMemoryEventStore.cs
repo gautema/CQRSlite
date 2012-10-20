@@ -13,7 +13,7 @@ namespace CQRSCode.WriteModel
         {
             List<IEvent> events;
             _inMemoryDB.TryGetValue(aggregateId, out events);
-            return events.Where(x => x.Version > fromVersion);
+            return events != null ? events.Where(x => x.Version > fromVersion) : new List<IEvent>();
         }
 
         public void Save(IEvent @event)
