@@ -11,12 +11,18 @@ namespace CQRSlite.Tests.Substitutes
 
         public void Save(IEvent @event)
         {
-            Events.Add(@event);
+            lock(Events)
+            {
+                Events.Add(@event);
+            }
         }
 
         public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)
         {
-            return Events.Where(x => x.Version > fromVersion).OrderBy(x => x.Version);
+            lock(Events)
+            {
+                return Events.Where(x => x.Version > fromVersion && x.Id == aggregateId).OrderBy(x => x.Version).ToList();
+            }
         }
     }
 }

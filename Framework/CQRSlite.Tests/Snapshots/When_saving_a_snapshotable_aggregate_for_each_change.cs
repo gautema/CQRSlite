@@ -12,6 +12,7 @@ namespace CQRSlite.Tests.Snapshots
     {
         private TestInMemorySnapshotStore _snapshotStore;
 	    private ISession _session;
+	    private TestSnapshotAggregate _aggregate;
 
 	    [SetUp]
         public void Setup()        
@@ -22,12 +23,12 @@ namespace CQRSlite.Tests.Snapshots
             var snapshotStrategy = new DefaultSnapshotStrategy();
             var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(eventStore, eventPublisher), eventStore);
 	        _session = new Session(repository);
-            var aggregate = new TestSnapshotAggregate();
+            _aggregate = new TestSnapshotAggregate();
 
             for (var i = 0; i < 20; i++)
             {
-                _session.Add(aggregate);
-                aggregate.DoSomething();
+                _session.Add(_aggregate);
+                _aggregate.DoSomething();
                 _session.Commit();
             }
 
@@ -48,7 +49,7 @@ namespace CQRSlite.Tests.Snapshots
         [Test]
         public void Should_get_aggregate_back_correct()
         {
-            Assert.AreEqual(20, _session.Get<TestSnapshotAggregate>(Guid.Empty).Number);
+            Assert.AreEqual(20, _session.Get<TestSnapshotAggregate>(_aggregate.Id).Number);
         }
     }
 }
