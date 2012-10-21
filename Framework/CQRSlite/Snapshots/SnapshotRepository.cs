@@ -16,6 +16,15 @@ namespace CQRSlite.Snapshots
 
         public SnapshotRepository(ISnapshotStore snapshotStore, ISnapshotStrategy snapshotStrategy, IRepository repository, IEventStore eventStore)
         {
+            if(snapshotStore == null)
+                throw new ArgumentNullException("snapshotStore");
+            if(snapshotStrategy == null)
+                throw new ArgumentNullException("snapshotStrategy");
+            if(repository == null)
+                throw new ArgumentNullException("repository");
+            if(eventStore == null)
+                throw new ArgumentNullException("eventStore");
+
             _snapshotStore = snapshotStore;
             _snapshotStrategy = snapshotStrategy;
             _repository = repository;

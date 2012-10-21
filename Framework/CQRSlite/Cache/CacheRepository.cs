@@ -18,6 +18,11 @@ namespace CQRSlite.Cache
 
         public CacheRepository(IRepository repository, IEventStore eventStore)
         {
+            if(repository == null)
+                throw new ArgumentNullException("repository");
+            if(eventStore == null)
+                throw new ArgumentNullException("eventStore");
+
             _repository = repository;
             _eventStore = eventStore;
             _cache = MemoryCache.Default;
