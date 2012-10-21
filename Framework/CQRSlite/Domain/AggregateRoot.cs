@@ -23,8 +23,11 @@ namespace CQRSlite.Domain
 
         public void MarkChangesAsCommitted()
         {
-            Version = Version + _changes.Count;
-            _changes.Clear();
+            lock(_changes)
+            {
+                Version = Version + _changes.Count;
+                _changes.Clear();
+            }
         }
 
         public void LoadFromHistory(IEnumerable<IEvent> history)
