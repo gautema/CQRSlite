@@ -2,10 +2,10 @@
 <package>
   <metadata>
     <id>CqrsLite</id>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <authors>The CqrsLite Team</authors>
     <licenseUrl>https://raw.github.com/gautema/CQRSlite/master/README.md</licenseUrl>
-    <projectUrl>https://github.com/gautema/</projectUrl>
+    <projectUrl>https://github.com/gautema/cqrslite</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A lightweight CQRS Framework written in C#</description>
     <copyright>Copyright 2012</copyright>
