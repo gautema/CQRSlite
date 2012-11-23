@@ -51,24 +51,35 @@ namespace CQRSlite.Cache
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
         {
             var idstring = aggregateId.ToString();
-            lock (_locks.GetOrAdd(idstring, _ => new object()))
+            try
             {
-                T aggregate;
-                if (IsTracked(aggregateId))
+                lock (_locks.GetOrAdd(idstring, _ => new object()))
                 {
-                    aggregate = (T)_cache.Get(idstring);
-                    var events = _eventStore.Get(aggregateId, aggregate.Version);
-                    if (events.Any() && events.First().Version != aggregate.Version + 1)
-                        throw new EventsOutOfOrderException(aggregateId);
-                    aggregate.LoadFromHistory(events);
+                    T aggregate;
+                    if (IsTracked(aggregateId))
+                    {
+                        aggregate = (T)_cache.Get(idstring);
+                        var events = _eventStore.Get(aggregateId, aggregate.Version);
+                        if (events.Any() && events.First().Version != aggregate.Version + 1)
+                        {
+                            throw new EventsOutOfOrderException(aggregateId);
+                        }
+                        aggregate.LoadFromHistory(events);
 
+                        return aggregate;
+                    }
+
+                    aggregate = _repository.Get<T>(aggregateId);
+                    _cache.Add(aggregateId.ToString(), aggregate, _policyFactory.Invoke());
                     return aggregate;
                 }
-
-                aggregate = _repository.Get<T>(aggregateId);
-                _cache.Add(aggregateId.ToString(), aggregate, _policyFactory.Invoke());
-                return aggregate;
             }
+            catch (Exception)
+            {
+                _cache.Remove(idstring);
+                throw;
+            }
+
         }
 
         private bool IsTracked(Guid id)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Caching;
 using CQRSlite.Cache;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
@@ -24,6 +25,14 @@ namespace CQRSlite.Tests.Cache
         {
             Assert.Throws<EventsOutOfOrderException>(() => _rep.Get<TestAggregate>(_aggregate.Id));
 
+        }
+
+        [Test]
+        public void Should_evict_from_cache()
+        {
+            Assert.Throws<EventsOutOfOrderException>(() => _rep.Get<TestAggregate>(_aggregate.Id));
+            var aggregate = MemoryCache.Default.Get(_aggregate.Id.ToString());
+            Assert.That(aggregate, Is.Null);
         }
     }
 }
