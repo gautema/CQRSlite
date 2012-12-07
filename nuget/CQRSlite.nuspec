@@ -7,7 +7,7 @@
     <licenseUrl>https://raw.github.com/gautema/CQRSlite/master/README.md</licenseUrl>
     <projectUrl>https://github.com/gautema/cqrslite</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A lightweight CQRS Framework written in C#</description>
+    <description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</description>
     <copyright>Copyright 2012</copyright>
   </metadata>
 </package>
