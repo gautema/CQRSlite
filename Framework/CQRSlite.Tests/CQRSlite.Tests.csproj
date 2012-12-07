@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bus\When_publishing_events.cs" />
+    <Compile Include="Cache\When_saving_fails.cs" />
     <Compile Include="Cache\When_saving_two_aggregates_in_parallel.cs" />
     <Compile Include="Cache\When_getting_aggregate.cs" />
     <Compile Include="Cache\When_getting_wrong_events_from_event_store.cs" />

@@ -8,6 +8,10 @@ namespace CQRSlite.Tests.Substitutes
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
             Saved = aggregate;
+            if (expectedVersion == 100)
+            {
+                throw new Exception();
+            }
         }
 
         public AggregateRoot Saved { get; private set; }

@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.Caching;
 using CQRSlite.Domain;
-using CQRSlite.Domain.Exception;
 using CQRSlite.Events;
 
 namespace CQRSlite.Cache
@@ -40,11 +39,19 @@ namespace CQRSlite.Cache
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
             var idstring = aggregate.Id.ToString();
-            lock (_locks.GetOrAdd(idstring, _ => new object()))
+            try
             {
-                if (aggregate.Id != Guid.Empty && !IsTracked(aggregate.Id))
-                    _cache.Add(idstring, aggregate, _policyFactory.Invoke());
-                _repository.Save(aggregate, expectedVersion);
+                lock (_locks.GetOrAdd(idstring, _ => new object()))
+                {
+                    if (aggregate.Id != Guid.Empty && !IsTracked(aggregate.Id))
+                        _cache.Add(idstring, aggregate, _policyFactory.Invoke());
+                    _repository.Save(aggregate, expectedVersion);
+                }
+            }
+            catch (Exception)
+            {
+                _cache.Remove(idstring);
+                throw;
             }
         }
 
@@ -62,11 +69,13 @@ namespace CQRSlite.Cache
                         var events = _eventStore.Get(aggregateId, aggregate.Version);
                         if (events.Any() && events.First().Version != aggregate.Version + 1)
                         {
-                            throw new EventsOutOfOrderException(aggregateId);
+                            _cache.Remove(idstring);
                         }
-                        aggregate.LoadFromHistory(events);
-
-                        return aggregate;
+                        else
+                        {
+                            aggregate.LoadFromHistory(events);
+                            return aggregate;
+                        }
                     }
 
                     aggregate = _repository.Get<T>(aggregateId);
@@ -79,7 +88,6 @@ namespace CQRSlite.Cache
                 _cache.Remove(idstring);
                 throw;
             }
-
         }
 
         private bool IsTracked(Guid id)
