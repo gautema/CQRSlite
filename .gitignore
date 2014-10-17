@@ -30,3 +30,4 @@ _ReSharper*/
 *.pidb
 *.userprefs
 .DS_Store
+packages/
