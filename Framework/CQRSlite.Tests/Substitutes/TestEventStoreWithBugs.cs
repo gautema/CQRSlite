@@ -19,12 +19,10 @@ namespace CQRSlite.Tests.Substitutes
                     new TestAggregateDidSomething {Id = aggregateId, Version = 2},
                     new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 1},
                 };
-
         }
 
         public void Save(IEvent eventDescriptor)
         {
         }
-
     }
 }

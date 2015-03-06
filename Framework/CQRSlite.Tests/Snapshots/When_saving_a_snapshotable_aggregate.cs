@@ -20,7 +20,7 @@ namespace CQRSlite.Tests.Snapshots
             var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(eventStore, eventPublisher), eventStore);
             var session = new Session(repository);
             var aggregate = new TestSnapshotAggregate();
-            for (int i = 0; i < 30; i++)
+            for (var i = 0; i < 30; i++)
             {
                 aggregate.DoSomething();
             }

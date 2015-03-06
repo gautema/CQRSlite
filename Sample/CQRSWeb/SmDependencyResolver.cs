@@ -7,11 +7,13 @@ using StructureMap;
 
 namespace CQRSWeb
 {
-    public class SmDependencyResolver : IDependencyResolver, IServiceLocator {
+    public class SmDependencyResolver : IDependencyResolver, IServiceLocator 
+    {
 
         private readonly IContainer _container;
 
-        public SmDependencyResolver(IContainer container) {
+        public SmDependencyResolver(IContainer container) 
+        {
             _container = container;
         }
 
@@ -20,20 +22,23 @@ namespace CQRSWeb
             return (T) GetService(typeof (T));
         }
 
-        public object GetService(Type serviceType) {
+        public object GetService(Type serviceType) 
+        {
             if (serviceType == null) return null;
-            try {
+            try 
+            {
                   return serviceType.IsAbstract || serviceType.IsInterface
                            ? _container.TryGetInstance(serviceType)
                            : _container.GetInstance(serviceType);
             }
-            catch {
-
+            catch 
+            {
                 return null;
             }
         }
 
-        public IEnumerable<object> GetServices(Type serviceType) {
+        public IEnumerable<object> GetServices(Type serviceType) 
+        {
             return _container.GetAllInstances<object>().Where(s => s.GetType() == serviceType);
         }
     }

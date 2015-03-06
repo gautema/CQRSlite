@@ -31,7 +31,6 @@ namespace CQRSlite.Tests.Snapshots
                 _aggregate.DoSomething();
                 _session.Commit();
             }
-
         }
 
         [Test]

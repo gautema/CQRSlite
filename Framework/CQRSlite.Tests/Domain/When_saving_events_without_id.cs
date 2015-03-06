@@ -22,7 +22,6 @@ namespace CQRSlite.Tests.Domain
             _rep = new Repository(_eventStore, _eventPublisher);
 
             _aggregate = new TestAggregate(Guid.Empty);
-
         }
 
         [Test]

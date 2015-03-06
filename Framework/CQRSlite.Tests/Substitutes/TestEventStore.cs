@@ -28,7 +28,6 @@ namespace CQRSlite.Tests.Substitutes
                     new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 2},
                     new TestAggregateDidSomething {Id = aggregateId, Version = 3},
                 }.Where(x => x.Version > version);
-
         }
 
         public void Save(IEvent @event)

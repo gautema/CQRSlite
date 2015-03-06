@@ -26,7 +26,6 @@ namespace CQRSlite.Tests.Domain
             _aggregate = new TestAggregate(Guid.NewGuid());
             _aggregate.DoSomething();
             _rep.Save(_aggregate);
-
         }
 
         [Test]
