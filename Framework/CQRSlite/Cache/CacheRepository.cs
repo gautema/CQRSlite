@@ -26,14 +26,14 @@ namespace CQRSlite.Cache
             _eventStore = eventStore;
             _cache = MemoryCache.Default;
             _policyFactory = () => new CacheItemPolicy
-                                       {
-                                           SlidingExpiration = new TimeSpan(0,0,15,0),
-                                           RemovedCallback = x =>
-                                                                 {
-                                                                     object o;
-                                                                     _locks.TryRemove(x.CacheItem.Key, out o);
-                                                                 }
-                                       };
+            {
+                SlidingExpiration = new TimeSpan(0, 0, 15, 0),
+                RemovedCallback = x =>
+                {
+                    object o;
+                    _locks.TryRemove(x.CacheItem.Key, out o);
+                }
+            };
         }
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
@@ -50,7 +50,10 @@ namespace CQRSlite.Cache
             }
             catch (Exception)
             {
-                _cache.Remove(idstring);
+                lock (_locks.GetOrAdd(idstring, _ => new object()))
+                {
+                    _cache.Remove(idstring);
+                }
                 throw;
             }
         }
@@ -85,7 +88,10 @@ namespace CQRSlite.Cache
             }
             catch (Exception)
             {
-                _cache.Remove(idstring);
+                lock (_locks.GetOrAdd(idstring, _ => new object()))
+                {
+                    _cache.Remove(idstring);
+                }
                 throw;
             }
         }
