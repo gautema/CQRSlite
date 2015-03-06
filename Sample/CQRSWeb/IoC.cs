@@ -7,11 +7,15 @@ using CQRSlite.Domain;
 using CQRSlite.Events;
 using StructureMap;
 using StructureMap.Graph;
+using StructureMap.Web;
 
-namespace CQRSWeb {
-    public static class IoC {
-        public static IContainer Initialize() {
-            ObjectFactory.Initialize(x =>
+namespace CQRSWeb 
+{
+    public static class IoC
+    {
+        public static IContainer Initialize() 
+        {
+            var container = new Container(x =>
                         {
                             x.For<InProcessBus>().Singleton().Use<InProcessBus>();
                             x.For<ICommandSender>().Use(y => y.GetInstance<InProcessBus>());
@@ -20,19 +24,16 @@ namespace CQRSWeb {
                             x.For<ISession>().HybridHttpOrThreadLocalScoped().Use<Session>();
                             x.For<IEventStore>().Singleton().Use<InMemoryEventStore>();
                             x.For<IRepository>().HybridHttpOrThreadLocalScoped().Use(y =>
-                                                                                     new CacheRepository(
-                                                                                         new Repository(y.GetInstance<IEventStore>(),
-                                                                                                        y.GetInstance<IEventPublisher>()),
-                                                                                         y.GetInstance<IEventStore>()));
+                                new CacheRepository(new Repository(y.GetInstance<IEventStore>(),y.GetInstance<IEventPublisher>()),y.GetInstance<IEventStore>()));
 
                             x.Scan(s =>
                             {
-                                s.TheCallingAssembly();
+                                s.AssemblyContainingType<SmDependencyResolver>();
                                 s.AssemblyContainingType<ReadModelFacade>();
                                 s.Convention<FirstInterfaceConvention>();
                             });
                         });
-            return ObjectFactory.Container;
+            return container;
         }
     }
 }
