@@ -64,7 +64,7 @@ namespace CQRSlite.Tests.Cache
             t2.Start();
             t3.Start();
 
-            Task.WaitAll(new[] {t1,t2, t3});
+            Task.WaitAll(t1, t2, t3);
         }
 
         [Test]

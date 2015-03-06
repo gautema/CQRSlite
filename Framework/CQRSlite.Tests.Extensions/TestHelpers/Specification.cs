@@ -4,7 +4,6 @@ using System.Linq;
 using CQRSlite.Commands;
 using CQRSlite.Domain;
 using CQRSlite.Events;
-using CQRSlite.Messages;
 using CQRSlite.Snapshots;
 using NUnit.Framework;
 
