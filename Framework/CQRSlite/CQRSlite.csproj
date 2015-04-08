@@ -77,7 +77,6 @@
     <Compile Include="Domain\Exception\AggregateNotFoundException.cs" />
     <Compile Include="Domain\Exception\ConcurrencyException.cs" />
     <Compile Include="Bus\InProcessBus.cs" />
-    <Compile Include="Infrastructure\DelegateAdjuster.cs" />
     <Compile Include="Events\IEvent.cs" />
     <Compile Include="Snapshots\ISnapshotStrategy.cs" />
     <Compile Include="Infrastructure\PrivateReflectionDynamicObject.cs" />

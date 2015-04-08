@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using CQRSlite.Commands;
 using CQRSlite.Events;
-using CQRSlite.Infrastructure;
 using CQRSlite.Messages;
 
 namespace CQRSlite.Bus
@@ -19,7 +18,7 @@ namespace CQRSlite.Bus
                 handlers = new List<Action<IMessage>>();
                 _routes.Add(typeof(T), handlers);
             }
-            handlers.Add(DelegateAdjuster.CastArgument<IMessage, T>(x => handler(x)));
+            handlers.Add((x => handler((T)x)));
         }
 
         public void Send<T>(T command) where T : ICommand
