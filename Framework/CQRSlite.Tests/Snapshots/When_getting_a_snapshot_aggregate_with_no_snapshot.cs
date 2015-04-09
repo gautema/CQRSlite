@@ -29,10 +29,7 @@ namespace CQRSlite.Tests.Snapshots
 	        {
 	            return null;
 	        }
-
-	        public void Save(Snapshot snapshot)
-	        {
-	        }
+            public void Save(Snapshot snapshot){}
 	    }
 
 	    [Test]

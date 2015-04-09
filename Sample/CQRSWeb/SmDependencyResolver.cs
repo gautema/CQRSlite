@@ -9,7 +9,6 @@ namespace CQRSWeb
 {
     public class SmDependencyResolver : IDependencyResolver, IServiceLocator 
     {
-
         private readonly IContainer _container;
 
         public SmDependencyResolver(IContainer container) 

@@ -7,17 +7,18 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestEventStore : IEventStore
     {
+        private readonly Guid _emptyGuid;
+
         public TestEventStore()
         {
-            EmptyGuid = Guid.NewGuid();
+            _emptyGuid = Guid.NewGuid();
             SavedEvents = new List<IEvent>();
         }
 
-        public Guid EmptyGuid { get; private set; }
 
         public IEnumerable<IEvent> Get(Guid aggregateId, int version)
         {
-            if (aggregateId == EmptyGuid || aggregateId == Guid.Empty)
+            if (aggregateId == _emptyGuid || aggregateId == Guid.Empty)
             {
                 return new List<IEvent>();
             }

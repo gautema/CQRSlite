@@ -3,7 +3,6 @@ using CQRSCode.ReadModel.Dtos;
 using CQRSCode.ReadModel.Events;
 using CQRSCode.ReadModel.Infrastructure;
 using CQRSlite.Events;
-using CQRSlite.Messages;
 
 namespace CQRSCode.ReadModel.Handlers
 {
@@ -27,26 +26,26 @@ namespace CQRSCode.ReadModel.Handlers
 
         private InventoryItemDetailsDto GetDetailsItem(Guid id)
         {
-            InventoryItemDetailsDto d;
-            if(!InMemoryDatabase.Details.TryGetValue(id, out d))
+            InventoryItemDetailsDto dto;
+            if(!InMemoryDatabase.Details.TryGetValue(id, out dto))
             {
                 throw new InvalidOperationException("did not find the original inventory this shouldnt happen");
             }
-            return d;
+            return dto;
         }
 
         public void Handle(ItemsRemovedFromInventory message)
         {
-            InventoryItemDetailsDto d = GetDetailsItem(message.Id);
-            d.CurrentCount -= message.Count;
-            d.Version = message.Version;
+            var dto = GetDetailsItem(message.Id);
+            dto.CurrentCount -= message.Count;
+            dto.Version = message.Version;
         }
 
         public void Handle(ItemsCheckedInToInventory message)
         {
-            InventoryItemDetailsDto d = GetDetailsItem(message.Id);
-            d.CurrentCount += message.Count;
-            d.Version = message.Version;
+            var dto = GetDetailsItem(message.Id);
+            dto.CurrentCount += message.Count;
+            dto.Version = message.Version;
         }
 
         public void Handle(InventoryItemDeactivated message)

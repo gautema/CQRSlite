@@ -15,7 +15,7 @@ namespace CQRSlite.Infrastructure
             if (o == null || o.GetType().IsPrimitive || o is string)
                 return o;
 
-            return new PrivateReflectionDynamicObject() { RealObject = o };
+            return new PrivateReflectionDynamicObject { RealObject = o };
         }
 
         // Called when a method is called

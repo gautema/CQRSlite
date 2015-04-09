@@ -2,7 +2,6 @@
 using CQRSCode.ReadModel.Events;
 using CQRSCode.ReadModel.Infrastructure;
 using CQRSlite.Events;
-using CQRSlite.Messages;
 
 namespace CQRSCode.ReadModel.Handlers
 {

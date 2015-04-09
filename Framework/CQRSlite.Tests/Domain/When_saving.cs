@@ -25,7 +25,6 @@ namespace CQRSlite.Tests.Domain
             _session = new Session(_rep);
 
             _aggregate = new TestAggregateNoParameterLessConstructor(2);
-
         }
 
         [Test]

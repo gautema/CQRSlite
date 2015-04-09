@@ -2,7 +2,6 @@
 using CQRSCode.WriteModel.Domain;
 using CQRSlite.Commands;
 using CQRSlite.Domain;
-using CQRSlite.Messages;
 
 namespace CQRSCode.WriteModel.Handlers
 {
