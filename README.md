@@ -1,4 +1,9 @@
 #CQRSlite 
+
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/gautema/CQRSLite?branch=master&svg=true)](https://ci.appveyor.com/project/gautema/CQRSLite) 
+[![NuGet](https://img.shields.io/nuget/dt/cqrslite.svg)](https://www.nuget.org/packages/cqrslite) 
+[![NuGet](https://img.shields.io/nuget/vpre/cqrslite.svg)](https://www.nuget.org/packages/cqrslite)
+
 ## The framework
 CQRSlite is a small CQRS and Eventsourcing Framework. It is written in C# and targets .NET 4.5.2 CQRSlite originated as a CQRS sample project Greg Young and I did in the autumn of 2010.
 This code is located at http://github.com/gregoryyoung/m-r
