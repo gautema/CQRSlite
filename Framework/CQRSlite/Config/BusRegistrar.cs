@@ -29,7 +29,7 @@ namespace CQRSlite.Config
                 var executorsAssembly = typesFromAssemblyContainingMessage.Assembly;
                 var executorTypes = executorsAssembly
                     .GetTypes()
-                    .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
+                    .Select(t => new {Type = t, Interfaces = ResolveMessageHandlerInterface(t)})
                     .Where(e => e.Interfaces != null && e.Interfaces.Any());
 
                 foreach (var executorType in executorTypes)
@@ -51,10 +51,10 @@ namespace CQRSlite.Config
                 .MakeGenericMethod(commandType);
 
             var del = new Action<dynamic>(x =>
-                                              {
-                                                  dynamic handler = _serviceLocator.GetService(executorType);
-                                                  handler.Handle(x);
-                                              });
+            {
+                dynamic handler = _serviceLocator.GetService(executorType);
+                handler.Handle(x);
+            });
             
             registerExecutorMethod.Invoke(bus, new object[] { del });
         }
@@ -63,8 +63,8 @@ namespace CQRSlite.Config
         {
             return type
                 .GetInterfaces()
-                .Where(i => i.IsGenericType && ((i.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
-												 || i.GetGenericTypeDefinition() == typeof(IEventHandler<>)));
+                .Where(i => i.IsGenericType && ((i.GetGenericTypeDefinition() == typeof (ICommandHandler<>))
+                                                || i.GetGenericTypeDefinition() == typeof (IEventHandler<>)));
         }
 
     }
