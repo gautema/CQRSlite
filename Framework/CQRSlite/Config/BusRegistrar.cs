@@ -15,7 +15,7 @@ namespace CQRSlite.Config
         public BusRegistrar(IServiceLocator serviceLocator)
         {
             if(serviceLocator == null)
-                throw new ArgumentNullException("serviceLocator");
+                throw new ArgumentNullException(nameof(serviceLocator));
 
             _serviceLocator = serviceLocator;
         }

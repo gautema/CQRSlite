@@ -14,9 +14,9 @@ namespace CQRSlite.Domain
         public Repository(IEventStore eventStore, IEventPublisher publisher)
         {
             if(eventStore == null)
-                throw new ArgumentNullException("eventStore");
+                throw new ArgumentNullException(nameof(eventStore));
             if(publisher == null)
-                throw new ArgumentNullException("publisher");
+                throw new ArgumentNullException(nameof(publisher));
             _eventStore = eventStore;
             _publisher = publisher;
         }
