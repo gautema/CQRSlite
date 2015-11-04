@@ -24,11 +24,11 @@ namespace CQRSWeb
         public object GetService(Type serviceType) 
         {
             if (serviceType == null) return null;
-            try 
+            try
             {
-                  return serviceType.IsAbstract || serviceType.IsInterface
-                           ? _container.TryGetInstance(serviceType)
-                           : _container.GetInstance(serviceType);
+                return serviceType.IsAbstract || serviceType.IsInterface
+                    ? _container.TryGetInstance(serviceType)
+                    : _container.GetInstance(serviceType);
             }
             catch 
             {

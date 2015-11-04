@@ -30,9 +30,9 @@ namespace CQRSlite.Domain
             {
                 if (@event.Id == Guid.Empty && aggregate.Id == Guid.Empty)
                     throw new AggregateOrEventMissingIdException(aggregate.GetType(), @event.GetType());
-                else if (@event.Id == Guid.Empty)
+                if (@event.Id == Guid.Empty)
                     @event.Id = aggregate.Id;
-                    
+
                 i++;
                 @event.Version = aggregate.Version + i;
                 @event.TimeStamp = DateTimeOffset.UtcNow;
