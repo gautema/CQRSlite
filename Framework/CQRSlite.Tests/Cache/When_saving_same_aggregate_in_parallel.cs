@@ -75,7 +75,7 @@ namespace CQRSlite.Tests.Cache
         [Test]
         public void Should_save_all_events()
         {
-            Assert.That(_testStore.Events.Count(), Is.EqualTo(301));
+            Assert.That(_testStore.Events.Count, Is.EqualTo(301));
         }
     }
 }

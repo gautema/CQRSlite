@@ -1,5 +1,6 @@
 using System;
 using System.Dynamic;
+using System.Linq;
 using System.Reflection;
 
 namespace CQRSlite.Infrastructure
@@ -31,25 +32,15 @@ namespace CQRSlite.Infrastructure
 
         private static object InvokeMemberOnType(Type type, object target, string name, object[] args)
         {
-            try
+            var argtypes = new Type[args.Length];
+            for (var i = 0; i < args.Length; i++)
+                argtypes[i] = args[i].GetType();
+            while (true)
             {
-                // Try to incoke the method
-                return type.InvokeMember(
-                    name,
-                    BindingFlags.InvokeMethod | bindingFlags,
-                    null,
-                    target,
-                    args);
-            }
-            catch (MissingMethodException)
-            {
-                // If we couldn't find the method, try on the base class
-                if (type.BaseType != null)
-                {
-                    return InvokeMemberOnType(type.BaseType, target, name, args);
-                }
-                //Don't care if the method don't exist.
-                return null;
+                var member = type.GetMethod(name, bindingFlags, null, argtypes, null);
+                if (member != null) return member.Invoke(target, args);
+                if (type.BaseType == null) return null;
+                type = type.BaseType;
             }
         }
     }
