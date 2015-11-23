@@ -17,9 +17,9 @@ namespace CQRSlite.Cache
 
         public CacheRepository(IRepository repository, IEventStore eventStore)
         {
-            if(repository == null)
+            if (repository == null)
                 throw new ArgumentNullException(nameof(repository));
-            if(eventStore == null)
+            if (eventStore == null)
                 throw new ArgumentNullException(nameof(eventStore));
 
             _repository = repository;
@@ -68,7 +68,7 @@ namespace CQRSlite.Cache
                     T aggregate;
                     if (IsTracked(aggregateId))
                     {
-                        aggregate = (T)_cache.Get(idstring);
+                        aggregate = (T) _cache.Get(idstring);
                         var events = _eventStore.Get(aggregateId, aggregate.Version);
                         if (events.Any() && events.First().Version != aggregate.Version + 1)
                         {
@@ -98,7 +98,11 @@ namespace CQRSlite.Cache
 
         private bool IsTracked(Guid id)
         {
-            return _cache.Contains(id.ToString());
+            var idstring = id.ToString();
+            lock (_locks.GetOrAdd(idstring, _ => new object()))
+            {
+                return _cache.Contains(id.ToString());
+            }
         }
     }
 }
