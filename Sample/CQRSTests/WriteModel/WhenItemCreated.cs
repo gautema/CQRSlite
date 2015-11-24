@@ -11,9 +11,9 @@ using NUnit.Framework;
 
 namespace CQRSTests.WriteModel
 {
-    public class When_item_checked_in : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
+    public class WhenItemCreated : Specification<InventoryItem, InventoryCommandHandlers, CreateInventoryItem>
     {
-        private Guid _guid;
+        private Guid _id;
         protected override InventoryCommandHandlers BuildHandler()
         {
             return new InventoryCommandHandlers(Session);
@@ -21,31 +21,31 @@ namespace CQRSTests.WriteModel
 
         protected override IEnumerable<IEvent> Given()
         {
-            _guid = Guid.NewGuid();
-            return new List<IEvent> { new InventoryItemCreated(_guid, "Jadda"){Version = 1}, new ItemsCheckedInToInventory(_guid, 2){Version = 2} };
+            _id = Guid.NewGuid();
+            return new List<IEvent>();
         }
 
-        protected override CheckInItemsToInventory When()
+        protected override CreateInventoryItem When()
         {
-            return new CheckInItemsToInventory(_guid, 2, 2);
+            return new CreateInventoryItem(_id, "myname");
         }
 
         [Then]
         public void Should_create_one_event()
         {
-            Assert.AreEqual(1, PublishedEvents.Count());
+            Assert.AreEqual(1, PublishedEvents.Count);
         }
 
         [Then]
         public void Should_create_correct_event()
         {
-            Assert.IsInstanceOf<ItemsCheckedInToInventory>(PublishedEvents.First());
+            Assert.IsInstanceOf<InventoryItemCreated>(PublishedEvents.First());
         }
 
         [Then]
-        public void Should_save_have_correct_number_of_items()
+        public void Should_save_name()
         {
-            Assert.AreEqual(2, ((ItemsCheckedInToInventory) PublishedEvents.First()).Count);
+            Assert.AreEqual("myname", ((InventoryItemCreated)PublishedEvents.First()).Name);
         }
     }
 }

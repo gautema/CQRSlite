@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WriteModel\WhenItemCheckedIn.cs" />
+    <Compile Include="WriteModel\WhenItemCreated.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\CQRSlite.Tests.Extensions\CQRSlite.Tests.Extensions.csproj">

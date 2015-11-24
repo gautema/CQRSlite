@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CQRSlite.Commands;
 using CQRSlite.Domain;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Events;
 using CQRSlite.Snapshots;
 using NUnit.Framework;
@@ -37,7 +38,14 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 		    var repository = new SnapshotRepository(snapshotstorage, snapshotStrategy, new Repository(eventstorage, eventpublisher), eventstorage);
             Session = new Session(repository);
 
-            Aggregate = Session.Get<TAggregate>(Guid.Empty);
+		    try
+		    {
+                Aggregate = Session.Get<TAggregate>(Guid.Empty);
+            }
+            catch (AggregateNotFoundException)
+		    {
+		        
+		    }
 
             var handler = BuildHandler();
             handler.Handle(When());
