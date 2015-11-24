@@ -27,7 +27,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         protected IList<IEvent> EventDescriptors { get; set; }
         protected IList<IEvent> PublishedEvents { get; set; }
 		
-		[SetUp]
+        [SetUp]
         public void Run()
         {
             var eventstorage = new SpecEventStorage(Given().ToList());
@@ -38,14 +38,14 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 		    var repository = new SnapshotRepository(snapshotstorage, snapshotStrategy, new Repository(eventstorage, eventpublisher), eventstorage);
             Session = new Session(repository);
 
-		    try
-		    {
+            try
+            {
                 Aggregate = Session.Get<TAggregate>(Guid.Empty);
             }
             catch (AggregateNotFoundException)
-		    {
+            {
 		        
-		    }
+            }
 
             var handler = BuildHandler();
             handler.Handle(When());
