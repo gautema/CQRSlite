@@ -98,11 +98,7 @@ namespace CQRSlite.Cache
 
         private bool IsTracked(Guid id)
         {
-            var idstring = id.ToString();
-            lock (_locks.GetOrAdd(idstring, _ => new object()))
-            {
-                return _cache.Contains(id.ToString());
-            }
+            return _cache.Contains(id.ToString());
         }
     }
 }
