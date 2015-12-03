@@ -26,7 +26,8 @@ namespace CQRSlite.Domain
             if (expectedVersion != null && _eventStore.Get(aggregate.Id, expectedVersion.Value).Any())
                 throw new ConcurrencyException(aggregate.Id);
             var i = 0;
-            foreach (var @event in aggregate.GetUncommittedChanges())
+            var flushresult = aggregate.FlushUncommitedChanges();
+            foreach (var @event in flushresult.Changes)
             {
                 if (@event.Id == Guid.Empty && aggregate.Id == Guid.Empty)
                     throw new AggregateOrEventMissingIdException(aggregate.GetType(), @event.GetType());
@@ -34,12 +35,11 @@ namespace CQRSlite.Domain
                     @event.Id = aggregate.Id;
 
                 i++;
-                @event.Version = aggregate.Version + i;
+                @event.Version = flushresult.Version - flushresult.Changes.Length + i;
                 @event.TimeStamp = DateTimeOffset.UtcNow;
                 _eventStore.Save(@event);
                 _publisher.Publish(@event);
             }
-            aggregate.MarkChangesAsCommitted();
         }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot

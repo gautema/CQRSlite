@@ -21,12 +21,14 @@ namespace CQRSlite.Domain
             }
         }
 
-        public void MarkChangesAsCommitted()
+        public FlushResult FlushUncommitedChanges()
         {
             lock(_changes)
             {
+                var changes = _changes.ToArray();
                 Version = Version + _changes.Count;
                 _changes.Clear();
+                return new FlushResult(changes, Version);
             }
         }
 
@@ -59,6 +61,18 @@ namespace CQRSlite.Domain
                     Id = @event.Id;
                     Version++;
                 }
+            }
+        }
+
+        public class FlushResult
+        {
+            public IEvent[] Changes { get; }
+            public int Version { get; }
+
+            public FlushResult(IEvent[] changes, int version)
+            {
+                Changes = changes;
+                Version = version;
             }
         }
     }
