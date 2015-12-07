@@ -10,4 +10,7 @@
     <description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</description>
     <copyright>Copyright 2015</copyright>
   </metadata>
+  <files>
+    <file src="Framework\CQRSlite\bin\Release\CqrsLite.dll" target="lib" />
+  </files>
 </package>
