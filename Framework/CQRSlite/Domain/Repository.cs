@@ -17,6 +17,7 @@ namespace CQRSlite.Domain
                 throw new ArgumentNullException(nameof(eventStore));
             if(publisher == null)
                 throw new ArgumentNullException(nameof(publisher));
+
             _eventStore = eventStore;
             _publisher = publisher;
         }
@@ -25,21 +26,11 @@ namespace CQRSlite.Domain
         {
             if (expectedVersion != null && _eventStore.Get(aggregate.Id, expectedVersion.Value).Any())
                 throw new ConcurrencyException(aggregate.Id);
-            var i = 0;
-            var flushresult = aggregate.FlushUncommitedChanges();
-            foreach (var @event in flushresult.Changes)
-            {
-                if (@event.Id == Guid.Empty && aggregate.Id == Guid.Empty)
-                    throw new AggregateOrEventMissingIdException(aggregate.GetType(), @event.GetType());
-                if (@event.Id == Guid.Empty)
-                    @event.Id = aggregate.Id;
 
-                i++;
-                @event.Version = flushresult.Version - flushresult.Changes.Length + i;
-                @event.TimeStamp = DateTimeOffset.UtcNow;
-                _eventStore.Save(@event);
+            var changes = aggregate.FlushUncommitedChanges();
+            _eventStore.Save(changes);
+            foreach (var @event in changes)
                 _publisher.Publish(@event);
-            }
         }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot

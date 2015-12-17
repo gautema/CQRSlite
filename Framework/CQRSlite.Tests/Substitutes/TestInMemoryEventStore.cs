@@ -9,11 +9,11 @@ namespace CQRSlite.Tests.Substitutes
     {
         public readonly List<IEvent> Events = new List<IEvent>();
 
-        public void Save(IEvent @event)
+        public void Save(IEnumerable<IEvent> events)
         {
-            lock(Events)
+            lock (Events)
             {
-                Events.Add(@event);
+                Events.AddRange(events);
             }
         }
 

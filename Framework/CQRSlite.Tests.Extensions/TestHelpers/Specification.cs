@@ -56,7 +56,8 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         }
     }
 
-    internal class SpecSnapShotStorage : ISnapshotStore {
+    internal class SpecSnapShotStorage : ISnapshotStore
+    {
         public SpecSnapShotStorage(Snapshot snapshot)
         {
             Snapshot = snapshot;
@@ -75,7 +76,8 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         }
     }
 
-    internal class SpecEventPublisher : IEventPublisher {
+    internal class SpecEventPublisher : IEventPublisher
+    {
         public SpecEventPublisher()
         {
             PublishedEvents = new List<IEvent>();
@@ -89,17 +91,18 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         public IList<IEvent> PublishedEvents { get; set; }
     }
 
-    internal class SpecEventStorage : IEventStore {
-        public SpecEventStorage(IList<IEvent> events)
+    internal class SpecEventStorage : IEventStore
+    {
+        public SpecEventStorage(List<IEvent> events)
         {
             Events = events;
         }
 
-        public IList<IEvent> Events { get; set; }
+        public List<IEvent> Events { get; set; }
 
-        public void Save(IEvent @event)
+        public void Save(IEnumerable<IEvent> events)
         {
-            Events.Add(@event);
+            Events.AddRange(events);
         }
 
         public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)

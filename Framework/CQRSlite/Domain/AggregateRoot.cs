@@ -21,14 +21,25 @@ namespace CQRSlite.Domain
             }
         }
 
-        public FlushResult FlushUncommitedChanges()
+        public IEnumerable<IEvent> FlushUncommitedChanges()
         {
             lock(_changes)
             {
                 var changes = _changes.ToArray();
+                var i = 0;
+                foreach (var @event in changes)
+                {
+                    if (@event.Id == Guid.Empty && Id == Guid.Empty)
+                        throw new AggregateOrEventMissingIdException(GetType(), @event.GetType());
+                    if (@event.Id == Guid.Empty)
+                        @event.Id = Id;
+                    i++;
+                    @event.Version = Version + i;
+                    @event.TimeStamp = DateTimeOffset.UtcNow;
+                }
                 Version = Version + _changes.Count;
                 _changes.Clear();
-                return new FlushResult(changes, Version);
+                return changes;
             }
         }
 
@@ -61,18 +72,6 @@ namespace CQRSlite.Domain
                     Id = @event.Id;
                     Version++;
                 }
-            }
-        }
-
-        public class FlushResult
-        {
-            public IEvent[] Changes { get; }
-            public int Version { get; }
-
-            public FlushResult(IEvent[] changes, int version)
-            {
-                Changes = changes;
-                Version = version;
             }
         }
     }

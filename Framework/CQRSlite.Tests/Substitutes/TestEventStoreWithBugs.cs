@@ -6,6 +6,11 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestEventStoreWithBugs : IEventStore
     {
+        public void Save(IEnumerable<IEvent> events)
+        {
+            
+        }
+
         public IEnumerable<IEvent> Get(Guid aggregateId, int version)
         {
             if (aggregateId == Guid.Empty)
@@ -14,15 +19,11 @@ namespace CQRSlite.Tests.Substitutes
             }
 
             return new List<IEvent>
-                {
-                    new TestAggregateDidSomething {Id = aggregateId, Version = 3},
-                    new TestAggregateDidSomething {Id = aggregateId, Version = 2},
-                    new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 1},
-                };
-        }
-
-        public void Save(IEvent eventDescriptor)
-        {
+            {
+                new TestAggregateDidSomething {Id = aggregateId, Version = 3},
+                new TestAggregateDidSomething {Id = aggregateId, Version = 2},
+                new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 1},
+            };
         }
     }
 }
