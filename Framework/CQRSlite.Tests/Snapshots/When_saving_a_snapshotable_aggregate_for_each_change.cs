@@ -23,7 +23,7 @@ namespace CQRSlite.Tests.Snapshots
 	        _session = new Session(repository);
             _aggregate = new TestSnapshotAggregate();
 
-            for (var i = 0; i < 20; i++)
+            for (var i = 0; i < 150; i++)
             {
                 _session.Add(_aggregate);
                 _aggregate.DoSomething();
@@ -32,9 +32,9 @@ namespace CQRSlite.Tests.Snapshots
         }
 
         [Test]
-        public void Should_snapshot_15th_change()
+        public void Should_snapshot_100th_change()
         {
-            Assert.AreEqual(15, _snapshotStore.SavedVersion);
+            Assert.AreEqual(100, _snapshotStore.SavedVersion);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace CQRSlite.Tests.Snapshots
         [Test]
         public void Should_get_aggregate_back_correct()
         {
-            Assert.AreEqual(20, _session.Get<TestSnapshotAggregate>(_aggregate.Id).Number);
+            Assert.AreEqual(150, _session.Get<TestSnapshotAggregate>(_aggregate.Id).Number);
         }
     }
 }

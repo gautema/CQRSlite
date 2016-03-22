@@ -19,7 +19,7 @@ namespace CQRSlite.Tests.Snapshots
             var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
             var session = new Session(repository);
             var aggregate = new TestSnapshotAggregate();
-            for (var i = 0; i < 30; i++)
+            for (var i = 0; i < 200; i++)
             {
                 aggregate.DoSomething();
             }
@@ -36,7 +36,7 @@ namespace CQRSlite.Tests.Snapshots
         [Test]
         public void Should_save_last_version_number()
         {
-            Assert.AreEqual(30, _snapshotStore.SavedVersion);
+            Assert.AreEqual(200, _snapshotStore.SavedVersion);
         }
     }
 }
