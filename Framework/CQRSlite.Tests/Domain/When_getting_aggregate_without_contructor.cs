@@ -15,8 +15,7 @@ namespace CQRSlite.Tests.Domain
         public void Setup()
         {
             var eventStore = new TestInMemoryEventStore();
-            var eventPublisher = new TestEventPublisher();
-            _session = new Session(new Repository(eventStore, eventPublisher));
+            _session = new Session(new Repository(eventStore));
         }
 
         [Test]

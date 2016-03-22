@@ -24,7 +24,7 @@ namespace CQRSWeb
                 x.For<ISession>().HybridHttpOrThreadLocalScoped().Use<Session>();
                 x.For<IEventStore>().Singleton().Use<InMemoryEventStore>();
                 x.For<IRepository>().HybridHttpOrThreadLocalScoped().Use(y =>
-                    new CacheRepository(new Repository(y.GetInstance<IEventStore>(), y.GetInstance<IEventPublisher>()),
+                    new CacheRepository(new Repository(y.GetInstance<IEventStore>()),
                         y.GetInstance<IEventStore>()));
 
                 x.Scan(s =>

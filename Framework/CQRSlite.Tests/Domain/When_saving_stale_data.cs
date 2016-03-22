@@ -11,7 +11,6 @@ namespace CQRSlite.Tests.Domain
     {
         private TestInMemoryEventStore _eventStore;
         private TestAggregate _aggregate;
-        private TestEventPublisher _eventPublisher;
         private Repository _rep;
         private Session _session;
 
@@ -19,8 +18,7 @@ namespace CQRSlite.Tests.Domain
         public void Setup()
         {
             _eventStore = new TestInMemoryEventStore();
-            _eventPublisher = new TestEventPublisher();
-            _rep = new Repository(_eventStore, _eventPublisher);
+            _rep = new Repository(_eventStore);
             _session = new Session(_rep);
 
             _aggregate = new TestAggregate(Guid.NewGuid());

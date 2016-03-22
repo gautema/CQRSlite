@@ -12,7 +12,6 @@ namespace CQRSlite.Tests.Domain
     {
         private TestInMemoryEventStore _eventStore;
         private TestAggregateNoParameterLessConstructor _aggregate;
-        private TestEventPublisher _eventPublisher;
 	    private ISession _session;
 	    private Repository _rep;
 
@@ -20,8 +19,7 @@ namespace CQRSlite.Tests.Domain
         public void Setup()
         {
             _eventStore = new TestInMemoryEventStore();
-            _eventPublisher = new TestEventPublisher();
-	        _rep = new Repository(_eventStore, _eventPublisher);
+	        _rep = new Repository(_eventStore);
             _session = new Session(_rep);
 
             _aggregate = new TestAggregateNoParameterLessConstructor(2);
@@ -45,15 +43,6 @@ namespace CQRSlite.Tests.Domain
             Assert.AreEqual(0, _aggregate.GetUncommittedChanges().Count());
         }
         
-        [Test]
-        public void Should_publish_events()
-        {
-            _aggregate.DoSomething();
-            _session.Add(_aggregate);
-            _session.Commit();
-            Assert.AreEqual(1, _eventPublisher.Published);
-        }
-
         [Test]
         public void Should_add_new_aggregate()
         {
@@ -84,7 +73,6 @@ namespace CQRSlite.Tests.Domain
             _session.Commit();
             Assert.That(_eventStore.Events.First().Version, Is.EqualTo(1));
             Assert.That(_eventStore.Events.Last().Version, Is.EqualTo(2));
-
         }
 
         [Test]

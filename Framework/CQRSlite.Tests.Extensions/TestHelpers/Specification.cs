@@ -30,12 +30,12 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         [SetUp]
         public void Run()
         {
-            var eventstorage = new SpecEventStorage(Given().ToList());
-            var snapshotstorage = new SpecSnapShotStorage(Snapshot);
             var eventpublisher = new SpecEventPublisher();
+            var eventstorage = new SpecEventStorage(eventpublisher, Given().ToList());
+            var snapshotstorage = new SpecSnapShotStorage(Snapshot);
 
             var snapshotStrategy = new DefaultSnapshotStrategy();
-		    var repository = new SnapshotRepository(snapshotstorage, snapshotStrategy, new Repository(eventstorage, eventpublisher), eventstorage);
+		    var repository = new SnapshotRepository(snapshotstorage, snapshotStrategy, new Repository(eventstorage), eventstorage);
             Session = new Session(repository);
 
             try
@@ -93,8 +93,11 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
     internal class SpecEventStorage : IEventStore
     {
-        public SpecEventStorage(List<IEvent> events)
+        private readonly IEventPublisher _publisher;
+
+        public SpecEventStorage(IEventPublisher publisher, List<IEvent> events)
         {
+            _publisher = publisher;
             Events = events;
         }
 
@@ -103,6 +106,8 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         public void Save(IEnumerable<IEvent> events)
         {
             Events.AddRange(events);
+            foreach (var @event in events)
+                _publisher.Publish(@event);
         }
 
         public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)

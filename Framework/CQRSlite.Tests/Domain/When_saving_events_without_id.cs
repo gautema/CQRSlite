@@ -11,15 +11,13 @@ namespace CQRSlite.Tests.Domain
     {
         private TestInMemoryEventStore _eventStore;
         private TestAggregate _aggregate;
-        private TestEventPublisher _eventPublisher;
         private Repository _rep;
 
         [SetUp]
         public void Setup()
         {
             _eventStore = new TestInMemoryEventStore();
-            _eventPublisher = new TestEventPublisher();
-            _rep = new Repository(_eventStore, _eventPublisher);
+            _rep = new Repository(_eventStore);
 
             _aggregate = new TestAggregate(Guid.Empty);
         }

@@ -25,8 +25,8 @@ namespace CQRSlite.Tests.Cache
                 MemoryCache.Default.Remove(cacheKey);
 
             _testStore = new TestInMemoryEventStore();
-            _rep1 = new CacheRepository(new Repository(_testStore,new TestEventPublisher()), _testStore);
-            _rep2 = new CacheRepository(new Repository(_testStore,new TestEventPublisher()), _testStore);
+            _rep1 = new CacheRepository(new Repository(_testStore), _testStore);
+            _rep2 = new CacheRepository(new Repository(_testStore), _testStore);
 
             _aggregate = new TestAggregate(Guid.NewGuid());
             _rep1.Save(_aggregate);

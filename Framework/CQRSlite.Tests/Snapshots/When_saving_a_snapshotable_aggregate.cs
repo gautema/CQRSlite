@@ -14,10 +14,9 @@ namespace CQRSlite.Tests.Snapshots
         public void Setup()
         {
             var eventStore = new TestInMemoryEventStore();
-            var eventPublisher = new TestEventPublisher();
             _snapshotStore = new TestSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-            var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(eventStore, eventPublisher), eventStore);
+            var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
             var session = new Session(repository);
             var aggregate = new TestSnapshotAggregate();
             for (var i = 0; i < 30; i++)

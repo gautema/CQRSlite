@@ -11,13 +11,21 @@ namespace CQRSlite.Domain
         private readonly IEventStore _eventStore;
         private readonly IEventPublisher _publisher;
 
-        public Repository(IEventStore eventStore, IEventPublisher publisher)
+        public Repository(IEventStore eventStore)
         {
             if(eventStore == null)
                 throw new ArgumentNullException(nameof(eventStore));
-            if(publisher == null)
-                throw new ArgumentNullException(nameof(publisher));
 
+            _eventStore = eventStore;
+        }
+
+        [Obsolete("The eventstore should publish events after saving")]
+        public Repository(IEventStore eventStore, IEventPublisher publisher)
+        {
+            if (eventStore == null)
+                throw new ArgumentNullException(nameof(eventStore));
+            if (publisher == null)
+                throw new ArgumentNullException(nameof(publisher));
             _eventStore = eventStore;
             _publisher = publisher;
         }
@@ -29,8 +37,10 @@ namespace CQRSlite.Domain
 
             var changes = aggregate.FlushUncommitedChanges();
             _eventStore.Save(changes);
-            foreach (var @event in changes)
-                _publisher.Publish(@event);
+
+            if (_publisher != null)
+                foreach (var @event in changes)
+                    _publisher.Publish(@event);
         }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
