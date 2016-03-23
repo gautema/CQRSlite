@@ -5,7 +5,7 @@ namespace CQRSlite.Events
 {
     public interface IEventStore 
     {
-        void Save(IEnumerable<IEvent> events);
-        IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion);
+        void Save<T>(IEnumerable<IEvent> events);
+        IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion);
     }
 }

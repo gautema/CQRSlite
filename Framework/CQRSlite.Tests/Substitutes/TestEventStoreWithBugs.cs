@@ -6,12 +6,12 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestEventStoreWithBugs : IEventStore
     {
-        public void Save(IEnumerable<IEvent> events)
+        public void Save<T>(IEnumerable<IEvent> events)
         {
             
         }
 
-        public IEnumerable<IEvent> Get(Guid aggregateId, int version)
+        public IEnumerable<IEvent> Get<T>(Guid aggregateId, int version)
         {
             if (aggregateId == Guid.Empty)
             {

@@ -32,11 +32,11 @@ namespace CQRSlite.Domain
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
-            if (expectedVersion != null && _eventStore.Get(aggregate.Id, expectedVersion.Value).Any())
+            if (expectedVersion != null && _eventStore.Get<T>(aggregate.Id, expectedVersion.Value).Any())
                 throw new ConcurrencyException(aggregate.Id);
 
             var changes = aggregate.FlushUncommitedChanges();
-            _eventStore.Save(changes);
+            _eventStore.Save<T>(changes);
 
             if (_publisher != null)
                 foreach (var @event in changes)
@@ -52,7 +52,7 @@ namespace CQRSlite.Domain
         {
             var aggregate = AggregateFactory.CreateAggregate<T>();
 
-            var events = _eventStore.Get(id, -1);
+            var events = _eventStore.Get<T>(id, -1);
             if (!events.Any())
                 throw new AggregateNotFoundException(id);
 

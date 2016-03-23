@@ -45,7 +45,7 @@ namespace CQRSlite.Snapshots
             {
                 return _repository.Get<T>(aggregateId);
             }
-            var events = _eventStore.Get(aggregateId, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
+            var events = _eventStore.Get<T>(aggregateId, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
             aggregate.LoadFromHistory(events);
 
             return aggregate;

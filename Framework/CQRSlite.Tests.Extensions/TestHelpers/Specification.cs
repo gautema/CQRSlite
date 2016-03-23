@@ -103,14 +103,14 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public List<IEvent> Events { get; set; }
 
-        public void Save(IEnumerable<IEvent> events)
+        public void Save<T>(IEnumerable<IEvent> events)
         {
             Events.AddRange(events);
             foreach (var @event in events)
                 _publisher.Publish(@event);
         }
 
-        public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)
+        public IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion)
         {
             return Events.Where(x => x.Version > fromVersion);
         }

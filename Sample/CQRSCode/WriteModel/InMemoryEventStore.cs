@@ -15,7 +15,7 @@ namespace CQRSCode.WriteModel
             _publisher = publisher;
         }
 
-        public void Save(IEnumerable<IEvent> events)
+        public void Save<T>(IEnumerable<IEvent> events)
         {
             foreach (var @event in events)
             {
@@ -31,7 +31,7 @@ namespace CQRSCode.WriteModel
             }
         }
 
-        public IEnumerable<IEvent> Get(Guid aggregateId, int fromVersion)
+        public IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion)
         {
             List<IEvent> events;
             _inMemoryDb.TryGetValue(aggregateId, out events);
