@@ -52,7 +52,7 @@ namespace CQRSlite.Domain
         {
             var events = _eventStore.Get<T>(id, -1);
             if (!events.Any())
-                throw new AggregateNotFoundException(id);
+                throw new AggregateNotFoundException(typeof(T), id);
 
             var aggregate = AggregateFactory.CreateAggregate<T>();
             aggregate.LoadFromHistory(events);
