@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CQRSlite.Bus;
+using CQRSlite.Commands;
+using CQRSlite.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using CQRSlite.Bus;
-using CQRSlite.Commands;
-using CQRSlite.Events;
 
 namespace CQRSlite.Config
 {
@@ -14,8 +14,10 @@ namespace CQRSlite.Config
 
         public BusRegistrar(IServiceLocator serviceLocator)
         {
-            if(serviceLocator == null)
+            if (serviceLocator == null)
+            {
                 throw new ArgumentNullException(nameof(serviceLocator));
+            }
 
             _serviceLocator = serviceLocator;
         }
@@ -23,22 +25,27 @@ namespace CQRSlite.Config
         public void Register(params Type[] typesFromAssemblyContainingMessages)
         {
             var bus = _serviceLocator.GetService<IHandlerRegistrar>();
-            
+
             foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
             {
                 var executorsAssembly = typesFromAssemblyContainingMessage.Assembly;
                 var executorTypes = executorsAssembly
                     .GetTypes()
-                    .Select(t => new {Type = t, Interfaces = ResolveMessageHandlerInterface(t)})
+                    .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
                     .Where(e => e.Interfaces != null && e.Interfaces.Any());
 
                 foreach (var executorType in executorTypes)
+                {
                     foreach (var @interface in executorType.Interfaces)
+                    {
                         InvokeHandler(@interface, bus, executorType.Type);
+                    }
+                }
             }
         }
 
-        private void InvokeHandler(Type @interface, IHandlerRegistrar bus, Type executorType) {
+        private void InvokeHandler(Type @interface, IHandlerRegistrar bus, Type executorType)
+        {
             var commandType = @interface.GetGenericArguments()[0];
 
             var registerExecutorMethod = bus
@@ -55,7 +62,7 @@ namespace CQRSlite.Config
                 dynamic handler = _serviceLocator.GetService(executorType);
                 handler.Handle(x);
             });
-            
+
             registerExecutorMethod.Invoke(bus, new object[] { del });
         }
 
@@ -63,8 +70,8 @@ namespace CQRSlite.Config
         {
             return type
                 .GetInterfaces()
-                .Where(i => i.IsGenericType && ((i.GetGenericTypeDefinition() == typeof (ICommandHandler<>))
-                                                || i.GetGenericTypeDefinition() == typeof (IEventHandler<>)));
+                .Where(i => i.IsGenericType && ((i.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
+                                                || i.GetGenericTypeDefinition() == typeof(IEventHandler<>)));
         }
 
     }

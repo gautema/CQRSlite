@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CQRSlite.Domain;
+using CQRSlite.Events;
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.Caching;
-using CQRSlite.Domain;
-using CQRSlite.Events;
 
 namespace CQRSlite.Cache
 {
@@ -18,9 +18,13 @@ namespace CQRSlite.Cache
         public CacheRepository(IRepository repository, IEventStore eventStore)
         {
             if (repository == null)
+            {
                 throw new ArgumentNullException(nameof(repository));
+            }
             if (eventStore == null)
+            {
                 throw new ArgumentNullException(nameof(eventStore));
+            }
 
             _repository = repository;
             _eventStore = eventStore;
@@ -44,7 +48,9 @@ namespace CQRSlite.Cache
                 lock (_locks.GetOrAdd(idstring, _ => new object()))
                 {
                     if (aggregate.Id != Guid.Empty && !IsTracked(aggregate.Id))
+                    {
                         _cache.Add(idstring, aggregate, _policyFactory.Invoke());
+                    }
                     _repository.Save(aggregate, expectedVersion);
                 }
             }

@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Cache\CacheRepository.cs" />
     <Compile Include="Config\IServiceLocator.cs" />
+    <Compile Include="Domain\AggregateDescriptor.cs" />
     <Compile Include="Domain\Exception\AggregateOrEventMissingIdException.cs" />
     <Compile Include="Domain\AggregateRoot.cs" />
     <Compile Include="Commands\ICommand.cs" />

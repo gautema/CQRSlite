@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using CQRSlite.Domain;
+﻿using CQRSlite.Domain;
 using CQRSlite.Domain.Factories;
 using CQRSlite.Events;
 using CQRSlite.Infrastructure;
+using System;
+using System.Linq;
 
 namespace CQRSlite.Snapshots
 {
@@ -16,14 +16,22 @@ namespace CQRSlite.Snapshots
 
         public SnapshotRepository(ISnapshotStore snapshotStore, ISnapshotStrategy snapshotStrategy, IRepository repository, IEventStore eventStore)
         {
-            if(snapshotStore == null)
+            if (snapshotStore == null)
+            {
                 throw new ArgumentNullException(nameof(snapshotStore));
-            if(snapshotStrategy == null)
+            }
+            if (snapshotStrategy == null)
+            {
                 throw new ArgumentNullException(nameof(snapshotStrategy));
-            if(repository == null)
+            }
+            if (repository == null)
+            {
                 throw new ArgumentNullException(nameof(repository));
-            if(eventStore == null)
+            }
+            if (eventStore == null)
+            {
                 throw new ArgumentNullException(nameof(eventStore));
+            }
 
             _snapshotStore = snapshotStore;
             _snapshotStrategy = snapshotStrategy;
@@ -41,7 +49,7 @@ namespace CQRSlite.Snapshots
         {
             var aggregate = AggregateFactory.CreateAggregate<T>();
             var snapshotVersion = TryRestoreAggregateFromSnapshot(aggregateId, aggregate);
-            if(snapshotVersion == -1)
+            if (snapshotVersion == -1)
             {
                 return _repository.Get<T>(aggregateId);
             }
@@ -69,7 +77,9 @@ namespace CQRSlite.Snapshots
         private void TryMakeSnapshot(AggregateRoot aggregate)
         {
             if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
+            {
                 return;
+            }
             var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
             _snapshotStore.Save(snapshot);

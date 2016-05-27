@@ -6,7 +6,6 @@ namespace CQRSlite.Domain.Exception
     {
         public ConcurrencyException(Guid id)
             : base($"A different version than expected was found in aggregate {id}")
-        {
-        }
+        { }
     }
 }

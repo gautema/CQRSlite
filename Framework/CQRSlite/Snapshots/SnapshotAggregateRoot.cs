@@ -2,7 +2,7 @@
 
 namespace CQRSlite.Snapshots
 {
-    public abstract class SnapshotAggregateRoot<T>: AggregateRoot where T : Snapshot
+    public abstract class SnapshotAggregateRoot<T> : AggregateRoot where T : Snapshot
     {
         public T GetSnapshot()
         {
