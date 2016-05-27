@@ -1,5 +1,5 @@
-using System;
 using CQRSlite.Messages;
+using System;
 
 namespace CQRSlite.Events
 {

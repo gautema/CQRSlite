@@ -13,7 +13,9 @@ namespace CQRSlite.Infrastructure
         {
             // Don't wrap primitive types, which don't have many interesting internal APIs
             if (o == null || o.GetType().IsPrimitive || o is string)
+            {
                 return o;
+            }
 
             return new PrivateReflectionDynamicObject { RealObject = o };
         }
@@ -33,12 +35,20 @@ namespace CQRSlite.Infrastructure
         {
             var argtypes = new Type[args.Length];
             for (var i = 0; i < args.Length; i++)
+            {
                 argtypes[i] = args[i].GetType();
+            }
             while (true)
             {
                 var member = type.GetMethod(name, bindingFlags, null, argtypes, null);
-                if (member != null) return member.Invoke(target, args);
-                if (type.BaseType == null) return null;
+                if (member != null)
+                {
+                    return member.Invoke(target, args);
+                }
+                if (type.BaseType == null)
+                {
+                    return null;
+                }
                 type = type.BaseType;
             }
         }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using CQRSlite.Domain.Exception;
+﻿using CQRSlite.Domain.Exception;
 using CQRSlite.Events;
 using CQRSlite.Infrastructure;
+using System;
+using System.Collections.Generic;
 
 namespace CQRSlite.Domain
 {
@@ -23,16 +23,20 @@ namespace CQRSlite.Domain
 
         public IEnumerable<IEvent> FlushUncommitedChanges()
         {
-            lock(_changes)
+            lock (_changes)
             {
                 var changes = _changes.ToArray();
                 var i = 0;
                 foreach (var @event in changes)
                 {
                     if (@event.Id == Guid.Empty && Id == Guid.Empty)
+                    {
                         throw new AggregateOrEventMissingIdException(GetType(), @event.GetType());
+                    }
                     if (@event.Id == Guid.Empty)
+                    {
                         @event.Id = Id;
+                    }
                     i++;
                     @event.Version = Version + i;
                     @event.TimeStamp = DateTimeOffset.UtcNow;
@@ -48,7 +52,9 @@ namespace CQRSlite.Domain
             foreach (var e in history)
             {
                 if (e.Version != Version + 1)
+                {
                     throw new EventsOutOfOrderException(e.Id);
+                }
                 ApplyChange(e, false);
             }
         }
