@@ -27,7 +27,7 @@ namespace CQRSlite.Cache
             _cache = MemoryCache.Default;
             _policyFactory = () => new CacheItemPolicy
             {
-                SlidingExpiration = new TimeSpan(0, 0, 15, 0),
+                SlidingExpiration = TimeSpan.FromMinutes(15),
                 RemovedCallback = x =>
                 {
                     object o;
@@ -68,7 +68,7 @@ namespace CQRSlite.Cache
                     T aggregate;
                     if (IsTracked(aggregateId))
                     {
-                        aggregate = (T) _cache.Get(idstring);
+                        aggregate = (T)_cache.Get(idstring);
                         var events = _eventStore.Get<T>(aggregateId, aggregate.Version);
                         if (events.Any() && events.First().Version != aggregate.Version + 1)
                         {
