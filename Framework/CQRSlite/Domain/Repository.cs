@@ -50,12 +50,11 @@ namespace CQRSlite.Domain
 
         private T LoadAggregate<T>(Guid id) where T : AggregateRoot
         {
-            var aggregate = AggregateFactory.CreateAggregate<T>();
-
             var events = _eventStore.Get<T>(id, -1);
             if (!events.Any())
                 throw new AggregateNotFoundException(id);
 
+            var aggregate = AggregateFactory.CreateAggregate<T>();
             aggregate.LoadFromHistory(events);
             return aggregate;
         }
