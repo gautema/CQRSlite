@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 14.00
-# Visual Studio 2015
-VisualStudioVersion = 14.0.22823.1
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 14.0.22823.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{B8A193A0-0649-4A91-AD4C-DD87794D5836}"
 EndProject
@@ -24,6 +24,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{211744
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Portable", "Framework\CQRSlite.Portable\CQRSlite.Portable.csproj", "{DAB63881-593E-41B2-964A-3EC4571768D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3D2B1113-69C1-450F-AF40-00EBA5F0A72A}"
+	ProjectSection(SolutionItems) = preProject
+		CQRSlite.nuspec = CQRSlite.nuspec
 	EndProjectSection
 EndProject
 Global
@@ -56,6 +63,10 @@ Global
 		{7D917143-64CF-4492-A2F6-B1D5B95136F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D917143-64CF-4492-A2F6-B1D5B95136F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D917143-64CF-4492-A2F6-B1D5B95136F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAB63881-593E-41B2-964A-3EC4571768D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAB63881-593E-41B2-964A-3EC4571768D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAB63881-593E-41B2-964A-3EC4571768D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAB63881-593E-41B2-964A-3EC4571768D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +78,7 @@ Global
 		{420F0A58-CB69-4517-9251-6F92911C3A61} = {2D2585B3-9047-41C0-BB5E-13342F1A6549}
 		{8E96F332-4D60-42E5-A264-5707A68A297A} = {2D2585B3-9047-41C0-BB5E-13342F1A6549}
 		{7D917143-64CF-4492-A2F6-B1D5B95136F6} = {B8A193A0-0649-4A91-AD4C-DD87794D5836}
+		{DAB63881-593E-41B2-964A-3EC4571768D6} = {2D2585B3-9047-41C0-BB5E-13342F1A6549}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Sample\CQRSWeb\CQRSWeb.csproj

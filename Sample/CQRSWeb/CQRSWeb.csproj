@@ -132,9 +132,9 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\CQRSlite\CQRSlite.csproj">
-      <Project>{dafd2a8a-d6b0-4433-8ddf-b98460c64ec6}</Project>
-      <Name>CQRSlite</Name>
+    <ProjectReference Include="..\..\Framework\CQRSlite.Portable\CQRSlite.Portable.csproj">
+      <Project>{dab63881-593e-41b2-964a-3ec4571768d6}</Project>
+      <Name>CQRSlite.Portable</Name>
     </ProjectReference>
     <ProjectReference Include="..\CQRSCode\CQRSCode.csproj">
       <Project>{34e7dc24-8080-4e47-90e6-3bcda44955e5}</Project>

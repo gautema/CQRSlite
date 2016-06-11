@@ -11,6 +11,12 @@
     <copyright>Copyright 2015</copyright>
   </metadata>
   <files>
-    <file src="Framework\CQRSlite\bin\Release\CqrsLite.dll" target="lib" />
+    <file src="Framework\CQRSlite.Portable\bin\Release\CqrsLite.dll" target="lib" />
   </files>
+  <dependencies>
+    <dependency id="C5" version="2.4.5947.17249"/>
+    <dependency id="Portable.ConcurrentDictionary" version="1.0.2"/>
+    <dependency id="Provision" version="3.0.3"/>
+    <dependency id="Provision.Providers.PortableMemoryCache" version="3.0.1" />
+  </dependencies>
 </package>
