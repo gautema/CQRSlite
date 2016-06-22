@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "CQRSlite": "1.0.0-*",
+    "CQRSlite.NetCore": "1.0.0-*",
     "NETStandard.Library": "1.5.0-rc2-24027"
   },
 
