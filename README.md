@@ -2,8 +2,6 @@
 
 This is a .Net Core fork of [CQRSlite](https://github.com/gautema/CQRSlite). All creds goes to [gautema](https://github.com/gautema)
 
-[![NuGet](https://img.shields.io/nuget/vpre/cqrslite.svg)](https://www.nuget.org/packages/cqrslite)
-
 ## The framework
 CQRSlite is a small CQRS and Eventsourcing Framework. It is written in C# and targets .NET 4.6.1 CQRSlite originated as a CQRS sample project Greg Young and I did in the autumn of 2010.
 This code is located at http://github.com/gregoryyoung/m-r
