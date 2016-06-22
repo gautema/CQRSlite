@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.Caching;
 using System.Threading.Tasks;
 using CQRSlite.Cache;
 using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Tests.Cache
 {
@@ -16,49 +16,45 @@ namespace CQRSlite.Tests.Cache
         private TestAggregate _aggregate;
         private TestInMemoryEventStore _testStore;
 
-        [SetUp]
-        public void Setup()
+        public When_saving_same_aggregate_in_parallel()
         {
-            // This will clear the cache between runs.
-            var cacheKeys = MemoryCache.Default.Select(kvp => kvp.Key).ToList();
-            foreach (var cacheKey in cacheKeys)
-                MemoryCache.Default.Remove(cacheKey);
+            var memoryCache = new MemoryCache(new MemoryCacheOptions());
 
             _testStore = new TestInMemoryEventStore();
-            _rep1 = new CacheRepository(new Repository(_testStore), _testStore);
-            _rep2 = new CacheRepository(new Repository(_testStore), _testStore);
+            _rep1 = new CacheRepository(new Repository(_testStore), _testStore, memoryCache);
+            _rep2 = new CacheRepository(new Repository(_testStore), _testStore, memoryCache);
 
             _aggregate = new TestAggregate(Guid.NewGuid());
             _rep1.Save(_aggregate);
 
             var t1 = new Task(() =>
-                                  {
-                                      for (var i = 0; i < 100; i++)
-                                      {
-                                          var aggregate = _rep1.Get<TestAggregate>(_aggregate.Id);
-                                          aggregate.DoSomething();
-                                          _rep1.Save(aggregate);
-                                      }
-                                  });
+            {
+                for (var i = 0; i < 100; i++)
+                {
+                    var aggregate = _rep1.Get<TestAggregate>(_aggregate.Id);
+                    aggregate.DoSomething();
+                    _rep1.Save(aggregate);
+                }
+            });
 
             var t2 = new Task(() =>
-                                  {
-                                      for (var i = 0; i < 100; i++)
-                                      {
-                                          var aggregate = _rep2.Get<TestAggregate>(_aggregate.Id);
-                                          aggregate.DoSomething();
-                                          _rep2.Save(aggregate);
-                                      }
-                                  });
+            {
+                for (var i = 0; i < 100; i++)
+                {
+                    var aggregate = _rep2.Get<TestAggregate>(_aggregate.Id);
+                    aggregate.DoSomething();
+                    _rep2.Save(aggregate);
+                }
+            });
             var t3 = new Task(() =>
-                                  {
-                                      for (var i = 0; i < 100; i++)
-                                      {
-                                          var aggregate = _rep2.Get<TestAggregate>(_aggregate.Id);
-                                          aggregate.DoSomething();
-                                          _rep2.Save(aggregate);
-                                      }
-                                  });
+            {
+                for (var i = 0; i < 100; i++)
+                {
+                    var aggregate = _rep2.Get<TestAggregate>(_aggregate.Id);
+                    aggregate.DoSomething();
+                    _rep2.Save(aggregate);
+                }
+            });
             t1.Start();
             t2.Start();
             t3.Start();
@@ -66,16 +62,16 @@ namespace CQRSlite.Tests.Cache
             Task.WaitAll(t1, t2, t3);
         }
 
-        [Test]
+        [Fact]
         public void Should_not_get_more_than_one_event_with_same_id()
         {
-            Assert.That(_testStore.Events.Select(x => x.Version).Distinct().Count(), Is.EqualTo(_testStore.Events.Count));
+            Assert.Equal(_testStore.Events.Count, _testStore.Events.Select(x => x.Version).Distinct().Count());
         }
 
-        [Test]
+        [Fact]
         public void Should_save_all_events()
         {
-            Assert.That(_testStore.Events.Count, Is.EqualTo(301));
+            Assert.Equal(301, _testStore.Events.Count);
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace CQRSlite.Messages
+﻿namespace CQRSlite.Messages
 {
     public interface IMessage
     { }

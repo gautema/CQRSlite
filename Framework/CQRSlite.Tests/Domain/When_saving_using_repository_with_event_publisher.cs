@@ -1,10 +1,9 @@
 ﻿using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
 
 namespace CQRSlite.Tests.Domain
 {
-    [TestFixture]
     public class When_saving_using_repository_with_event_publisher
     {
         private TestInMemoryEventStore _eventStore;
@@ -13,8 +12,7 @@ namespace CQRSlite.Tests.Domain
         private ISession _session;
         private Repository _rep;
 
-        [SetUp]
-        public void Setup()
+        public When_saving_using_repository_with_event_publisher()
         {
             _eventStore = new TestInMemoryEventStore();
             _eventPublisher = new TestEventPublisher();
@@ -26,13 +24,13 @@ namespace CQRSlite.Tests.Domain
             _aggregate = new TestAggregateNoParameterLessConstructor(2);
         }
 
-        [Test]
+        [Fact]
         public void Should_publish_events()
         {
             _aggregate.DoSomething();
             _session.Add(_aggregate);
             _session.Commit();
-            Assert.AreEqual(1, _eventPublisher.Published);
+            Assert.Equal(1, _eventPublisher.Published);
         }
     }
 }

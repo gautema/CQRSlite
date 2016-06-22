@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using CQRSlite.Domain;
+using System.Reflection;
 
 namespace CQRSlite.Snapshots
 {
@@ -9,15 +10,15 @@ namespace CQRSlite.Snapshots
         private const int SnapshotInterval = 100;
         public bool IsSnapshotable(Type aggregateType)
         {
-            if (aggregateType.BaseType == null)
+            if (aggregateType.GetTypeInfo().BaseType == null)
             {
                 return false;
             }
-            if (aggregateType.BaseType.IsGenericType && aggregateType.BaseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
+            if (aggregateType.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType && aggregateType.GetTypeInfo().BaseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
             {
                 return true;
             }
-            return IsSnapshotable(aggregateType.BaseType);
+            return IsSnapshotable(aggregateType.GetTypeInfo().BaseType);
         }
 
         public bool ShouldMakeSnapShot(AggregateRoot aggregate)

@@ -3,7 +3,7 @@ using CQRSlite.Events;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Runtime.Caching;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Cache
 {
@@ -11,11 +11,11 @@ namespace CQRSlite.Cache
     {
         private readonly IRepository _repository;
         private readonly IEventStore _eventStore;
-        private readonly MemoryCache _cache;
-        private readonly Func<CacheItemPolicy> _policyFactory;
+        private readonly IMemoryCache _cache;
+        private readonly MemoryCacheEntryOptions _cacheOptions;
         private static readonly ConcurrentDictionary<string, object> _locks = new ConcurrentDictionary<string, object>();
 
-        public CacheRepository(IRepository repository, IEventStore eventStore)
+        public CacheRepository(IRepository repository, IEventStore eventStore, IMemoryCache memoryCache)
         {
             if (repository == null)
             {
@@ -28,16 +28,8 @@ namespace CQRSlite.Cache
 
             _repository = repository;
             _eventStore = eventStore;
-            _cache = MemoryCache.Default;
-            _policyFactory = () => new CacheItemPolicy
-            {
-                SlidingExpiration = TimeSpan.FromMinutes(15),
-                RemovedCallback = x =>
-                {
-                    object o;
-                    _locks.TryRemove(x.CacheItem.Key, out o);
-                }
-            };
+            _cache = memoryCache;
+            _cacheOptions = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(15) };
         }
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
@@ -49,7 +41,7 @@ namespace CQRSlite.Cache
                 {
                     if (aggregate.Id != Guid.Empty && !IsTracked(aggregate.Id))
                     {
-                        _cache.Add(idstring, aggregate, _policyFactory.Invoke());
+                        _cache.Set(idstring, aggregate, _cacheOptions);
                     }
                     _repository.Save(aggregate, expectedVersion);
                 }
@@ -88,7 +80,7 @@ namespace CQRSlite.Cache
                     }
 
                     aggregate = _repository.Get<T>(aggregateId);
-                    _cache.Add(aggregateId.ToString(), aggregate, _policyFactory.Invoke());
+                    _cache.Set(aggregateId.ToString(), aggregate, _cacheOptions);
                     return aggregate;
                 }
             }
@@ -104,7 +96,8 @@ namespace CQRSlite.Cache
 
         private bool IsTracked(Guid id)
         {
-            return _cache.Contains(id.ToString());
+            object o;
+            return _cache.TryGetValue(id.ToString(), out o);
         }
     }
 }

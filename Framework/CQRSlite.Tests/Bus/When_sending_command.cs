@@ -1,32 +1,30 @@
 using System;
 using CQRSlite.Bus;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
 
 namespace CQRSlite.Tests.Bus
 {
-	[TestFixture]
     public class When_sending_command
     {
         private InProcessBus _bus;
 
-		[SetUp]
-        public void Setup()
+        public When_sending_command()
         {
             _bus = new InProcessBus();
         }
 
-        [Test]
+        [Fact]
         public void Should_run_handler()
         {
             var handler = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
             _bus.Send(new TestAggregateDoSomething());
 
-            Assert.AreEqual(1,handler.TimesRun);
+            Assert.Equal(1,handler.TimesRun);
         }
 
-        [Test]
+        [Fact]
         public void Should_throw_if_more_handlers()
         {
             var x = new TestAggregateDoSomethingHandler();
@@ -36,7 +34,7 @@ namespace CQRSlite.Tests.Bus
             Assert.Throws<InvalidOperationException>(() => _bus.Send(new TestAggregateDoSomething()));
         }
 
-        [Test]
+        [Fact]
         public void Should_throw_if_no_handlers()
         {
             Assert.Throws<InvalidOperationException>(() => _bus.Send(new TestAggregateDoSomething()));

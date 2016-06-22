@@ -28,7 +28,7 @@ namespace CQRSlite.Config
 
             foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
             {
-                var executorsAssembly = typesFromAssemblyContainingMessage.Assembly;
+                var executorsAssembly = typesFromAssemblyContainingMessage.GetTypeInfo().Assembly;
                 var executorTypes = executorsAssembly
                     .GetTypes()
                     .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
@@ -70,9 +70,8 @@ namespace CQRSlite.Config
         {
             return type
                 .GetInterfaces()
-                .Where(i => i.IsGenericType && ((i.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
+                .Where(i => i.GetTypeInfo().IsGenericType && ((i.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
                                                 || i.GetGenericTypeDefinition() == typeof(IEventHandler<>)));
         }
-
     }
 }

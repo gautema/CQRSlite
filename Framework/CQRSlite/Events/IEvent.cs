@@ -1,4 +1,4 @@
-using CQRSlite.Messages;
+﻿using CQRSlite.Messages;
 using System;
 
 namespace CQRSlite.Events
@@ -10,4 +10,3 @@ namespace CQRSlite.Events
         DateTimeOffset TimeStamp { get; set; }
     }
 }
-

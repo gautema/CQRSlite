@@ -2,23 +2,21 @@
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
 
 namespace CQRSlite.Tests.Domain
 {
-    [TestFixture]
     public class When_adding_aggregates_to_repository
     {
         private Session _session;
 
-        [SetUp]
-        public void SetUp()
+        public When_adding_aggregates_to_repository()
         {
             var eventStore = new TestInMemoryEventStore();
             _session = new Session(new Repository(eventStore));
         }
 
-        [Test]
+        [Fact]
         public void Should_throw_if_different_object_with_tracked_guid_is_added()
         {
             var aggregate = new TestAggregate(Guid.NewGuid());
@@ -27,7 +25,7 @@ namespace CQRSlite.Tests.Domain
             Assert.Throws<ConcurrencyException>(() => _session.Add(aggregate2));
         }
 
-        [Test]
+        [Fact]
         public void Should_not_throw_if_object_already_tracked()
         {
             var aggregate = new TestAggregate(Guid.NewGuid());

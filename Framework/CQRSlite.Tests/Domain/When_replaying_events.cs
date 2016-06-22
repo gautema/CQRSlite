@@ -1,32 +1,30 @@
 ﻿using System;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
 
 namespace CQRSlite.Tests.Domain
 {
-	[TestFixture]
     public class When_replaying_events
     {
         private TestAggregate _aggregate;
 
-		[SetUp]
-        public void Setup()
+        public When_replaying_events()
         {
             _aggregate = new TestAggregate(Guid.NewGuid());
         }
 
-        [Test]
+        [Fact]
         public void Should_call_apply_if_exist()
         {
             _aggregate.DoSomething();
-            Assert.AreEqual(1, _aggregate.DidSomethingCount);
+            Assert.Equal(1, _aggregate.DidSomethingCount);
         }
 
-        [Test]
+        [Fact]
         public void Should_not_fail_apply_if_dont_exist()
         {
             _aggregate.DoSomethingElse();
-            Assert.AreEqual(0, _aggregate.DidSomethingCount);
+            Assert.Equal(0, _aggregate.DidSomethingCount);
         }
     }
 }

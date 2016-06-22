@@ -1,37 +1,37 @@
 ﻿using System;
-using System.Runtime.Caching;
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Tests.Cache
 {
-    [TestFixture]
     public class When_saving_fails
     {
         private CacheRepository _rep;
         private TestAggregate _aggregate;
         private TestRepository _testRep;
+        private IMemoryCache _memoryCache;
 
-        [SetUp]
-        public void Setup()
+        public When_saving_fails()
         {
+            _memoryCache = new MemoryCache(new MemoryCacheOptions());
             _testRep = new TestRepository();
-            _rep = new CacheRepository(_testRep, new TestInMemoryEventStore());
+            _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), _memoryCache);
             _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid());
             _aggregate.DoSomething();
             try
             {
                 _rep.Save(_aggregate, 100);
             }
-            catch (Exception){}
+            catch (Exception) { }
         }
 
-        [Test]
+        [Fact]
         public void Should_evict_old_object_from_cache()
         {
-            var aggregate = MemoryCache.Default.Get(_aggregate.Id.ToString());
-            Assert.That(aggregate, Is.Null);
+            var aggregate = _memoryCache.Get(_aggregate.Id.ToString());
+            Assert.Null(aggregate);
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace CQRSlite.Infrastructure
+﻿namespace CQRSlite.Infrastructure
 {
     internal static class PrivateReflectionDynamicObjectExtensions
     {

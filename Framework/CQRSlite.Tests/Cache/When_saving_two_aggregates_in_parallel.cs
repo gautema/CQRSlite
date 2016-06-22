@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Caching;
 using System.Threading.Tasks;
 using CQRSlite.Cache;
 using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Tests.Cache
 {
@@ -17,16 +16,10 @@ namespace CQRSlite.Tests.Cache
         private TestInMemoryEventStore _testStore;
         private TestAggregate _aggregate2;
 
-        [SetUp]
-        public void Setup()
+        public When_saving_two_aggregates_in_parallel()
         {
-            // This will clear the cache between runs.
-            var cacheKeys = MemoryCache.Default.Select(kvp => kvp.Key).ToList();
-            foreach (var cacheKey in cacheKeys)
-                MemoryCache.Default.Remove(cacheKey);
-
             _testStore = new TestInMemoryEventStore();
-            _rep1 = new CacheRepository(new Repository(_testStore), _testStore);
+            _rep1 = new CacheRepository(new Repository(_testStore), _testStore, new MemoryCache(new MemoryCacheOptions()));
 
             _aggregate1 = new TestAggregate(Guid.NewGuid());
             _aggregate2 = new TestAggregate(Guid.NewGuid());
@@ -35,49 +28,50 @@ namespace CQRSlite.Tests.Cache
             _rep1.Save(_aggregate2);
 
             var t1 = new Task(() =>
-                                  {
-                                      for (var i = 0; i < 100; i++)
-                                      {
-                                          var aggregate = _rep1.Get<TestAggregate>(_aggregate1.Id);
-                                          aggregate.DoSomething();
-                                          _rep1.Save(aggregate);
-                                      }
-                                  });
+            {
+                for (var i = 0; i < 100; i++)
+                {
+                    var aggregate = _rep1.Get<TestAggregate>(_aggregate1.Id);
+                    aggregate.DoSomething();
+                    _rep1.Save(aggregate);
+                }
+            });
 
             var t2 = new Task(() =>
-                                  {
-                                      for (var i = 0; i < 100; i++)
-                                      {
-                                          var aggregate = _rep1.Get<TestAggregate>(_aggregate2.Id);
-                                          aggregate.DoSomething();
-                                          _rep1.Save(aggregate);
-                                      }
-                                  });
+            {
+                for (var i = 0; i < 100; i++)
+                {
+                    var aggregate = _rep1.Get<TestAggregate>(_aggregate2.Id);
+                    aggregate.DoSomething();
+                    _rep1.Save(aggregate);
+                }
+            });
             t1.Start();
             t2.Start();
 
             Task.WaitAll(t1, t2);
         }
-
-        [Test]
+       
+        [Fact]
         public void Should_not_get_more_than_one_event_with_same_id()
         {
-            Assert.That(_testStore.Events.Select(x => x.Version).Count(), Is.EqualTo(_testStore.Events.Count));
+            Assert.Equal(_testStore.Events.Count, _testStore.Events.Select(x => x.Version).Count());
         }
 
-        [Test]
+        [Fact]
         public void Should_save_all_events()
         {
-            Assert.That(_testStore.Events.Count(), Is.EqualTo(202));
+            Assert.Equal(202, _testStore.Events.Count);
         }
 
-        [Test]
+        [Fact]
         public void Should_distibute_events_correct()
         {
             var aggregate1 = _rep1.Get<TestAggregate>(_aggregate2.Id);
-            Assert.That(aggregate1.DidSomethingCount, Is.EqualTo(100));
+            Assert.Equal(100, aggregate1.DidSomethingCount);
+
             var aggregate2 = _rep1.Get<TestAggregate>(_aggregate2.Id);
-            Assert.That(aggregate2.DidSomethingCount, Is.EqualTo(100));
+            Assert.Equal(100, aggregate2.DidSomethingCount);
         }
     }
 }

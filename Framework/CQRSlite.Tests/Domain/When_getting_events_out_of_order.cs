@@ -2,23 +2,21 @@
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
 
 namespace CQRSlite.Tests.Domain
 {
-	[TestFixture]
     public class When_getting_events_out_of_order
     {
 	    private ISession _session;
 
-	    [SetUp]
-        public void Setup()
+        public When_getting_events_out_of_order()
         {
             var eventStore = new TestEventStoreWithBugs();
             _session = new Session(new Repository(eventStore));
         }
 
-        [Test]
+        [Fact]
         public void Should_throw_concurrency_exception()
         {
             var id = Guid.NewGuid();

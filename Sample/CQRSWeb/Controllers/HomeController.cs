@@ -1,8 +1,8 @@
-﻿using System;
-using System.Web.Mvc;
-using CQRSCode.ReadModel;
+﻿using CQRSCode.ReadModel;
 using CQRSCode.WriteModel.Commands;
 using CQRSlite.Commands;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CQRSWeb.Controllers
 {

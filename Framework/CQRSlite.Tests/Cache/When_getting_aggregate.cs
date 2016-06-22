@@ -1,49 +1,52 @@
 ﻿using System;
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
-using NUnit.Framework;
+using Xunit;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Tests.Cache
 {
-    [TestFixture]
     public class When_getting_aggregate
     {
         private CacheRepository _rep;
         private TestAggregate _aggregate;
+        private IMemoryCache _memoryCache;
 
-        [SetUp]
-        public void Setup()
+        public When_getting_aggregate()
         {
-            _rep = new CacheRepository(new TestRepository(), new TestEventStore());
+            _memoryCache = new MemoryCache(new MemoryCacheOptions());
+            _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _memoryCache);
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid());
         }
 
-        [Test]
+        [Fact]
         public void Should_get_aggregate()
         {
-            Assert.That(_aggregate, Is.Not.Null);
+            Assert.NotNull(_aggregate);
         }
 
-        [Test]
+        [Fact]
         public void Should_get_same_aggregate_on_second_try()
         {
             var aggregate =_rep.Get<TestAggregate>(_aggregate.Id);
-            Assert.That(aggregate, Is.EqualTo(_aggregate));
+            Assert.Equal(_aggregate, aggregate);
         }
 
-        [Test]
+        [Fact]
         public void Should_update_if_version_changed_in_event_store()
         {
             var aggregate = _rep.Get<TestAggregate>(_aggregate.Id);
-            Assert.That(aggregate.Version, Is.EqualTo(3));
+            Assert.Equal(3, _aggregate.Version);
         }
 
-        [Test]
+        [Fact]
         public void Should_get_same_aggregate_from_different_cache_repository()
         {
-            var rep = new CacheRepository(new TestRepository(), new TestInMemoryEventStore());
+            var rep = new CacheRepository(new TestRepository(), new TestInMemoryEventStore(), _memoryCache);
             var aggregate = rep.Get<TestAggregate>(_aggregate.Id);
-            Assert.That(aggregate, Is.EqualTo(_aggregate));
+            Assert.Equal(_aggregate.DidSomethingCount, aggregate.DidSomethingCount);
+            Assert.Equal(_aggregate.Id, aggregate.Id);
+            Assert.Equal(_aggregate.Version, aggregate.Version);
         }
     }
 }

@@ -1,6 +1,7 @@
-#CQRSlite
+#CQRSlite .Net Core
 
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/gautema/CQRSLite?branch=master&svg=true)](https://ci.appveyor.com/project/gautema/CQRSLite)
+This is a .Net Core fork of [CQRSlite](https://github.com/gautema/CQRSlite). All creds goes to [gautema](https://github.com/gautema)
+
 [![NuGet](https://img.shields.io/nuget/vpre/cqrslite.svg)](https://www.nuget.org/packages/cqrslite)
 
 ## The framework

@@ -1,4 +1,4 @@
-using CQRSlite.Messages;
+﻿using CQRSlite.Messages;
 
 namespace CQRSlite.Events
 {
