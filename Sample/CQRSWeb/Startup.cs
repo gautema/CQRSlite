@@ -17,6 +17,7 @@ using Scrutor;
 using System.Reflection;
 using CQRSCode.ReadModel.Handlers;
 using CQRSCode.ReadModel.Dtos;
+using System.Linq;
 
 namespace CQRSWeb
 {
@@ -32,19 +33,23 @@ namespace CQRSWeb
             services.AddSingleton<ICommandSender>(y => y.GetService<InProcessBus>());
             services.AddSingleton<IEventPublisher>(y => y.GetService<InProcessBus>());
             services.AddSingleton<IHandlerRegistrar>(y => y.GetService<InProcessBus>());
-
             services.AddScoped<ISession, Session>();
             services.AddSingleton<IEventStore, InMemoryEventStore>();
             services.AddScoped<IRepository>(y => new CacheRepository(new Repository(y.GetService<IEventStore>()), y.GetService<IEventStore>(), y.GetService<IMemoryCache>()));
+
             services.AddTransient<IReadModelFacade, ReadModelFacade>();
 
+            //Scan for commandhandlers and eventhandlers
             services.Scan(scan => scan
                 .FromAssemblies(typeof(InventoryCommandHandlers).GetTypeInfo().Assembly)
-                .AddClasses(classes => classes.InNamespaceOf<InventoryCommandHandlers>())
-                .AddClasses(classes => classes.InNamespaceOf<InventoryItemDetailView>())
-                .AddClasses(classes => classes.InNamespaceOf<InventoryItemDetailsDto>())
-                .AsSelf()
-                .WithTransientLifetime()
+                    .AddClasses(classes => classes.Where(x => {
+                        var allInterfaces = x.GetInterfaces();
+                        return 
+                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(ICommandHandler<>)) ||
+                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(IEventHandler<>));
+                    }))
+                    .AsSelf()
+                    .WithTransientLifetime()
             );
 
             //Register bus
