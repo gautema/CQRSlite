@@ -21,7 +21,7 @@
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc2-final",
     "CQRSCode": "1.0.0-*",
     "Scrutor": "1.7.0",
-    "CQRSlite.NetCore": "1.0.0-*"
+    "CQRSlite": "0.9.9"
   },
 
   "tools": {

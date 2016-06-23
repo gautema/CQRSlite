@@ -10,7 +10,7 @@
     },
     "xunit": "2.1.0",
     "dotnet-test-xunit": "1.0.0-rc2-build10025",
-    "CQRSlite.NetCore": "1.0.0-*"
+    "CQRSlite": "0.9.9"
   },
 
   "frameworks": {
