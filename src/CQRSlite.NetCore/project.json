@@ -1,5 +1,7 @@
 {
-  "version": "1.0.0-*",
+  "version": "0.9.9",
+  "authors": [ "gautema" ],
+  "description": "A lightweight framework to help write CQRS and Eventsourcing applications in C#",
 
   "dependencies": {
     "NETStandard.Library": "1.5.0-rc2-24027",
