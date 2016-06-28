@@ -4,7 +4,7 @@
   "dependencies": {
     "CQRSlite": "0.9.9",
     "Microsoft.NETCore.App": {
-      "version": "1.0.0-rc2-3002702",
+      "version": "1.0.0",
       "type": "platform"
     },
     "xunit": "2.1.0"
