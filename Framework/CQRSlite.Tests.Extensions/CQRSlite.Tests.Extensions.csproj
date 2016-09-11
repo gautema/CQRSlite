@@ -49,13 +49,13 @@
     <Compile Include="TestHelpers\ThenAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CQRSlite\CQRSlite.csproj">
-      <Project>{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}</Project>
-      <Name>CQRSlite</Name>
+    <ProjectReference Include="..\CQRSlite.Net4\CQRSlite.Net4.csproj">
+      <Project>{bb56fb3f-6b23-48aa-921a-a5445fa289ea}</Project>
+      <Name>CQRSlite.Net4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="project.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

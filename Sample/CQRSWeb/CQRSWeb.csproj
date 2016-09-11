@@ -133,7 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\CQRSlite\CQRSlite.csproj">
-      <Project>{dafd2a8a-d6b0-4433-8ddf-b98460c64ec6}</Project>
+      <Project>{ce81ea4e-4d09-4303-ad5c-1e27de6e78df}</Project>
       <Name>CQRSlite</Name>
     </ProjectReference>
     <ProjectReference Include="..\CQRSCode\CQRSCode.csproj">
@@ -142,15 +142,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Home\Add.cshtml" />
     <Content Include="Views\Home\ChangeName.cshtml" />
     <Content Include="Views\Home\CheckIn.cshtml" />
     <Content Include="Views\Home\Details.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Remove.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="project.json" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

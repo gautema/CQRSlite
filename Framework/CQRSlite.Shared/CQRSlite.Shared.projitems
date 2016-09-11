@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>dd015ad6-1f91-4057-996a-f7bd59cfacdc</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CQRSlite.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Bus\IHandlerRegistrar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bus\InProcessBus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Cache\CacheRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\ICommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\ICommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\ICommandSender.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\BusRegistrar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\IServiceLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\AggregateDescriptor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\AggregateRoot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\Exception\AggregateNotFoundException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\Exception\AggregateOrEventMissingIdException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\Exception\ConcurrencyException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\Exception\EventsOutOfOrderException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\Exception\MissingParameterLessConstructorException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\Factories\AggregateFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\IRepository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\ISession.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\Repository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Domain\Session.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\IEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\IEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\IEventPublisher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Events\IEventStore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Infrastructure\PrivateReflectionDynamicObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Infrastructure\PrivateReflectionDynamicObjectExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Messages\IHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Messages\IMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Snapshots\DefaultSnapshotStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Snapshots\ISnapshotStore.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Snapshots\ISnapshotStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Snapshots\Snapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Snapshots\SnapshotAggregateRoot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Snapshots\SnapshotRepository.cs" />
+  </ItemGroup>
+</Project>

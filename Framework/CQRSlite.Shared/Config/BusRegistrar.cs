@@ -28,9 +28,9 @@ namespace CQRSlite.Config
 
             foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
             {
-                var executorsAssembly = typesFromAssemblyContainingMessage.Assembly;
+                var executorsAssembly = typesFromAssemblyContainingMessage.GetTypeInfo().Assembly;
                 var executorTypes = executorsAssembly
-                    .GetTypes()
+                    .ExportedTypes
                     .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
                     .Where(e => e.Interfaces != null && e.Interfaces.Any());
 
@@ -46,11 +46,12 @@ namespace CQRSlite.Config
 
         private void InvokeHandler(Type @interface, IHandlerRegistrar bus, Type executorType)
         {
-            var commandType = @interface.GetGenericArguments()[0];
+            var commandType = @interface.GetTypeInfo().GenericTypeArguments[0];
 
-            var registerExecutorMethod = bus
-                .GetType()
-                .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+            var registerExecutorMethod = ((object)bus)
+                .GetType().GetTypeInfo()
+                //.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .DeclaredMethods
                 .Where(mi => mi.Name == "RegisterHandler")
                 .Where(mi => mi.IsGenericMethod)
                 .Where(mi => mi.GetGenericArguments().Count() == 1)
@@ -68,9 +69,9 @@ namespace CQRSlite.Config
 
         private static IEnumerable<Type> ResolveMessageHandlerInterface(Type type)
         {
-            return type
-                .GetInterfaces()
-                .Where(i => i.IsGenericType && ((i.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
+            return type.GetTypeInfo()
+                .ImplementedInterfaces
+                .Where(i => i.IsConstructedGenericType && ((i.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
                                                 || i.GetGenericTypeDefinition() == typeof(IEventHandler<>)));
         }
 
