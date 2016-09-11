@@ -1,0 +1,15 @@
+﻿{
+  "supports": {},
+  "dependencies": {
+    "Provision.Providers.PortableMemoryCache": "3.0.1",
+    "Microsoft.CSharp": "4.0.1",
+    "System.Collections.Concurrent": "4.0.12",
+    "NETStandard.Library": "1.6.0"
+  },
+  "frameworks": {
+    "netstandard1.1": {
+      "imports": "portable-net45+win8+wp8+wpa81"
+
+    }
+  }
+}

@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DAB63881-593E-41B2-964A-3EC4571768D6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CQRSlite</RootNamespace>
+    <AssemblyName>CQRSlite</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETSTANDARD1_3;NET451</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETSTANDARD1_3;NET45</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CQRSlite.Portable\Bus\IHandlerRegistrar.cs">
+      <Link>Bus\IHandlerRegistrar.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Bus\InProcessBus.cs">
+      <Link>Bus\InProcessBus.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Cache\CacheRepository.cs">
+      <Link>Cache\CacheRepository.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Commands\ICommand.cs">
+      <Link>Commands\ICommand.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Commands\ICommandHandler.cs">
+      <Link>Commands\ICommandHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Commands\ICommandSender.cs">
+      <Link>Commands\ICommandSender.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Config\BusRegistrar.cs">
+      <Link>Config\BusRegistrar.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Config\IServiceLocator.cs">
+      <Link>Config\IServiceLocator.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\AggregateDescriptor.cs">
+      <Link>Domain\AggregateDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\AggregateRoot.cs">
+      <Link>Domain\AggregateRoot.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\Exception\AggregateNotFoundException.cs">
+      <Link>Domain\Exception\AggregateNotFoundException.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\Exception\AggregateOrEventMissingIdException.cs">
+      <Link>Domain\Exception\AggregateOrEventMissingIdException.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\Exception\ConcurrencyException.cs">
+      <Link>Domain\Exception\ConcurrencyException.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\Exception\EventsOutOfOrderException.cs">
+      <Link>Domain\Exception\EventsOutOfOrderException.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\Exception\MissingParameterLessConstructorException.cs">
+      <Link>Domain\Exception\MissingParameterLessConstructorException.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\Factories\AggregateFactory.cs">
+      <Link>Domain\Factories\AggregateFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\IRepository.cs">
+      <Link>Domain\IRepository.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\ISession.cs">
+      <Link>Domain\ISession.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\Repository.cs">
+      <Link>Domain\Repository.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Domain\Session.cs">
+      <Link>Domain\Session.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Events\IEvent.cs">
+      <Link>Events\IEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Events\IEventHandler.cs">
+      <Link>Events\IEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Events\IEventPublisher.cs">
+      <Link>Events\IEventPublisher.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Events\IEventStore.cs">
+      <Link>Events\IEventStore.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Infrastructure\PrivateReflectionDynamicObject.cs">
+      <Link>Infrastructure\PrivateReflectionDynamicObject.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Infrastructure\PrivateReflectionDynamicObjectExtensions.cs">
+      <Link>Infrastructure\PrivateReflectionDynamicObjectExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Messages\IHandler.cs">
+      <Link>Messages\IHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Messages\IMessage.cs">
+      <Link>Messages\IMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\obj\Debug\net461\dotnet-compile.assemblyinfo.cs">
+      <Link>obj\Debug\net461\dotnet-compile.assemblyinfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs">
+      <Link>obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs">
+      <Link>obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs">
+      <Link>obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Snapshots\DefaultSnapshotStrategy.cs">
+      <Link>Snapshots\DefaultSnapshotStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Snapshots\ISnapshotStore.cs">
+      <Link>Snapshots\ISnapshotStore.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Snapshots\ISnapshotStrategy.cs">
+      <Link>Snapshots\ISnapshotStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Snapshots\Snapshot.cs">
+      <Link>Snapshots\Snapshot.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Snapshots\SnapshotAggregateRoot.cs">
+      <Link>Snapshots\SnapshotAggregateRoot.cs</Link>
+    </Compile>
+    <Compile Include="..\CQRSlite.Portable\Snapshots\SnapshotRepository.cs">
+      <Link>Snapshots\SnapshotRepository.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

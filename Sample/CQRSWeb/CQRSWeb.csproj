@@ -132,17 +132,14 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\CQRSlite.Portable\CQRSlite.Portable.csproj">
-      <Project>{dab63881-593e-41b2-964a-3ec4571768d6}</Project>
-      <Name>CQRSlite.Portable</Name>
+    <ProjectReference Include="..\..\Framework\CQRSlite\CQRSlite.csproj">
+      <Project>{ce81ea4e-4d09-4303-ad5c-1e27de6e78df}</Project>
+      <Name>CQRSlite</Name>
     </ProjectReference>
     <ProjectReference Include="..\CQRSCode\CQRSCode.csproj">
       <Project>{34e7dc24-8080-4e47-90e6-3bcda44955e5}</Project>
       <Name>CQRSCode</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Add.cshtml" />
@@ -151,6 +148,9 @@
     <Content Include="Views\Home\Details.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Remove.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="project.json" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

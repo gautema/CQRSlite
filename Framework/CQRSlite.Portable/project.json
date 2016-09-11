@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0-pre-*",
+  "supports": {},
+  //"dependencies": {
+  //  "Microsoft.Extensions.Caching.Memory": "1.0.0",
+  //  "Microsoft.CSharp": "4.0.1",
+  //  "System.Collections.Concurrent": "4.0.12",
+  //},
+  "frameworks": {
+    "netstandard1.3": {
+      "dependencies": {
+        "Microsoft.Extensions.Caching.Memory": "1.0.0",
+        "Microsoft.CSharp": "4.0.1",
+        "System.Collections.Concurrent": "4.0.12",
+        "NETStandard.Library": "1.6.0"
+      }
+    },
+    //"net451": {
+    //  "frameworkAssemblies": {
+    //    "System.Runtime.Caching": "4.0.0" 
+    //  }
+    //},
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Runtime.Caching": "4.0.0"
+      }
+    }
+  },
+  "buildOptions": {
+    "xmlDoc": true
+  }
+} 

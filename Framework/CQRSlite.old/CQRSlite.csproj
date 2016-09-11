@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DAFD2A8A-D6B0-4433-8DDF-B98460C64EC6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>CQRSlite</RootNamespace>
+    <AssemblyName>CQRSlite</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Runtime.Caching" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cache\CacheRepository.cs" />
+    <Compile Include="Config\IServiceLocator.cs" />
+    <Compile Include="Domain\AggregateDescriptor.cs" />
+    <Compile Include="Domain\Exception\AggregateOrEventMissingIdException.cs" />
+    <Compile Include="Domain\AggregateRoot.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ICommandSender.cs" />
+    <Compile Include="Domain\Exception\EventsOutOfOrderException.cs" />
+    <Compile Include="Domain\Exception\MissingParameterLessConstructorException.cs" />
+    <Compile Include="Domain\Repository.cs" />
+    <Compile Include="Domain\IRepository.cs" />
+    <Compile Include="Domain\ISession.cs" />
+    <Compile Include="Domain\Session.cs" />
+    <Compile Include="Events\IEventPublisher.cs" />
+    <Compile Include="Events\IEventStore.cs" />
+    <Compile Include="Bus\IHandlerRegistrar.cs" />
+    <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Snapshots\ISnapshotStore.cs" />
+    <Compile Include="Domain\Factories\AggregateFactory.cs" />
+    <Compile Include="Snapshots\Snapshot.cs" />
+    <Compile Include="Snapshots\SnapshotAggregateRoot.cs" />
+    <Compile Include="Messages\IHandler.cs" />
+    <Compile Include="Domain\Exception\AggregateNotFoundException.cs" />
+    <Compile Include="Domain\Exception\ConcurrencyException.cs" />
+    <Compile Include="Bus\InProcessBus.cs" />
+    <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Snapshots\ISnapshotStrategy.cs" />
+    <Compile Include="Infrastructure\PrivateReflectionDynamicObject.cs" />
+    <Compile Include="Infrastructure\PrivateReflectionDynamicObjectExtensions.cs" />
+    <Compile Include="Snapshots\DefaultSnapshotStrategy.cs" />
+    <Compile Include="Messages\IMessage.cs" />
+    <Compile Include="Config\BusRegistrar.cs" />
+    <Compile Include="Snapshots\SnapshotRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

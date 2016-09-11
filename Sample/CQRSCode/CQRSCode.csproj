@@ -66,10 +66,13 @@
     <Compile Include="ReadModel\ReadModelFacade.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\CQRSlite.Portable\CQRSlite.Portable.csproj">
-      <Project>{dab63881-593e-41b2-964a-3ec4571768d6}</Project>
-      <Name>CQRSlite.Portable</Name>
+    <ProjectReference Include="..\..\Framework\CQRSlite.Net4\CQRSlite.Net4.csproj">
+      <Project>{bb56fb3f-6b23-48aa-921a-a5445fa289ea}</Project>
+      <Name>CQRSlite.Net4</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

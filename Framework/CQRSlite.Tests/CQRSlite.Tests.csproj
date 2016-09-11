@@ -37,14 +37,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Caching" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bus\When_publishing_events.cs" />
@@ -88,12 +83,12 @@
     <Compile Include="Substitutes\TestSnapshotStore.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CQRSlite.Portable\CQRSlite.Portable.csproj">
-      <Project>{dab63881-593e-41b2-964a-3ec4571768d6}</Project>
-      <Name>CQRSlite.Portable</Name>
+    <ProjectReference Include="..\CQRSlite.Net4\CQRSlite.Net4.csproj">
+      <Project>{bb56fb3f-6b23-48aa-921a-a5445fa289ea}</Project>
+      <Name>CQRSlite.Net4</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,22 +1,49 @@
 <?xml version="1.0"?>
-<package>
+<package >
   <metadata>
     <id>CqrsLite</id>
-    <version>0.3.4</version>
-    <authors>Gaute Magnussen</authors>
+    <!--<version>$version$</version>-->
+    <version>1.0.0-pre4</version>
+    <title>Gaute Magnussen</title>
+    <authors>bob</authors>
+    <owners>bob</owners>
     <licenseUrl>https://raw.github.com/gautema/CQRSlite/master/README.md</licenseUrl>
     <projectUrl>https://github.com/gautema/cqrslite</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</description>
     <copyright>Copyright 2015</copyright>
+    <tags>Xamarin RedDragon</tags>
+    <dependencies>
+      <group>
+        <dependency id="System.Collections.Concurrent" version="[4.0.12, )" />
+
+      </group>
+      <group targetFramework="netstandard1.1">
+        <dependency id="NETStandard.Library" version="[1.6.0, )" />
+        <dependency id="Provision.Providers.PortableMemoryCache" version="[3.0.1, )" />
+      </group>
+      <group targetFramework="net452" />
+      <!--<group targetFramework=".NETPortable4.5-Profile111" />-->
+  
+
+      <group targetFramework="netstandard1.3">
+        <dependency id="NETStandard.Library" version="[1.6.0, )" />
+        <dependency id="Microsoft.Extensions.Caching.Memory" version="[1.0.0, )" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Runtime.Caching" targetFramework="net452" />
+    </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="Framework\CQRSlite.Portable\bin\Release\CqrsLite.dll" target="lib" />
+    <file src="Framework\CQRSlite\bin\Debug\CqrsLite.dll" target="lib\netstandard1.1" />
+    <file src="Framework\CQRSlite\bin\Debug\CqrsLite.xml" target="lib\netstandard1.1" />
+    <file src="Framework\CQRSlite\bin\Debug\CqrsLite.pdb" target="lib\netstandard1.1" />
+    <file src="Framework\CQRSlite.DotNetCore\bin\Debug\CqrsLite.dll" target="lib\netstandard1.3" />
+    <file src="Framework\CQRSlite.DotNetCore\bin\Debug\CqrsLite.xml" target="lib\netstandard1.3" />
+    <file src="Framework\CQRSlite.DotNetCore\bin\Debug\CqrsLite.pdb" target="lib\netstandard1.3" />
+    <file src="Framework\CQRSlite.Net4\bin\Debug\CqrsLite.dll" target="lib\net452" />
+    <file src="Framework\CQRSlite.Net4\bin\Debug\CqrsLite.xml" target="lib\net452" />
+    <file src="Framework\CQRSlite.Net4\bin\Debug\CqrsLite.pdb" target="lib\net452" />
   </files>
-  <dependencies>
-    <dependency id="C5" version="2.4.5947.17249"/>
-    <dependency id="Portable.ConcurrentDictionary" version="1.0.2"/>
-    <dependency id="Provision" version="3.0.3"/>
-    <dependency id="Provision.Providers.PortableMemoryCache" version="3.0.1" />
-  </dependencies>
 </package>
