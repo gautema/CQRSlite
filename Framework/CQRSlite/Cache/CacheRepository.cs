@@ -30,7 +30,9 @@ namespace CQRSlite.Cache
             _eventStore = eventStore;
             _cache = memoryCache;
             _cacheOptions = new MemoryCacheEntryOptions
-                    {SlidingExpiration = TimeSpan.FromMinutes(15)}
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(15)
+                }
                 .RegisterPostEvictionCallback((key, value, reason, substate) =>
                 {
                     object o;
