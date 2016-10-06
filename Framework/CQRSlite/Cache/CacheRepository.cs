@@ -29,7 +29,13 @@ namespace CQRSlite.Cache
             _repository = repository;
             _eventStore = eventStore;
             _cache = memoryCache;
-            _cacheOptions = new MemoryCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(15) };
+            _cacheOptions = new MemoryCacheEntryOptions
+                    {SlidingExpiration = TimeSpan.FromMinutes(15)}
+                .RegisterPostEvictionCallback((key, value, reason, substate) =>
+                {
+                    object o;
+                    _locks.TryRemove((string) key, out o);
+                });
         }
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot

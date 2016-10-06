@@ -2,18 +2,21 @@
   "version": "0.9.9",
   "authors": [ "gautema" ],
   "description": "A lightweight framework to help write CQRS and Eventsourcing applications in C#",
-
-  "dependencies": {
-    "NETStandard.Library": "1.6.0",
-    "System.Dynamic.Runtime": "4.0.11",
-    "Microsoft.CSharp": "4.0.1",
-    "System.Reflection.TypeExtensions": "4.1.0",
-    "Microsoft.Extensions.Caching.Memory": "1.0.0"
-  },
-
   "frameworks": {
     "netstandard1.5": {
-      "imports": "dnxcore50"
+      "imports": "dnxcore50",
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.Dynamic.Runtime": "4.0.11",
+        "Microsoft.CSharp": "4.0.1",
+        "System.Reflection.TypeExtensions": "4.1.0",
+        "Microsoft.Extensions.Caching.Memory": "1.0.0"
+      }
+    },
+    "net451": {
+      "dependencies": {
+        "Microsoft.Extensions.Caching.Memory": "1.0.0"
+      }
     }
   }
 }
