@@ -3,6 +3,7 @@ using CQRSlite.Events;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Cache
@@ -37,6 +38,7 @@ namespace CQRSlite.Cache
                 {
                     object o;
                     _locks.TryRemove((string) key, out o);
+                    ((ManualResetEvent) o).Set();
                 });
         }
 
@@ -45,7 +47,7 @@ namespace CQRSlite.Cache
             var idstring = aggregate.Id.ToString();
             try
             {
-                lock (_locks.GetOrAdd(idstring, _ => new object()))
+                lock (_locks.GetOrAdd(idstring, _ => new ManualResetEvent(false)))
                 {
                     if (aggregate.Id != Guid.Empty && !IsTracked(aggregate.Id))
                     {
@@ -56,7 +58,7 @@ namespace CQRSlite.Cache
             }
             catch (Exception)
             {
-                lock (_locks.GetOrAdd(idstring, _ => new object()))
+                lock (_locks.GetOrAdd(idstring, _ => new ManualResetEvent(false)))
                 {
                     _cache.Remove(idstring);
                 }
@@ -69,7 +71,7 @@ namespace CQRSlite.Cache
             var idstring = aggregateId.ToString();
             try
             {
-                lock (_locks.GetOrAdd(idstring, _ => new object()))
+                lock (_locks.GetOrAdd(idstring, _ => new ManualResetEvent(false)))
                 {
                     T aggregate;
                     if (IsTracked(aggregateId))
@@ -94,7 +96,7 @@ namespace CQRSlite.Cache
             }
             catch (Exception)
             {
-                lock (_locks.GetOrAdd(idstring, _ => new object()))
+                lock (_locks.GetOrAdd(idstring, _ => new ManualResetEvent(false)))
                 {
                     _cache.Remove(idstring);
                 }
