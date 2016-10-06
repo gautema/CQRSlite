@@ -12,7 +12,7 @@
     "dotnet-test-xunit": "1.0.0-rc2-build10025",
     "CQRSlite.Tests.Extensions": "1.0.0-*",
     "CQRSCode": "1.0.0-*",
-    "CQRSlite": "0.9.9"
+    "CQRSlite": "0.10.0"
   },
 
   "frameworks": {

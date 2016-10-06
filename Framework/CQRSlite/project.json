@@ -1,5 +1,5 @@
 {
-  "version": "0.9.9",
+  "version": "0.10.0",
   "authors": [ "gautema" ],
   "description": "A lightweight framework to help write CQRS and Eventsourcing applications in C#",
   "frameworks": {

@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>CqrsLite</id>
-    <version>0.9.9</version>
+    <version>0.10.0</version>
     <authors>Gaute Magnussen</authors>
     <licenseUrl>https://raw.github.com/gautema/CQRSlite/master/README.md</licenseUrl>
     <projectUrl>https://github.com/gautema/cqrslite</projectUrl>
