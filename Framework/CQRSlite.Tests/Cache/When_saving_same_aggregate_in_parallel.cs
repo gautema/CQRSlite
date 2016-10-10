@@ -5,7 +5,6 @@ using CQRSlite.Cache;
 using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Tests.Cache
 {
@@ -18,7 +17,7 @@ namespace CQRSlite.Tests.Cache
 
         public When_saving_same_aggregate_in_parallel()
         {
-            var memoryCache = new MemoryCache(new MemoryCacheOptions());
+            var memoryCache = new MemoryCache();
 
             _testStore = new TestInMemoryEventStore();
             _rep1 = new CacheRepository(new Repository(_testStore), _testStore, memoryCache);

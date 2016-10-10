@@ -15,8 +15,6 @@ using CQRSlite.Config;
 using CQRSCode.WriteModel.Handlers;
 using Scrutor;
 using System.Reflection;
-using CQRSCode.ReadModel.Handlers;
-using CQRSCode.ReadModel.Dtos;
 using System.Linq;
 
 namespace CQRSWeb
@@ -35,7 +33,7 @@ namespace CQRSWeb
             services.AddSingleton<IHandlerRegistrar>(y => y.GetService<InProcessBus>());
             services.AddScoped<ISession, Session>();
             services.AddSingleton<IEventStore, InMemoryEventStore>();
-            services.AddScoped<IRepository>(y => new CacheRepository(new Repository(y.GetService<IEventStore>()), y.GetService<IEventStore>(), y.GetService<IMemoryCache>()));
+            services.AddScoped<IRepository>(y => new CacheRepository(new Repository(y.GetService<IEventStore>()), y.GetService<IEventStore>(), y.GetService<ICache>()));
 
             services.AddTransient<IReadModelFacade, ReadModelFacade>();
 
@@ -53,7 +51,7 @@ namespace CQRSWeb
             );
 
             //Register bus
-            IServiceProvider serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
             var registrar = new BusRegistrar(new DependencyResolver(serviceProvider));
             registrar.Register(typeof(InventoryCommandHandlers));
 

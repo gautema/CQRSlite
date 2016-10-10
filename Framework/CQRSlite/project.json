@@ -1,5 +1,5 @@
 {
-  "version": "0.10.0",
+  "version": "0.11.0",
   "authors": [ "gautema" ],
   "description": "A lightweight framework to help write CQRS and Eventsourcing applications in C#",
   "frameworks": {
@@ -24,8 +24,8 @@
       }
     },
     "net451": {
-      "dependencies": {
-        "Microsoft.Extensions.Caching.Memory": "1.0.0"
+      "frameworkAssemblies": {
+        "System.Runtime.Caching": "4.0.0.0"
       }
     }
   }

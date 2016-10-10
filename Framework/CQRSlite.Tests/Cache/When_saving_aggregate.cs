@@ -2,7 +2,6 @@
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Tests.Cache
 {
@@ -15,7 +14,7 @@ namespace CQRSlite.Tests.Cache
         public When_saving_aggregate()
         {
             _testRep = new TestRepository();
-            _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), new MemoryCache(new MemoryCacheOptions()));
+            _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), new MemoryCache());
             _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid());
             _aggregate.DoSomething();
             _rep.Save(_aggregate, -1);

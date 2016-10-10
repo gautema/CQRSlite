@@ -4,7 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Cache
 {
@@ -12,11 +11,10 @@ namespace CQRSlite.Cache
     {
         private readonly IRepository _repository;
         private readonly IEventStore _eventStore;
-        private readonly IMemoryCache _cache;
-        private readonly MemoryCacheEntryOptions _cacheOptions;
-        private static readonly ConcurrentDictionary<string, object> _locks = new ConcurrentDictionary<string, object>();
+        private readonly ICache _cache;
+        private static readonly ConcurrentDictionary<Guid, ManualResetEvent> _locks = new ConcurrentDictionary<Guid, ManualResetEvent>();
 
-        public CacheRepository(IRepository repository, IEventStore eventStore, IMemoryCache memoryCache)
+        public CacheRepository(IRepository repository, IEventStore eventStore, ICache cache)
         {
             if (repository == null)
             {
@@ -29,38 +27,34 @@ namespace CQRSlite.Cache
 
             _repository = repository;
             _eventStore = eventStore;
-            _cache = memoryCache;
-            _cacheOptions = new MemoryCacheEntryOptions
-                {
-                    SlidingExpiration = TimeSpan.FromMinutes(15)
-                }
-                .RegisterPostEvictionCallback((key, value, reason, substate) =>
-                {
-                    object o;
-                    _locks.TryRemove((string) key, out o);
-                    ((ManualResetEvent) o).Set();
-                });
+            _cache = cache;
+            _cache.RegisterEvictionCallback(key =>
+                     {
+                         ManualResetEvent o;
+                         _locks.TryRemove(key, out o);
+                         o.Set();
+                     });
+
         }
 
         public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
-            var idstring = aggregate.Id.ToString();
             try
             {
-                lock (_locks.GetOrAdd(idstring, _ => new ManualResetEvent(false)))
+                lock (_locks.GetOrAdd(aggregate.Id, _ => new ManualResetEvent(false)))
                 {
-                    if (aggregate.Id != Guid.Empty && !IsTracked(aggregate.Id))
+                    if (aggregate.Id != Guid.Empty && !_cache.IsTracked(aggregate.Id))
                     {
-                        _cache.Set(idstring, aggregate, _cacheOptions);
+                        _cache.Set(aggregate.Id, aggregate);
                     }
                     _repository.Save(aggregate, expectedVersion);
                 }
             }
             catch (Exception)
             {
-                lock (_locks.GetOrAdd(idstring, _ => new ManualResetEvent(false)))
+                lock (_locks.GetOrAdd(aggregate.Id, _ => new ManualResetEvent(false)))
                 {
-                    _cache.Remove(idstring);
+                    _cache.Remove(aggregate.Id);
                 }
                 throw;
             }
@@ -68,19 +62,18 @@ namespace CQRSlite.Cache
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
         {
-            var idstring = aggregateId.ToString();
             try
             {
-                lock (_locks.GetOrAdd(idstring, _ => new ManualResetEvent(false)))
+                lock (_locks.GetOrAdd(aggregateId, _ => new ManualResetEvent(false)))
                 {
                     T aggregate;
-                    if (IsTracked(aggregateId))
+                    if (_cache.IsTracked(aggregateId))
                     {
-                        aggregate = (T)_cache.Get(idstring);
+                        aggregate = (T)_cache.Get(aggregateId);
                         var events = _eventStore.Get<T>(aggregateId, aggregate.Version);
                         if (events.Any() && events.First().Version != aggregate.Version + 1)
                         {
-                            _cache.Remove(idstring);
+                            _cache.Remove(aggregateId);
                         }
                         else
                         {
@@ -90,24 +83,18 @@ namespace CQRSlite.Cache
                     }
 
                     aggregate = _repository.Get<T>(aggregateId);
-                    _cache.Set(aggregateId.ToString(), aggregate, _cacheOptions);
+                    _cache.Set(aggregateId, aggregate);
                     return aggregate;
                 }
             }
             catch (Exception)
             {
-                lock (_locks.GetOrAdd(idstring, _ => new ManualResetEvent(false)))
+                lock (_locks.GetOrAdd(aggregateId, _ => new ManualResetEvent(false)))
                 {
-                    _cache.Remove(idstring);
+                    _cache.Remove(aggregateId);
                 }
                 throw;
             }
-        }
-
-        private bool IsTracked(Guid id)
-        {
-            object o;
-            return _cache.TryGetValue(id.ToString(), out o);
         }
     }
 }

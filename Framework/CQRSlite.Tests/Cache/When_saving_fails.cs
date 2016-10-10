@@ -2,7 +2,6 @@
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Tests.Cache
 {
@@ -11,11 +10,11 @@ namespace CQRSlite.Tests.Cache
         private CacheRepository _rep;
         private TestAggregate _aggregate;
         private TestRepository _testRep;
-        private IMemoryCache _memoryCache;
+        private ICache _memoryCache;
 
         public When_saving_fails()
         {
-            _memoryCache = new MemoryCache(new MemoryCacheOptions());
+            _memoryCache = new MemoryCache();
             _testRep = new TestRepository();
             _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), _memoryCache);
             _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid());
@@ -30,7 +29,7 @@ namespace CQRSlite.Tests.Cache
         [Fact]
         public void Should_evict_old_object_from_cache()
         {
-            var aggregate = _memoryCache.Get(_aggregate.Id.ToString());
+            var aggregate = _memoryCache.Get(_aggregate.Id);
             Assert.Null(aggregate);
         }
     }

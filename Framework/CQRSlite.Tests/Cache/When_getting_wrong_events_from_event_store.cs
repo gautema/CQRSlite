@@ -2,7 +2,6 @@
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Tests.Cache
 {
@@ -10,11 +9,11 @@ namespace CQRSlite.Tests.Cache
     {
         private CacheRepository _rep;
         private TestAggregate _aggregate;
-        private IMemoryCache _memoryCache;
+        private ICache _memoryCache;
 
         public When_getting_earlier_than_expected_events_from_event_store()
         {
-            _memoryCache = new MemoryCache(new MemoryCacheOptions());
+            _memoryCache = new MemoryCache();
             _rep = new CacheRepository(new TestRepository(), new TestEventStoreWithBugs(), _memoryCache);
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid());
         }
@@ -23,7 +22,7 @@ namespace CQRSlite.Tests.Cache
         public void Should_evict_old_object_from_cache()
         {
             _rep.Get<TestAggregate>(_aggregate.Id);
-            var aggregate = _memoryCache.Get(_aggregate.Id.ToString());
+            var aggregate = _memoryCache.Get(_aggregate.Id);
             Assert.NotEqual(_aggregate, aggregate);
         }
 
