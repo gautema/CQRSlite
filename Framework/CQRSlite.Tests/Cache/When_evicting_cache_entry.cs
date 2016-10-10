@@ -13,25 +13,25 @@ namespace CQRSlite.Tests.Cache
         private CacheRepository _rep;
         private TestAggregate _aggregate;
         private MemoryCache _memoryCache;
-        private ConcurrentDictionary<Guid, object> _locks;
+        private ConcurrentDictionary<Guid, ManualResetEvent> _locks;
 
         public When_evicting_cache_entry()
         {
             _memoryCache = new MemoryCache();
             _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _memoryCache);
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid());
-            object resetEvent;
+            ManualResetEvent resetEvent;
             var field = _rep.GetType().GetField("_locks", BindingFlags.Static | BindingFlags.NonPublic);
-            _locks = (ConcurrentDictionary<Guid, object>)field.GetValue(_rep);
+            _locks = (ConcurrentDictionary<Guid, ManualResetEvent>)field.GetValue(_rep);
             _locks.TryGetValue(_aggregate.Id, out resetEvent);
             _memoryCache.Remove(_aggregate.Id);
-            ((ManualResetEvent)resetEvent).WaitOne(500);
+            resetEvent.WaitOne(500);
         }
 
         [Fact]
         public void Should_remove_lock()
         {
-            object val;
+            ManualResetEvent val;
             _locks.TryGetValue(_aggregate.Id, out val);
             Assert.Null(val);
         }
