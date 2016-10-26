@@ -24,6 +24,10 @@ namespace CQRSlite.Cache
             {
                 throw new ArgumentNullException(nameof(eventStore));
             }
+            if (cache == null)
+            {
+                throw new ArgumentNullException(nameof(cache));
+            }
 
             _repository = repository;
             _eventStore = eventStore;
