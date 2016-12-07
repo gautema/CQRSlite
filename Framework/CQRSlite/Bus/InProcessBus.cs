@@ -24,7 +24,7 @@ namespace CQRSlite.Bus
         public void Send<T>(T command) where T : ICommand
         {
             List<Action<IMessage>> handlers;
-            if (_routes.TryGetValue(typeof(T), out handlers))
+            if (_routes.TryGetValue(command.GetType(), out handlers))
             {
                 if (handlers.Count != 1)
                 {

@@ -2,6 +2,7 @@ using System;
 using CQRSlite.Bus;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
+using CQRSlite.Commands;
 
 namespace CQRSlite.Tests.Bus
 {
@@ -38,6 +39,18 @@ namespace CQRSlite.Tests.Bus
         public void Should_throw_if_no_handlers()
         {
             Assert.Throws<InvalidOperationException>(() => _bus.Send(new TestAggregateDoSomething()));
+        }
+
+        [Fact]
+        public void Should_handle_dynamically_generated_commands()
+        {
+            var handler = new TestAggregateDoSomethingHandler();
+            var command = (ICommand)Activator.CreateInstance(typeof(TestAggregateDoSomething));
+
+            _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
+            _bus.Send(command);
+
+            Assert.Equal(1, handler.TimesRun);
         }
     }
 }
