@@ -2,6 +2,7 @@ using CQRSlite.Domain.Exception;
 using CQRSlite.Domain.Factories;
 using CQRSlite.Events;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -47,6 +48,24 @@ namespace CQRSlite.Domain
             var changes = aggregate.FlushUncommitedChanges();
             _eventStore.Save<T>(changes);
 
+            PublishChanges(changes);
+        }
+
+        public async Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            if (expectedVersion != null && _eventStore.Get<T>(aggregate.Id, expectedVersion.Value).Any())
+            {
+                throw new ConcurrencyException(aggregate.Id);
+            }
+
+            var changes = aggregate.FlushUncommitedChanges();
+            await _eventStore.SaveAsync<T>(changes);
+
+            PublishChanges(changes);
+        }
+
+        private void PublishChanges(System.Collections.Generic.IEnumerable<IEvent> changes)
+        {
             if (_publisher != null)
             {
                 foreach (var @event in changes)
@@ -56,25 +75,20 @@ namespace CQRSlite.Domain
             }
         }
 
-        public Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
-        {
-            Save<T>(aggregate, expectedVersion);
-            return Task.FromResult(0);
-        }
-
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
         {
-            return LoadAggregate<T>(aggregateId);
+            var events = _eventStore.Get<T>(aggregateId, -1);
+            return LoadAggregate<T>(aggregateId, events);
         }
 
-        public Task<T> GetAsync<T>(Guid aggregateId) where T : AggregateRoot
+        public async Task<T> GetAsync<T>(Guid aggregateId) where T : AggregateRoot
         {
-            return Task.FromResult(Get<T>(aggregateId));
+            var events = await _eventStore.GetAsync<T>(aggregateId, -1);
+            return LoadAggregate<T>(aggregateId, events);
         }
 
-        private T LoadAggregate<T>(Guid id) where T : AggregateRoot
+        private T LoadAggregate<T>(Guid id, IEnumerable<IEvent> events) where T : AggregateRoot
         {
-            var events = _eventStore.Get<T>(id, -1);
             if (!events.Any())
             {
                 throw new AggregateNotFoundException(typeof(T), id);
