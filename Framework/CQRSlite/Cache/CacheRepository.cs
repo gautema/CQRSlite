@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Cache
 {
@@ -62,6 +63,12 @@ namespace CQRSlite.Cache
                 }
                 throw;
             }
+        }
+
+        public Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            Save<T>(aggregate, expectedVersion);
+            return Task.FromResult(0);
         }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot

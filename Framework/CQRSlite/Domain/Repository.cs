@@ -3,6 +3,7 @@ using CQRSlite.Domain.Factories;
 using CQRSlite.Events;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Domain
 {
@@ -53,6 +54,12 @@ namespace CQRSlite.Domain
                     _publisher.Publish(@event);
                 }
             }
+        }
+
+        public Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            Save<T>(aggregate, expectedVersion);
+            return Task.FromResult(0);
         }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot

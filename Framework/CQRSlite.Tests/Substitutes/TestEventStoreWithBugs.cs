@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CQRSlite.Events;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -8,7 +9,12 @@ namespace CQRSlite.Tests.Substitutes
     {
         public void Save<T>(IEnumerable<IEvent> events)
         {
-            
+
+        }
+
+        public Task SaveAsync<T>(IEnumerable<IEvent> events)
+        {
+            return Task.FromResult(0);
         }
 
         public IEnumerable<IEvent> Get<T>(Guid aggregateId, int version)

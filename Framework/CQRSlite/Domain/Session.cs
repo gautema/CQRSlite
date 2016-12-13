@@ -1,6 +1,8 @@
 ﻿using CQRSlite.Domain.Exception;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Domain
 {
@@ -65,6 +67,13 @@ namespace CQRSlite.Domain
             {
                 _repository.Save(descriptor.Aggregate, descriptor.Version);
             }
+            _trackedAggregates.Clear();
+        }
+
+        public async Task CommitAsync()
+        {
+            var saveTasks = _trackedAggregates.Values.Select(obj => _repository.SaveAsync(obj.Aggregate, obj.Version));
+            await Task.WhenAll(saveTasks);
             _trackedAggregates.Clear();
         }
     }

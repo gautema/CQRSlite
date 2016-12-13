@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CQRSlite.Events;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -15,6 +16,12 @@ namespace CQRSlite.Tests.Substitutes
             {
                 Events.AddRange(events);
             }
+        }
+
+        public Task SaveAsync<T>(IEnumerable<IEvent> events)
+        {
+            Save<T>(events);
+            return Task.FromResult(0);
         }
 
         public IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion)

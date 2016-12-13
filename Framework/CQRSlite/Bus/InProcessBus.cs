@@ -3,6 +3,7 @@ using CQRSlite.Events;
 using CQRSlite.Messages;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Bus
 {
@@ -50,6 +51,12 @@ namespace CQRSlite.Bus
             {
                 handler(@event);
             }
+        }
+
+        public Task PublishAsync<T>(T @event) where T : IEvent
+        {
+            Publish<T>(@event);
+            return Task.FromResult(0);
         }
     }
 }

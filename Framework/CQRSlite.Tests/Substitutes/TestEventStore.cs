@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
@@ -33,6 +34,12 @@ namespace CQRSlite.Tests.Substitutes
         public void Save<T>(IEnumerable<IEvent> events)
         {
             SavedEvents.AddRange(events);
+        }
+
+        public Task SaveAsync<T>(IEnumerable<IEvent> events)
+        {
+            Save<T>(events);
+            return Task.FromResult(0);
         }
 
         private List<IEvent> SavedEvents { get; }

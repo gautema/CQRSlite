@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CQRSlite.Commands;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
@@ -85,6 +86,12 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             PublishedEvents.Add(@event);
         }
 
+        public Task PublishAsync<T>(T @event) where T : IEvent
+        {
+            Publish<T>(@event);
+            return Task.FromResult(0);
+        }
+
         public IList<IEvent> PublishedEvents { get; set; }
     }
 
@@ -105,6 +112,12 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             Events.AddRange(events);
             foreach (var @event in events)
                 _publisher.Publish(@event);
+        }
+
+        public Task SaveAsync<T>(IEnumerable<IEvent> events)
+        {
+            Save<T>(events);
+            return Task.FromResult(0);
         }
 
         public IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion)

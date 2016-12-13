@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 
 namespace CQRSlite.Tests.Substitutes
@@ -12,6 +13,12 @@ namespace CQRSlite.Tests.Substitutes
             {
                 throw new Exception();
             }
+        }
+
+        public Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            Save<T>(aggregate, expectedVersion);
+            return Task.FromResult(0);
         }
 
         public AggregateRoot Saved { get; private set; }

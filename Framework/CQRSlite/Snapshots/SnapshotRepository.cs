@@ -4,6 +4,7 @@ using CQRSlite.Events;
 using CQRSlite.Infrastructure;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Snapshots
 {
@@ -43,6 +44,11 @@ namespace CQRSlite.Snapshots
         {
             TryMakeSnapshot(aggregate);
             _repository.Save(aggregate, exectedVersion);
+        }
+
+        public Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            throw new NotImplementedException();
         }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
