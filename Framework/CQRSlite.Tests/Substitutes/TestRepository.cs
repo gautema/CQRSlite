@@ -29,5 +29,10 @@ namespace CQRSlite.Tests.Substitutes
             obj.LoadFromHistory(new[] {new TestAggregateDidSomething {Id = aggregateId, Version = 1}});
             return obj;
         }
+
+        public Task<T> GetAsync<T>(Guid aggregateId) where T : AggregateRoot
+        {
+            return Task.FromResult(Get<T>(aggregateId));
+        }
     }
 }

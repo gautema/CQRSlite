@@ -31,5 +31,10 @@ namespace CQRSlite.Tests.Substitutes
                 new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 1},
             };
         }
+
+        public Task<IEnumerable<IEvent>> GetAsync<T>(Guid aggregateId, int fromVersion)
+        {
+            return Task.FromResult(Get<T>(aggregateId, fromVersion));
+        }
     }
 }

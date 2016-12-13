@@ -107,5 +107,10 @@ namespace CQRSlite.Cache
                 throw;
             }
         }
+
+        public Task<T> GetAsync<T>(Guid aggregateId) where T : AggregateRoot
+        {
+            return Task.FromResult(Get<T>(aggregateId));
+        }
     }
 }

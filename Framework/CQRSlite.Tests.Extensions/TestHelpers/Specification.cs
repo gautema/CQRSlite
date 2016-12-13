@@ -124,5 +124,10 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         {
             return Events.Where(x => x.Version > fromVersion);
         }
+
+        public Task<IEnumerable<IEvent>> GetAsync<T>(Guid aggregateId, int fromVersion)
+        {
+            return Task.FromResult(Get<T>(aggregateId, fromVersion));
+        }
     }
 }

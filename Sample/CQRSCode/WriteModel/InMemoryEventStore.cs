@@ -44,5 +44,10 @@ namespace CQRSCode.WriteModel
             _inMemoryDb.TryGetValue(aggregateId, out events);
             return events?.Where(x => x.Version > fromVersion) ?? new List<IEvent>();
         }
+
+        public Task<IEnumerable<IEvent>> GetAsync<T>(Guid aggregateId, int fromVersion)
+        {
+            return Task.FromResult(Get<T>(aggregateId, fromVersion));
+        }
     }
 }

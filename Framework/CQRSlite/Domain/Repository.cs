@@ -67,6 +67,11 @@ namespace CQRSlite.Domain
             return LoadAggregate<T>(aggregateId);
         }
 
+        public Task<T> GetAsync<T>(Guid aggregateId) where T : AggregateRoot
+        {
+            return Task.FromResult(Get<T>(aggregateId));
+        }
+
         private T LoadAggregate<T>(Guid id) where T : AggregateRoot
         {
             var events = _eventStore.Get<T>(id, -1);

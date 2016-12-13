@@ -48,7 +48,8 @@ namespace CQRSlite.Snapshots
 
         public Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
         {
-            throw new NotImplementedException();
+            Save<T>(aggregate, expectedVersion);
+            return Task.FromResult(0);
         }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
@@ -63,6 +64,11 @@ namespace CQRSlite.Snapshots
             aggregate.LoadFromHistory(events);
 
             return aggregate;
+        }
+
+        public Task<T> GetAsync<T>(Guid aggregateId) where T : AggregateRoot
+        {
+            return Task.FromResult(Get<T>(aggregateId));
         }
 
         private int TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate)

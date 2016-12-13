@@ -34,6 +34,12 @@ namespace CQRSlite.Domain
             }
         }
 
+        public Task AddAsync<T>(T aggregate) where T : AggregateRoot
+        {
+            Add<T>(aggregate);
+            return Task.FromResult(0);
+        }
+
         public T Get<T>(Guid id, int? expectedVersion = null) where T : AggregateRoot
         {
             if (IsTracked(id))
@@ -54,6 +60,11 @@ namespace CQRSlite.Domain
             Add(aggregate);
 
             return aggregate;
+        }
+
+        public Task<T> GetAsync<T>(Guid id, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            return Task.FromResult(Get<T>(id, expectedVersion));
         }
 
         private bool IsTracked(Guid id)
