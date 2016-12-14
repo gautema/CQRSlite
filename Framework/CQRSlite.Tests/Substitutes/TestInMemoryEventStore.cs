@@ -18,10 +18,11 @@ namespace CQRSlite.Tests.Substitutes
             }
         }
 
-        public Task SaveAsync<T>(IEnumerable<IEvent> events)
+        public async Task SaveAsync<T>(IEnumerable<IEvent> events)
         {
             Save<T>(events);
-            return Task.FromResult(0);
+            // simulate async delay
+            await Task.Delay(100);
         }
 
         public IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion)
@@ -32,9 +33,14 @@ namespace CQRSlite.Tests.Substitutes
             }
         }
 
-        public Task<IEnumerable<IEvent>> GetAsync<T>(Guid aggregateId, int fromVersion)
+        public async Task<IEnumerable<IEvent>> GetAsync<T>(Guid aggregateId, int fromVersion)
         {
-            return Task.FromResult(Get<T>(aggregateId, fromVersion));
+            var events = Get<T>(aggregateId, fromVersion);
+            
+            // simulate async delay
+            await Task.Delay(100);
+
+            return events;
         }
     }
 }
