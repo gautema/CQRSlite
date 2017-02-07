@@ -1,18 +1,18 @@
-﻿using System;
-using CQRSlite.Domain;
+﻿using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
-using Xunit;
+using System;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace CQRSlite.Tests.Domain
 {
-    public class When_async_getting_aggregate_without_contructor
+    public class When_getting_aggregate_without_contructor_async
     {
         private Guid _id;
         private Repository _repository;
 
-        public When_async_getting_aggregate_without_contructor()
+        public When_getting_aggregate_without_contructor_async()
         {
             _id = Guid.NewGuid();
             var eventStore = new TestInMemoryEventStore();

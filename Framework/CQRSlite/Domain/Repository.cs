@@ -61,7 +61,7 @@ namespace CQRSlite.Domain
             var changes = aggregate.FlushUncommitedChanges();
             await _eventStore.SaveAsync<T>(changes);
 
-            PublishChanges(changes);
+            await PublishChangesAsync(changes);
         }
 
         private void PublishChanges(System.Collections.Generic.IEnumerable<IEvent> changes)
@@ -71,6 +71,17 @@ namespace CQRSlite.Domain
                 foreach (var @event in changes)
                 {
                     _publisher.Publish(@event);
+                }
+            }
+        }
+
+        private async Task PublishChangesAsync(System.Collections.Generic.IEnumerable<IEvent> changes)
+        {
+            if (_publisher != null)
+            {
+                foreach (var @event in changes)
+                {
+                    await _publisher.PublishAsync(@event);
                 }
             }
         }
