@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Snapshots;
 using CQRSlite.Tests.Substitutes;
@@ -26,8 +27,19 @@ namespace CQRSlite.Tests.Snapshots
 	        {
 	            return null;
 	        }
+
+            public Task<Snapshot> GetAsync(Guid id)
+            {
+                return Task.FromResult<Snapshot>(null);
+            }
+
             public void Save(Snapshot snapshot){}
-	    }
+
+            public Task SaveAsync(Snapshot snapshot)
+            {
+                return Task.FromResult(0);
+            }
+        }
 
 	    [Fact]
         public void Should_load_events()

@@ -68,9 +68,20 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             return Snapshot;
         }
 
+        public Task<Snapshot> GetAsync(Guid id)
+        {
+            return Task.FromResult<Snapshot>(Get(id));
+        }
+
         public void Save(Snapshot snapshot)
         {
             Snapshot = snapshot;
+        }
+
+        public Task SaveAsync(Snapshot snapshot)
+        {
+            Save(snapshot);
+            return Task.FromResult(0);
         }
     }
 
