@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Snapshots;
 
 namespace CQRSlite.Tests.Substitutes
@@ -19,6 +20,17 @@ namespace CQRSlite.Tests.Substitutes
         {
             VerifySave = true;
             SavedVersion = snapshot.Version;
+        }
+
+        public Task<Snapshot> GetAsync(Guid id)
+        {
+            return Task.FromResult<Snapshot>(Get(id));
+        }
+
+        public Task SaveAsync(Snapshot snapshot)
+        {
+            Save(snapshot);
+            return Task.FromResult(0);
         }
     }
 }

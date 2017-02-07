@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 
 namespace CQRSlite.Tests.Substitutes
@@ -14,6 +15,12 @@ namespace CQRSlite.Tests.Substitutes
             }
         }
 
+        public Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            Save<T>(aggregate, expectedVersion);
+            return Task.FromResult(0);
+        }
+
         public AggregateRoot Saved { get; private set; }
 
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
@@ -21,6 +28,11 @@ namespace CQRSlite.Tests.Substitutes
             var obj = (T) Activator.CreateInstance(typeof (T), true);
             obj.LoadFromHistory(new[] {new TestAggregateDidSomething {Id = aggregateId, Version = 1}});
             return obj;
+        }
+
+        public Task<T> GetAsync<T>(Guid aggregateId) where T : AggregateRoot
+        {
+            return Task.FromResult(Get<T>(aggregateId));
         }
     }
 }

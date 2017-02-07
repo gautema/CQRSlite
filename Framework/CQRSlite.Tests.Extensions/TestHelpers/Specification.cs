@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CQRSlite.Commands;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
@@ -67,9 +68,20 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             return Snapshot;
         }
 
+        public Task<Snapshot> GetAsync(Guid id)
+        {
+            return Task.FromResult<Snapshot>(Get(id));
+        }
+
         public void Save(Snapshot snapshot)
         {
             Snapshot = snapshot;
+        }
+
+        public Task SaveAsync(Snapshot snapshot)
+        {
+            Save(snapshot);
+            return Task.FromResult(0);
         }
     }
 
@@ -83,6 +95,12 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         public void Publish<T>(T @event) where T : IEvent
         {
             PublishedEvents.Add(@event);
+        }
+
+        public Task PublishAsync<T>(T @event) where T : IEvent
+        {
+            Publish<T>(@event);
+            return Task.FromResult(0);
         }
 
         public IList<IEvent> PublishedEvents { get; set; }
@@ -107,9 +125,20 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
                 _publisher.Publish(@event);
         }
 
+        public Task SaveAsync<T>(IEnumerable<IEvent> events)
+        {
+            Save<T>(events);
+            return Task.FromResult(0);
+        }
+
         public IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion)
         {
             return Events.Where(x => x.Version > fromVersion);
+        }
+
+        public Task<IEnumerable<IEvent>> GetAsync<T>(Guid aggregateId, int fromVersion)
+        {
+            return Task.FromResult(Get<T>(aggregateId, fromVersion));
         }
     }
 }

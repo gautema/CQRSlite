@@ -1,6 +1,8 @@
 ﻿using CQRSlite.Domain.Exception;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Domain
 {
@@ -36,20 +38,24 @@ namespace CQRSlite.Domain
         {
             if (IsTracked(id))
             {
-                var trackedAggregate = (T)_trackedAggregates[id].Aggregate;
-                if (expectedVersion != null && trackedAggregate.Version != expectedVersion)
-                {
-                    throw new ConcurrencyException(trackedAggregate.Id);
-                }
-                return trackedAggregate;
+                return HandleTracked<T>(id, expectedVersion);
             }
 
             var aggregate = _repository.Get<T>(id);
-            if (expectedVersion != null && aggregate.Version != expectedVersion)
+            AddAggregate(id, expectedVersion, aggregate);
+
+            return aggregate;
+        }
+
+        public async Task<T> GetAsync<T>(Guid id, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            if (IsTracked(id))
             {
-                throw new ConcurrencyException(id);
+                return HandleTracked<T>(id, expectedVersion);
             }
-            Add(aggregate);
+
+            var aggregate = await _repository.GetAsync<T>(id);
+            AddAggregate(id, expectedVersion, aggregate);
 
             return aggregate;
         }
@@ -59,12 +65,38 @@ namespace CQRSlite.Domain
             return _trackedAggregates.ContainsKey(id);
         }
 
+        private T HandleTracked<T>(Guid id, int? expectedVersion) where T : AggregateRoot
+        {
+            var trackedAggregate = (T)_trackedAggregates[id].Aggregate;
+            if (expectedVersion != null && trackedAggregate.Version != expectedVersion)
+            {
+                throw new ConcurrencyException(trackedAggregate.Id);
+            }
+            return trackedAggregate;
+        }
+
+        private void AddAggregate<T>(Guid id, int? expectedVersion, T aggregate) where T : AggregateRoot
+        {
+            if (expectedVersion != null && aggregate.Version != expectedVersion)
+            {
+                throw new ConcurrencyException(id);
+            }
+            Add(aggregate);
+        }
+
         public void Commit()
         {
             foreach (var descriptor in _trackedAggregates.Values)
             {
                 _repository.Save(descriptor.Aggregate, descriptor.Version);
             }
+            _trackedAggregates.Clear();
+        }
+
+        public async Task CommitAsync()
+        {
+            var saveTasks = _trackedAggregates.Values.Select(obj => _repository.SaveAsync(obj.Aggregate, obj.Version));
+            await Task.WhenAll(saveTasks);
             _trackedAggregates.Clear();
         }
     }

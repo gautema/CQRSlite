@@ -4,6 +4,7 @@ using CQRSlite.Events;
 using CQRSlite.Infrastructure;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Snapshots
 {
@@ -45,6 +46,12 @@ namespace CQRSlite.Snapshots
             _repository.Save(aggregate, exectedVersion);
         }
 
+        public async Task SaveAsync<T>(T aggregate, int? expectedVersion = default(int?)) where T : AggregateRoot
+        {
+            TryMakeSnapshot(aggregate);
+            await _repository.SaveAsync(aggregate, expectedVersion);
+        }
+
         public T Get<T>(Guid aggregateId) where T : AggregateRoot
         {
             var aggregate = AggregateFactory.CreateAggregate<T>();
@@ -53,8 +60,22 @@ namespace CQRSlite.Snapshots
             {
                 return _repository.Get<T>(aggregateId);
             }
-            var events = _eventStore.Get<T>(aggregateId, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
-            aggregate.LoadFromHistory(events);
+            var events = _eventStore.Get<T>(aggregateId, snapshotVersion);
+            aggregate.LoadFromHistory(events.Where(desc => desc.Version > snapshotVersion));
+
+            return aggregate;
+        }
+
+        public async Task<T> GetAsync<T>(Guid aggregateId) where T : AggregateRoot
+        {
+            var aggregate = AggregateFactory.CreateAggregate<T>();
+            var snapshotVersion = TryRestoreAggregateFromSnapshot(aggregateId, aggregate);
+            if (snapshotVersion == -1)
+            {
+                return await _repository.GetAsync<T>(aggregateId);
+            }
+            var events = await _eventStore.GetAsync<T>(aggregateId, snapshotVersion);
+            aggregate.LoadFromHistory(events.Where(desc => desc.Version > snapshotVersion));
 
             return aggregate;
         }
