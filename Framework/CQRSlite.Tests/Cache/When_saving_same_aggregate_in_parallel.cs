@@ -26,32 +26,32 @@ namespace CQRSlite.Tests.Cache
             _aggregate = new TestAggregate(Guid.NewGuid());
             _rep1.Save(_aggregate);
 
-            var t1 = new Task(() =>
+            var t1 = new Task(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
-                    var aggregate = _rep1.Get<TestAggregate>(_aggregate.Id);
+                    var aggregate = await _rep1.Get<TestAggregate>(_aggregate.Id);
                     aggregate.DoSomething();
-                    _rep1.Save(aggregate);
+                    await _rep1.Save(aggregate);
                 }
             });
 
-            var t2 = new Task(() =>
+            var t2 = new Task(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
-                    var aggregate = _rep2.Get<TestAggregate>(_aggregate.Id);
+                    var aggregate = await _rep2.Get<TestAggregate>(_aggregate.Id);
                     aggregate.DoSomething();
-                    _rep2.Save(aggregate);
+                    await _rep2.Save(aggregate);
                 }
             });
-            var t3 = new Task(() =>
+            var t3 = new Task(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
-                    var aggregate = _rep2.Get<TestAggregate>(_aggregate.Id);
+                    var aggregate = await _rep2.Get<TestAggregate>(_aggregate.Id);
                     aggregate.DoSomething();
-                    _rep2.Save(aggregate);
+                    await _rep2.Save(aggregate);
                 }
             });
             t1.Start();

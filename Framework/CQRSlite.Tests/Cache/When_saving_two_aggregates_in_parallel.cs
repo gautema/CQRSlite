@@ -26,23 +26,23 @@ namespace CQRSlite.Tests.Cache
             _rep1.Save(_aggregate1);
             _rep1.Save(_aggregate2);
 
-            var t1 = new Task(() =>
+            var t1 = new Task(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
-                    var aggregate = _rep1.Get<TestAggregate>(_aggregate1.Id);
+                    var aggregate = await _rep1.Get<TestAggregate>(_aggregate1.Id);
                     aggregate.DoSomething();
-                    _rep1.Save(aggregate);
+                    await  _rep1.Save(aggregate);
                 }
             });
 
-            var t2 = new Task(() =>
+            var t2 = new Task(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
-                    var aggregate = _rep1.Get<TestAggregate>(_aggregate2.Id);
+                    var aggregate = await _rep1.Get<TestAggregate>(_aggregate2.Id);
                     aggregate.DoSomething();
-                    _rep1.Save(aggregate);
+                    await _rep1.Save(aggregate);
                 }
             });
             t1.Start();
@@ -64,12 +64,12 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public void Should_distibute_events_correct()
+        public async void Should_distibute_events_correct()
         {
-            var aggregate1 = _rep1.Get<TestAggregate>(_aggregate2.Id);
+            var aggregate1 = await _rep1.Get<TestAggregate>(_aggregate2.Id);
             Assert.Equal(100, aggregate1.DidSomethingCount);
 
-            var aggregate2 = _rep1.Get<TestAggregate>(_aggregate2.Id);
+            var aggregate2 = await _rep1.Get<TestAggregate>(_aggregate2.Id);
             Assert.Equal(100, aggregate2.DidSomethingCount);
         }
     }

@@ -1,21 +1,23 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Snapshots;
 
 namespace CQRSlite.Tests.Substitutes
 {
     public class TestInMemorySnapshotStore : ISnapshotStore 
     {
-        public Snapshot Get(Guid id)
+        public Task<Snapshot> Get(Guid id)
         {
-            return _snapshot;
+            return Task.FromResult(_snapshot);
         }
 
-        public void Save(Snapshot snapshot)
+        public Task Save(Snapshot snapshot)
         {
             if(snapshot.Version == 0)
                 FirstSaved = true;
             SavedVersion = snapshot.Version;
             _snapshot = snapshot;
+            return Task.CompletedTask;
         }
 
         private Snapshot _snapshot;

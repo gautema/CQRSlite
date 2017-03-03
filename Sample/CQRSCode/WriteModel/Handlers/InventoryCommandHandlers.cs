@@ -25,32 +25,32 @@ namespace CQRSCode.WriteModel.Handlers
             _session.Commit();
         }
 
-        public void Handle(DeactivateInventoryItem message)
+        public async void Handle(DeactivateInventoryItem message)
         {
-            var item = _session.Get<InventoryItem>(message.Id, message.ExpectedVersion);
+            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion);
             item.Deactivate();
-            _session.Commit();
+            await _session.Commit();
         }
 
-        public void Handle(RemoveItemsFromInventory message)
+        public async void Handle(RemoveItemsFromInventory message)
         {
-            var item = _session.Get<InventoryItem>(message.Id, message.ExpectedVersion);
+            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion);
             item.Remove(message.Count);
-            _session.Commit();
+            await _session.Commit();
         }
 
-        public void Handle(CheckInItemsToInventory message)
+        public async void Handle(CheckInItemsToInventory message)
         {
-            var item = _session.Get<InventoryItem>(message.Id, message.ExpectedVersion);
+            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion);
             item.CheckIn(message.Count);
-            _session.Commit();
+            await _session.Commit();
         }
 
-        public void Handle(RenameInventoryItem message)
+        public async void Handle(RenameInventoryItem message)
         {
-            var item = _session.Get<InventoryItem>(message.Id, message.ExpectedVersion);
+            var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion);
             item.ChangeName(message.NewName);
-            _session.Commit();
+            await _session.Commit();
         }
     }
 }

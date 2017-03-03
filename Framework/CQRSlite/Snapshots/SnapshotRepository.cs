@@ -4,6 +4,7 @@ using CQRSlite.Events;
 using CQRSlite.Infrastructure;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Snapshots
 {
@@ -39,32 +40,31 @@ namespace CQRSlite.Snapshots
             _eventStore = eventStore;
         }
 
-        public void Save<T>(T aggregate, int? exectedVersion = null) where T : AggregateRoot
+        public Task Save<T>(T aggregate, int? exectedVersion = null) where T : AggregateRoot
         {
-            TryMakeSnapshot(aggregate);
-            _repository.Save(aggregate, exectedVersion);
+            return Task.WhenAll(TryMakeSnapshot(aggregate), _repository.Save(aggregate, exectedVersion));
         }
 
-        public T Get<T>(Guid aggregateId) where T : AggregateRoot
+        public async Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
         {
             var aggregate = AggregateFactory.CreateAggregate<T>();
-            var snapshotVersion = TryRestoreAggregateFromSnapshot(aggregateId, aggregate);
+            var snapshotVersion = await TryRestoreAggregateFromSnapshot(aggregateId, aggregate);
             if (snapshotVersion == -1)
             {
-                return _repository.Get<T>(aggregateId);
+                return await _repository.Get<T>(aggregateId);
             }
-            var events = _eventStore.Get<T>(aggregateId, snapshotVersion).Where(desc => desc.Version > snapshotVersion);
+            var events = (await _eventStore.Get<T>(aggregateId, snapshotVersion)).Where(desc => desc.Version > snapshotVersion);
             aggregate.LoadFromHistory(events);
 
             return aggregate;
         }
 
-        private int TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate)
+        private async Task<int> TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate)
         {
             var version = -1;
             if (_snapshotStrategy.IsSnapshotable(typeof(T)))
             {
-                var snapshot = _snapshotStore.Get(id);
+                var snapshot = await _snapshotStore.Get(id);
                 if (snapshot != null)
                 {
                     aggregate.AsDynamic().Restore(snapshot);
@@ -74,15 +74,15 @@ namespace CQRSlite.Snapshots
             return version;
         }
 
-        private void TryMakeSnapshot(AggregateRoot aggregate)
+        private Task TryMakeSnapshot(AggregateRoot aggregate)
         {
             if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
             {
-                return;
+                return Task.CompletedTask;
             }
             var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
-            _snapshotStore.Save(snapshot);
+            return _snapshotStore.Save(snapshot);
         }
     }
 }

@@ -26,19 +26,19 @@ namespace CQRSlite.Tests.Bus
         }
 
         [Fact]
-        public void Should_throw_if_more_handlers()
+        public async void Should_throw_if_more_handlers()
         {
             var x = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(x.Handle);
             _bus.RegisterHandler<TestAggregateDoSomething>(x.Handle);
 
-            Assert.Throws<InvalidOperationException>(() => _bus.Send(new TestAggregateDoSomething()));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _bus.Send(new TestAggregateDoSomething()));
         }
 
         [Fact]
-        public void Should_throw_if_no_handlers()
+        public async void Should_throw_if_no_handlers()
         {
-            Assert.Throws<InvalidOperationException>(() => _bus.Send(new TestAggregateDoSomething()));
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await _bus.Send(new TestAggregateDoSomething()));
         }
 
         [Fact]

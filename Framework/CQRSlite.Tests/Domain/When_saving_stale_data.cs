@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
@@ -22,22 +23,22 @@ namespace CQRSlite.Tests.Domain
 
             _aggregate = new TestAggregate(Guid.NewGuid());
             _aggregate.DoSomething();
-            _rep.Save(_aggregate);
+            Task.Run(() => _rep.Save(_aggregate)).Wait();
         }
 
         [Fact]
-        public void Should_throw_concurrency_exception_from_repository()
+        public async void Should_throw_concurrency_exception_from_repository()
         {
-            Assert.Throws<ConcurrencyException>(() => _rep.Save(_aggregate, 0));
+            await Assert.ThrowsAsync<ConcurrencyException>(async () => await _rep.Save(_aggregate, 0));
         }
 
         [Fact]
-        public void Should_throw_concurrency_exception_from_session()
+        public async void Should_throw_concurrency_exception_from_session()
         {
-            _session.Add(_aggregate);
+            await _session.Add(_aggregate);
             _aggregate.DoSomething();
-            _rep.Save(_aggregate);
-            Assert.Throws<ConcurrencyException>(() => _session.Commit());
+            await _rep.Save(_aggregate);
+            await Assert.ThrowsAsync<ConcurrencyException>(async () => await _session.Commit());
         }
     }
 }

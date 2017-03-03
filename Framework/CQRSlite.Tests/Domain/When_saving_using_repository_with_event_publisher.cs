@@ -25,11 +25,11 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public void Should_publish_events()
+        public async void Should_publish_events()
         {
             _aggregate.DoSomething();
-            _session.Add(_aggregate);
-            _session.Commit();
+            await _session.Add(_aggregate);
+            await _session.Commit();
             Assert.Equal(1, _eventPublisher.Published);
         }
     }

@@ -1,11 +1,13 @@
-﻿using CQRSlite.Events;
+﻿using System.Threading.Tasks;
+using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
 {
     public class TestEventPublisher: IEventPublisher {
-        public void Publish<T>(T @event) where T : IEvent
+        public Task Publish<T>(T @event) where T : IEvent
         {
             Published++;
+            return Task.CompletedTask;
         }
 
         public int Published { get; private set; }

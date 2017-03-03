@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Snapshots;
 using CQRSlite.Tests.Substitutes;
@@ -17,16 +18,19 @@ namespace CQRSlite.Tests.Snapshots
             var snapshotStrategy = new DefaultSnapshotStrategy();
             var repository = new SnapshotRepository(snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
             var session = new Session(repository);
-            _aggregate = session.Get<TestSnapshotAggregate>(Guid.NewGuid());
+            _aggregate = session.Get<TestSnapshotAggregate>(Guid.NewGuid()).Result;
         }
 
 	    private class NullSnapshotStore : ISnapshotStore
 	    {
-	        public Snapshot Get(Guid id)
+	        public Task<Snapshot> Get(Guid id)
 	        {
-	            return null;
+	            return Task.FromResult<Snapshot>(null);
 	        }
-            public void Save(Snapshot snapshot){}
+            public Task Save(Snapshot snapshot)
+            {
+                return Task.CompletedTask;
+            }
 	    }
 
 	    [Fact]

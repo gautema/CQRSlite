@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CQRSlite.Commands;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
@@ -34,15 +35,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             var snapshotStrategy = new DefaultSnapshotStrategy();
             var repository = new SnapshotRepository(snapshotstorage, snapshotStrategy, new Repository(eventstorage), eventstorage);
             Session = new Session(repository);
-
-            try
-            {
-                Aggregate = Session.Get<TAggregate>(Guid.Empty);
-            }
-            catch (AggregateNotFoundException)
-            {
-
-            }
+            Aggregate = GetAggregate().Result;
 
             var handler = BuildHandler();
             handler.Handle(When());
@@ -50,6 +43,18 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             Snapshot = snapshotstorage.Snapshot;
             PublishedEvents = eventpublisher.PublishedEvents;
             EventDescriptors = eventstorage.Events;
+        }
+
+        private async Task<TAggregate> GetAggregate()
+        {
+            try
+            {
+                return await Session.Get<TAggregate>(Guid.Empty);
+            }
+            catch (AggregateNotFoundException)
+            {
+                return null;
+            }
         }
     }
 
@@ -62,14 +67,15 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public Snapshot Snapshot { get; set; }
 
-        public Snapshot Get(Guid id)
+        public Task<Snapshot> Get(Guid id)
         {
-            return Snapshot;
+            return Task.FromResult(Snapshot);
         }
 
-        public void Save(Snapshot snapshot)
+        public Task Save(Snapshot snapshot)
         {
             Snapshot = snapshot;
+            return Task.CompletedTask;
         }
     }
 
@@ -80,9 +86,10 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             PublishedEvents = new List<IEvent>();
         }
 
-        public void Publish<T>(T @event) where T : IEvent
+        public Task Publish<T>(T @event) where T : IEvent
         {
             PublishedEvents.Add(@event);
+            return Task.CompletedTask;
         }
 
         public IList<IEvent> PublishedEvents { get; set; }
@@ -100,16 +107,16 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public List<IEvent> Events { get; set; }
 
-        public void Save<T>(IEnumerable<IEvent> events)
+        public Task Save<T>(IEnumerable<IEvent> events)
         {
             Events.AddRange(events);
-            foreach (var @event in events)
-                _publisher.Publish(@event);
+            return Task.WhenAll(events.Select(evt =>_publisher.Publish(evt)));
+                
         }
 
-        public IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion)
+        public Task<IEnumerable<IEvent>> Get<T>(Guid aggregateId, int fromVersion)
         {
-            return Events.Where(x => x.Version > fromVersion);
+            return Task.FromResult(Events.Where(x => x.Version > fromVersion));
         }
     }
 }

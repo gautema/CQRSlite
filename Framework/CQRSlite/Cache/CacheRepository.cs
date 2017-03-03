@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Cache
 {
@@ -41,7 +42,7 @@ namespace CQRSlite.Cache
 
         }
 
-        public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
+        public Task Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
             try
             {
@@ -51,7 +52,7 @@ namespace CQRSlite.Cache
                     {
                         _cache.Set(aggregate.Id, aggregate);
                     }
-                    _repository.Save(aggregate, expectedVersion);
+                    return _repository.Save(aggregate, expectedVersion);
                 }
             }
             catch (Exception)
@@ -64,7 +65,7 @@ namespace CQRSlite.Cache
             }
         }
 
-        public T Get<T>(Guid aggregateId) where T : AggregateRoot
+        public Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
         {
             try
             {
@@ -74,7 +75,7 @@ namespace CQRSlite.Cache
                     if (_cache.IsTracked(aggregateId))
                     {
                         aggregate = (T)_cache.Get(aggregateId);
-                        var events = _eventStore.Get<T>(aggregateId, aggregate.Version);
+                        var events = _eventStore.Get<T>(aggregateId, aggregate.Version).Result;
                         if (events.Any() && events.First().Version != aggregate.Version + 1)
                         {
                             _cache.Remove(aggregateId);
@@ -82,13 +83,13 @@ namespace CQRSlite.Cache
                         else
                         {
                             aggregate.LoadFromHistory(events);
-                            return aggregate;
+                            return Task.FromResult(aggregate);
                         }
                     }
 
-                    aggregate = _repository.Get<T>(aggregateId);
+                    aggregate = _repository.Get<T>(aggregateId).Result;
                     _cache.Set(aggregateId, aggregate);
-                    return aggregate;
+                    return Task.FromResult(aggregate);
                 }
             }
             catch (Exception)

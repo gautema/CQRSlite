@@ -14,19 +14,19 @@ namespace CQRSlite.Tests.Bus
         }
 		
         [Fact]
-        public void Should_publish_to_all_handlers()
+        public async void Should_publish_to_all_handlers()
         {
             var handler = new TestAggregateDidSomethingHandler();
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
-            _bus.Publish(new TestAggregateDidSomething());
+            await _bus.Publish(new TestAggregateDidSomething());
             Assert.Equal(2, handler.TimesRun);
         }
 
         [Fact]
-        public void Should_work_with_no_handlers()
+        public async void Should_work_with_no_handlers()
         {
-            _bus.Publish(new TestAggregateDidSomething());
+            await _bus.Publish(new TestAggregateDidSomething());
         }
     }
 }

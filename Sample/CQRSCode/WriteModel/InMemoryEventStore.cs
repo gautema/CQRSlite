@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CQRSlite.Events;
 
 namespace CQRSCode.WriteModel
@@ -15,7 +16,7 @@ namespace CQRSCode.WriteModel
             _publisher = publisher;
         }
 
-        public void Save<T>(IEnumerable<IEvent> events)
+        public async Task Save<T>(IEnumerable<IEvent> events)
         {
             foreach (var @event in events)
             {
@@ -27,15 +28,15 @@ namespace CQRSCode.WriteModel
                     _inMemoryDb.Add(@event.Id, list);
                 }
                 list.Add(@event);
-                _publisher.Publish(@event);
+                await _publisher.Publish(@event);
             }
         }
 
-        public IEnumerable<IEvent> Get<T>(Guid aggregateId, int fromVersion)
+        public Task<IEnumerable<IEvent>> Get<T>(Guid aggregateId, int fromVersion)
         {
             List<IEvent> events;
             _inMemoryDb.TryGetValue(aggregateId, out events);
-            return events?.Where(x => x.Version > fromVersion) ?? new List<IEvent>();
+            return Task.FromResult(events?.Where(x => x.Version > fromVersion) ?? new List<IEvent>());
         }
     }
 }

@@ -17,10 +17,10 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public void Should_throw_concurrency_exception()
+        public async void Should_throw_concurrency_exception()
         {
             var id = Guid.NewGuid();
-            Assert.Throws<EventsOutOfOrderException>(() => _session.Get<TestAggregate>(id, 3));
+            await Assert.ThrowsAsync<EventsOutOfOrderException>(async () => await  _session.Get<TestAggregate>(id, 3));
         }
     }
 }

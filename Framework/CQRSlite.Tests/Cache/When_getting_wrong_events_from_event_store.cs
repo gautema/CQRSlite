@@ -15,21 +15,21 @@ namespace CQRSlite.Tests.Cache
         {
             _memoryCache = new MemoryCache();
             _rep = new CacheRepository(new TestRepository(), new TestEventStoreWithBugs(), _memoryCache);
-            _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid());
+            _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
         }
 
         [Fact]
-        public void Should_evict_old_object_from_cache()
+        public async void Should_evict_old_object_from_cache()
         {
-            _rep.Get<TestAggregate>(_aggregate.Id);
+            await _rep.Get<TestAggregate>(_aggregate.Id);
             var aggregate = _memoryCache.Get(_aggregate.Id);
             Assert.NotEqual(_aggregate, aggregate);
         }
 
         [Fact]
-        public void Should_get_events_from_start()
+        public async void Should_get_events_from_start()
         {
-            var aggregate =_rep.Get<TestAggregate>(_aggregate.Id);
+            var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
             Assert.Equal(1, aggregate.Version);
         }
     }

@@ -15,15 +15,15 @@ namespace CQRSlite.Tests.Cache
         {
             _testRep = new TestRepository();
             _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), new MemoryCache());
-            _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid());
+            _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid()).Result;
             _aggregate.DoSomething();
             _rep.Save(_aggregate, -1);
         }
 
         [Fact]
-        public void Should_get_same_aggregate_on_get()
+        public async void Should_get_same_aggregate_on_get()
         {
-            var aggregate = _rep.Get<TestAggregate>(_aggregate.Id);
+            var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
             Assert.Equal(_aggregate, aggregate);
         }
 
@@ -34,11 +34,11 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public void Should_not_cache_empty_id()
+        public async void Should_not_cache_empty_id()
         {
             var aggregate = new TestAggregate(Guid.Empty);
-            _rep.Save(aggregate);
-            Assert.NotEqual(aggregate, _rep.Get<TestAggregate>(Guid.Empty));
+            await _rep.Save(aggregate);
+            Assert.NotEqual(aggregate, await _rep.Get<TestAggregate>(Guid.Empty));
         }
     }
 }

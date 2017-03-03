@@ -3,6 +3,7 @@ using CQRSlite.Domain.Factories;
 using CQRSlite.Events;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Domain
 {
@@ -36,33 +37,33 @@ namespace CQRSlite.Domain
             _publisher = publisher;
         }
 
-        public void Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
+        public async Task Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
-            if (expectedVersion != null && _eventStore.Get<T>(aggregate.Id, expectedVersion.Value).Any())
+            if (expectedVersion != null && (await _eventStore.Get<T>(aggregate.Id, expectedVersion.Value)).Any())
             {
                 throw new ConcurrencyException(aggregate.Id);
             }
 
             var changes = aggregate.FlushUncommitedChanges();
-            _eventStore.Save<T>(changes);
+            await _eventStore.Save<T>(changes);
 
             if (_publisher != null)
             {
                 foreach (var @event in changes)
                 {
-                    _publisher.Publish(@event);
+                    await _publisher.Publish(@event);
                 }
             }
         }
 
-        public T Get<T>(Guid aggregateId) where T : AggregateRoot
+        public Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
         {
             return LoadAggregate<T>(aggregateId);
         }
 
-        private T LoadAggregate<T>(Guid id) where T : AggregateRoot
+        private async Task<T> LoadAggregate<T>(Guid id) where T : AggregateRoot
         {
-            var events = _eventStore.Get<T>(id, -1);
+            var events = await _eventStore.Get<T>(id, -1);
             if (!events.Any())
             {
                 throw new AggregateNotFoundException(typeof(T), id);

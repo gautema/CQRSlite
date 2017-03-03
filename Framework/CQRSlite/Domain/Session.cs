@@ -1,6 +1,8 @@
 ﻿using CQRSlite.Domain.Exception;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Domain
 {
@@ -20,7 +22,7 @@ namespace CQRSlite.Domain
             _trackedAggregates = new Dictionary<Guid, AggregateDescriptor>();
         }
 
-        public void Add<T>(T aggregate) where T : AggregateRoot
+        public Task Add<T>(T aggregate) where T : AggregateRoot
         {
             if (!IsTracked(aggregate.Id))
             {
@@ -30,9 +32,10 @@ namespace CQRSlite.Domain
             {
                 throw new ConcurrencyException(aggregate.Id);
             }
+            return Task.CompletedTask;
         }
 
-        public T Get<T>(Guid id, int? expectedVersion = null) where T : AggregateRoot
+        public async Task<T> Get<T>(Guid id, int? expectedVersion = null) where T : AggregateRoot
         {
             if (IsTracked(id))
             {
@@ -44,12 +47,12 @@ namespace CQRSlite.Domain
                 return trackedAggregate;
             }
 
-            var aggregate = _repository.Get<T>(id);
+            var aggregate = await _repository.Get<T>(id);
             if (expectedVersion != null && aggregate.Version != expectedVersion)
             {
                 throw new ConcurrencyException(id);
             }
-            Add(aggregate);
+            await Add(aggregate);
 
             return aggregate;
         }
@@ -59,12 +62,9 @@ namespace CQRSlite.Domain
             return _trackedAggregates.ContainsKey(id);
         }
 
-        public void Commit()
+        public async Task Commit()
         {
-            foreach (var descriptor in _trackedAggregates.Values)
-            {
-                _repository.Save(descriptor.Aggregate, descriptor.Version);
-            }
+            await Task.WhenAll(_trackedAggregates.Values.Select(x => _repository.Save(x.Aggregate, x.Version)));
             _trackedAggregates.Clear();
         }
     }

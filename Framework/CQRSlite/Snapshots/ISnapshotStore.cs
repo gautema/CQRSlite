@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Snapshots
 {
     public interface ISnapshotStore
     {
-        Snapshot Get(Guid id);
-        void Save(Snapshot snapshot);
+        Task<Snapshot> Get(Guid id);
+        Task Save(Snapshot snapshot);
     }
 }

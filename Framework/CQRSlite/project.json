@@ -23,7 +23,7 @@
         "Microsoft.Extensions.Caching.Memory": "1.0.0"
       }
     },
-    "net451": {
+    "net461": {
       "frameworkAssemblies": {
         "System.Runtime.Caching": "4.0.0.0"
       }

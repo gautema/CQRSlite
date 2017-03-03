@@ -19,7 +19,7 @@ namespace CQRSlite.Tests.Cache
         {
             _memoryCache = new MemoryCache();
             _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _memoryCache);
-            _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid());
+            _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
             ManualResetEvent resetEvent;
             var field = _rep.GetType().GetField("_locks", BindingFlags.Static | BindingFlags.NonPublic);
             _locks = (ConcurrentDictionary<Guid, ManualResetEvent>)field.GetValue(_rep);
@@ -37,11 +37,11 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public void Should_get_new_aggregate_next_get()
+        public async void Should_get_new_aggregate_next_get()
         {
             _memoryCache.Remove(_aggregate.Id);
 
-            var aggregate = _rep.Get<TestAggregate>(_aggregate.Id);
+            var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
             Assert.NotEqual(_aggregate, aggregate);
         }
     }

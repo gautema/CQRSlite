@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
@@ -9,7 +10,7 @@ namespace CQRSlite.Tests.Domain
     public class When_getting_aggregate_without_contructor
     {
 	    private Guid _id;
-	    private Repository _repository;
+	    private readonly Repository _repository;
 
         public When_getting_aggregate_without_contructor()
         {
@@ -18,13 +19,13 @@ namespace CQRSlite.Tests.Domain
             _repository = new Repository(eventStore);
             var aggreagate = new TestAggregateNoParameterLessConstructor(1, _id);
             aggreagate.DoSomething();
-            _repository.Save(aggreagate);
+            Task.Run(() => _repository.Save(aggreagate)).Wait();
         }
 
         [Fact]
-        public void Should_throw_missing_parameterless_constructor_exception()
+        public async void Should_throw_missing_parameterless_constructor_exception()
         {
-            Assert.Throws<MissingParameterLessConstructorException>(() => _repository.Get<TestAggregateNoParameterLessConstructor>(_id));
+            await Assert.ThrowsAsync<MissingParameterLessConstructorException>(async () => await _repository.Get<TestAggregateNoParameterLessConstructor>(_id));
         }
     }
 }

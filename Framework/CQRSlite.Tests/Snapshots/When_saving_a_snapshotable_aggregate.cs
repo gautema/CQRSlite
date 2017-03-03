@@ -1,4 +1,5 @@
-﻿using CQRSlite.Domain;
+﻿using System.Threading.Tasks;
+using CQRSlite.Domain;
 using CQRSlite.Snapshots;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
@@ -7,7 +8,7 @@ namespace CQRSlite.Tests.Snapshots
 {
     public class When_saving_a_snapshotable_aggregate
     {
-        private TestSnapshotStore _snapshotStore;
+        private readonly TestSnapshotStore _snapshotStore;
 
         public When_saving_a_snapshotable_aggregate()
         {
@@ -21,8 +22,11 @@ namespace CQRSlite.Tests.Snapshots
             {
                 aggregate.DoSomething();
             }
-            session.Add(aggregate);
-            session.Commit();
+            Task.Run(async () =>
+            {
+                await session.Add(aggregate);
+                await session.Commit();
+            }).Wait();
         }
 
         [Fact]

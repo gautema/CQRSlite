@@ -3,6 +3,8 @@ using CQRSlite.Events;
 using CQRSlite.Messages;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Bus
 {
@@ -21,35 +23,28 @@ namespace CQRSlite.Bus
             handlers.Add((x => handler((T)x)));
         }
 
-        public void Send<T>(T command) where T : ICommand
+        public Task Send<T>(T command) where T : ICommand
         {
             List<Action<IMessage>> handlers;
-            if (_routes.TryGetValue(command.GetType(), out handlers))
-            {
-                if (handlers.Count != 1)
-                {
-                    throw new InvalidOperationException("Cannot send to more than one handler");
-                }
-                handlers[0](command);
-            }
-            else
-            {
+            if (!_routes.TryGetValue(command.GetType(), out handlers))
                 throw new InvalidOperationException("No handler registered");
-            }
+            if (handlers.Count != 1)
+                throw new InvalidOperationException("Cannot send to more than one handler");
+
+            handlers[0](command);
+            return Task.CompletedTask;
         }
 
-        public void Publish<T>(T @event) where T : IEvent
+        public Task Publish<T>(T @event) where T : IEvent
         {
             List<Action<IMessage>> handlers;
             if (!_routes.TryGetValue(@event.GetType(), out handlers))
+                return Task.CompletedTask;
+            return Task.WhenAll(handlers.Select(x =>
             {
-                return;
-            }
-
-            foreach (var handler in handlers)
-            {
-                handler(@event);
-            }
+                x(@event);
+                return Task.CompletedTask;
+            }));
         }
     }
 }

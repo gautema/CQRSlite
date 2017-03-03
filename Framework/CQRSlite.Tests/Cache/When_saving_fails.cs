@@ -17,7 +17,7 @@ namespace CQRSlite.Tests.Cache
             _memoryCache = new MemoryCache();
             _testRep = new TestRepository();
             _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), _memoryCache);
-            _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid());
+            _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid()).Result;
             _aggregate.DoSomething();
             try
             {

@@ -42,9 +42,9 @@ namespace CQRSlite.Tests.Snapshots
         }
 
         [Fact]
-        public void Should_get_aggregate_back_correct()
+        public async void Should_get_aggregate_back_correct()
         {
-            Assert.Equal(150, _session.Get<TestSnapshotAggregate>(_aggregate.Id).Number);
+            Assert.Equal(150, (await _session.Get<TestSnapshotAggregate>(_aggregate.Id)).Number);
         }
     }
 }
