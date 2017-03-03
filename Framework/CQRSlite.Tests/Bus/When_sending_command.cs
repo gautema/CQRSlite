@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using CQRSlite.Bus;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
@@ -26,7 +27,7 @@ namespace CQRSlite.Tests.Bus
         }
 
         [Fact]
-        public async void Should_throw_if_more_handlers()
+        public async Task Should_throw_if_more_handlers()
         {
             var x = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(x.Handle);
@@ -36,7 +37,7 @@ namespace CQRSlite.Tests.Bus
         }
 
         [Fact]
-        public async void Should_throw_if_no_handlers()
+        public async Task Should_throw_if_no_handlers()
         {
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await _bus.Send(new TestAggregateDoSomething()));
         }

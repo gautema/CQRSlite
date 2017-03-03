@@ -64,7 +64,7 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public async void Should_distibute_events_correct()
+        public async Task Should_distibute_events_correct()
         {
             var aggregate1 = await _rep1.Get<TestAggregate>(_aggregate2.Id);
             Assert.Equal(100, aggregate1.DidSomethingCount);

@@ -27,13 +27,13 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_throw_concurrency_exception_from_repository()
+        public async Task Should_throw_concurrency_exception_from_repository()
         {
             await Assert.ThrowsAsync<ConcurrencyException>(async () => await _rep.Save(_aggregate, 0));
         }
 
         [Fact]
-        public async void Should_throw_concurrency_exception_from_session()
+        public async Task Should_throw_concurrency_exception_from_session()
         {
             await _session.Add(_aggregate);
             _aggregate.DoSomething();

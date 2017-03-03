@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
@@ -21,7 +22,7 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public async void Should_get_same_aggregate_on_get()
+        public async Task Should_get_same_aggregate_on_get()
         {
             var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
             Assert.Equal(_aggregate, aggregate);
@@ -34,7 +35,7 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public async void Should_not_cache_empty_id()
+        public async Task Should_not_cache_empty_id()
         {
             var aggregate = new TestAggregate(Guid.Empty);
             await _rep.Save(aggregate);

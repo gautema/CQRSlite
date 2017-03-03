@@ -1,4 +1,5 @@
-﻿using CQRSlite.Domain;
+﻿using System.Threading.Tasks;
+using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
 
@@ -25,7 +26,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_publish_events()
+        public async Task Should_publish_events()
         {
             _aggregate.DoSomething();
             await _session.Add(_aggregate);

@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
@@ -37,7 +38,7 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public async void Should_get_new_aggregate_next_get()
+        public async Task Should_get_new_aggregate_next_get()
         {
             _memoryCache.Remove(_aggregate.Id);
 

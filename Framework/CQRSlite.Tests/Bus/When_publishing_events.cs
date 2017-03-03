@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using CQRSlite.Bus;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
@@ -14,7 +15,7 @@ namespace CQRSlite.Tests.Bus
         }
 		
         [Fact]
-        public async void Should_publish_to_all_handlers()
+        public async Task Should_publish_to_all_handlers()
         {
             var handler = new TestAggregateDidSomethingHandler();
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
@@ -24,7 +25,7 @@ namespace CQRSlite.Tests.Bus
         }
 
         [Fact]
-        public async void Should_work_with_no_handlers()
+        public async Task Should_work_with_no_handlers()
         {
             await _bus.Publish(new TestAggregateDidSomething());
         }

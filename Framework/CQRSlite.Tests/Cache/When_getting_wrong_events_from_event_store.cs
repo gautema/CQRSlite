@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
@@ -19,7 +20,7 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public async void Should_evict_old_object_from_cache()
+        public async Task Should_evict_old_object_from_cache()
         {
             await _rep.Get<TestAggregate>(_aggregate.Id);
             var aggregate = _memoryCache.Get(_aggregate.Id);
@@ -27,7 +28,7 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
-        public async void Should_get_events_from_start()
+        public async Task Should_get_events_from_start()
         {
             var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
             Assert.Equal(1, aggregate.Version);

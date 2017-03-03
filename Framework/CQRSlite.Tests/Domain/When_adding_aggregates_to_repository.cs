@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
@@ -17,7 +18,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_throw_if_different_object_with_tracked_guid_is_added()
+        public async Task Should_throw_if_different_object_with_tracked_guid_is_added()
         {
             var aggregate = new TestAggregate(Guid.NewGuid());
             var aggregate2 = new TestAggregate(aggregate.Id);
@@ -26,7 +27,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_not_throw_if_object_already_tracked()
+        public async Task Should_not_throw_if_object_already_tracked()
         {
             var aggregate = new TestAggregate(Guid.NewGuid());
             await _session.Add(aggregate);

@@ -23,7 +23,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_throw_missing_parameterless_constructor_exception()
+        public async Task Should_throw_missing_parameterless_constructor_exception()
         {
             await Assert.ThrowsAsync<MissingParameterLessConstructorException>(async () => await _repository.Get<TestAggregateNoParameterLessConstructor>(_id));
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
@@ -21,7 +22,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_throw_aggregate_or_event_missing_id_exception_from_repository()
+        public async Task Should_throw_aggregate_or_event_missing_id_exception_from_repository()
         {
             await Assert.ThrowsAsync<AggregateOrEventMissingIdException>(async () => await _rep.Save(_aggregate, 0));
         }

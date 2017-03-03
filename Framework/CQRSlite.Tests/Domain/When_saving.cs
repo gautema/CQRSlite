@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
@@ -42,7 +43,7 @@ namespace CQRSlite.Tests.Domain
         }
         
         [Fact]
-        public async void Should_add_new_aggregate()
+        public async Task Should_add_new_aggregate()
         {
             var agg = new TestAggregateNoParameterLessConstructor(1);
             agg.DoSomething();
@@ -52,7 +53,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_set_date()
+        public async Task Should_set_date()
         {
             var agg = new TestAggregateNoParameterLessConstructor(1);
             agg.DoSomething();
@@ -62,7 +63,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_set_version()
+        public async Task Should_set_version()
         {
             var agg = new TestAggregateNoParameterLessConstructor(1);
             agg.DoSomething();
@@ -74,7 +75,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_set_id()
+        public async Task Should_set_id()
         {
             var id = Guid.NewGuid();
             var agg = new TestAggregateNoParameterLessConstructor(1, id);
@@ -85,7 +86,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public async void Should_clear_tracked_aggregates()
+        public async Task Should_clear_tracked_aggregates()
         {
             var agg = new TestAggregate(Guid.NewGuid());
             await _session.Add(agg);
