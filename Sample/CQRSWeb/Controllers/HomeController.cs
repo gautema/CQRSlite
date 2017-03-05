@@ -3,6 +3,7 @@ using CQRSCode.WriteModel.Commands;
 using CQRSlite.Commands;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace CQRSWeb.Controllers
 {
@@ -35,9 +36,9 @@ namespace CQRSWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(string name)
+        public async Task<ActionResult> Add(string name)
         {
-            _commandSender.Send(new CreateInventoryItem(Guid.NewGuid(), name));
+            await _commandSender.Send(new CreateInventoryItem(Guid.NewGuid(), name));
             return RedirectToAction("Index");
         }
 
@@ -48,15 +49,15 @@ namespace CQRSWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult ChangeName(Guid id, string name, int version)
+        public async Task<ActionResult> ChangeName(Guid id, string name, int version)
         {
-            _commandSender.Send(new RenameInventoryItem(id, name, version));
+            await _commandSender.Send(new RenameInventoryItem(id, name, version));
             return RedirectToAction("Index");
         }
 
-        public ActionResult Deactivate(Guid id, int version)
+        public async Task<ActionResult> Deactivate(Guid id, int version)
         {
-            _commandSender.Send(new DeactivateInventoryItem(id, version));
+            await _commandSender.Send(new DeactivateInventoryItem(id, version));
             return RedirectToAction("Index");
         }
 
@@ -67,9 +68,9 @@ namespace CQRSWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult CheckIn(Guid id, int number, int version)
+        public async Task<ActionResult> CheckIn(Guid id, int number, int version)
         {
-            _commandSender.Send(new CheckInItemsToInventory(id, number, version));
+            await _commandSender.Send(new CheckInItemsToInventory(id, number, version));
             return RedirectToAction("Index");
         }
 
@@ -80,9 +81,9 @@ namespace CQRSWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult Remove(Guid id, int number, int version)
+        public async Task<ActionResult> Remove(Guid id, int number, int version)
         {
-            _commandSender.Send(new RemoveItemsFromInventory(id, number, version));
+            await _commandSender.Send(new RemoveItemsFromInventory(id, number, version));
             return RedirectToAction("Index");
         }
     }

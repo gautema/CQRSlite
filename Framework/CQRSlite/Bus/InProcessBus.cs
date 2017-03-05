@@ -10,14 +10,14 @@ namespace CQRSlite.Bus
 {
     public class InProcessBus : ICommandSender, IEventPublisher, IHandlerRegistrar
     {
-        private readonly Dictionary<Type, List<Action<IMessage>>> _routes = new Dictionary<Type, List<Action<IMessage>>>();
+        private readonly Dictionary<Type, List<Func<IMessage, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, Task>>>();
 
         public void RegisterHandler<T>(Func<T,Task> handler) where T : IMessage
         {
-            List<Action<IMessage>> handlers;
+            List<Func<IMessage, Task>> handlers;
             if (!_routes.TryGetValue(typeof(T), out handlers))
             {
-                handlers = new List<Action<IMessage>>();
+                handlers = new List<Func<IMessage, Task>>();
                 _routes.Add(typeof(T), handlers);
             }
             handlers.Add((x => handler((T)x)));
@@ -25,19 +25,18 @@ namespace CQRSlite.Bus
 
         public Task Send<T>(T command) where T : ICommand
         {
-            List<Action<IMessage>> handlers;
+            List<Func<IMessage, Task>> handlers;
             if (!_routes.TryGetValue(command.GetType(), out handlers))
                 throw new InvalidOperationException("No handler registered");
             if (handlers.Count != 1)
                 throw new InvalidOperationException("Cannot send to more than one handler");
 
-            handlers[0](command);
-            return Task.CompletedTask;
+            return handlers[0](command);
         }
 
         public Task Publish<T>(T @event) where T : IEvent
         {
-            List<Action<IMessage>> handlers;
+            List<Func<IMessage, Task>> handlers;
             if (!_routes.TryGetValue(@event.GetType(), out handlers))
                 return Task.CompletedTask;
             return Task.WhenAll(handlers.Select(handler =>
