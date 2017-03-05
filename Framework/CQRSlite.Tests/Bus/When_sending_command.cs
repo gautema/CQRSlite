@@ -4,6 +4,7 @@ using CQRSlite.Bus;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
 using CQRSlite.Commands;
+using CQRSlite.Domain.Exception;
 
 namespace CQRSlite.Tests.Bus
 {
@@ -17,11 +18,11 @@ namespace CQRSlite.Tests.Bus
         }
 
         [Fact]
-        public void Should_run_handler()
+        public async Task Should_run_handler()
         {
             var handler = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
-            _bus.Send(new TestAggregateDoSomething());
+            await _bus.Send(new TestAggregateDoSomething());
 
             Assert.Equal(1,handler.TimesRun);
         }
@@ -43,15 +44,25 @@ namespace CQRSlite.Tests.Bus
         }
 
         [Fact]
-        public void Should_handle_dynamically_generated_commands()
+        public async Task Should_handle_dynamically_generated_commands()
         {
             var handler = new TestAggregateDoSomethingHandler();
             var command = (ICommand)Activator.CreateInstance(typeof(TestAggregateDoSomething));
 
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
-            _bus.Send(command);
+            await _bus.Send(command);
 
             Assert.Equal(1, handler.TimesRun);
+        }
+
+        [Fact]
+        public async Task ShouldThrowIfHandlerThrows()
+        {
+            var handler = new TestAggregateDoSomethingHandler();
+            _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
+            await Assert.ThrowsAsync<ConcurrencyException>(
+                async () => await _bus.Send(new TestAggregateDoSomething {ExpectedVersion = 30}));
+
         }
     }
 }

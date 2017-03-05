@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
@@ -23,6 +24,8 @@ namespace CQRSlite.Tests.Substitutes
         {
             lock (message)
             {
+                if(message.Version == -10)
+                    throw new ConcurrencyException(message.Id);
                 TimesRun++;
                 return Task.CompletedTask;
             }

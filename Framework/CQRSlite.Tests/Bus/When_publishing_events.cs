@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using CQRSlite.Bus;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
 
@@ -28,6 +29,16 @@ namespace CQRSlite.Tests.Bus
         public async Task Should_work_with_no_handlers()
         {
             await _bus.Publish(new TestAggregateDidSomething());
+        }
+
+        [Fact]
+        public async Task ShouldThrowIfHandlerThrows()
+        {
+            var handler = new TestAggregateDidSomethingHandler();
+            _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
+            await Assert.ThrowsAsync<ConcurrencyException>(
+                async () => await _bus.Publish(new TestAggregateDidSomething {Version = -10}));
+
         }
     }
 }

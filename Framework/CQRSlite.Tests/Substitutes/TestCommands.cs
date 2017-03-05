@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using CQRSlite.Commands;
+using CQRSlite.Domain.Exception;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -14,6 +15,8 @@ namespace CQRSlite.Tests.Substitutes
     {
         public Task Handle(TestAggregateDoSomething message)
         {
+            if(message.ExpectedVersion != TimesRun)
+                throw new ConcurrencyException(message.Id);
             TimesRun++;
             return Task.CompletedTask;
         }
