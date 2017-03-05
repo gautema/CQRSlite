@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
@@ -18,11 +19,12 @@ namespace CQRSlite.Tests.Substitutes
 
     public class TestAggregateDidSomethingHandler : IEventHandler<TestAggregateDidSomething>
     {
-        public void Handle(TestAggregateDidSomething message)
+        public Task Handle(TestAggregateDidSomething message)
         {
             lock (message)
             {
                 TimesRun++;
+                return Task.CompletedTask;
             }
         }
 

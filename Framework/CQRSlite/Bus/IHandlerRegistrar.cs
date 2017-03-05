@@ -1,10 +1,11 @@
 ﻿using CQRSlite.Messages;
 using System;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Bus
 {
     public interface IHandlerRegistrar
     {
-        void RegisterHandler<T>(Action<T> handler) where T : IMessage;
+        void RegisterHandler<T>(Func<T,Task> handler) where T : IMessage;
     }
 }

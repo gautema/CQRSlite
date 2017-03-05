@@ -12,7 +12,7 @@ namespace CQRSlite.Bus
     {
         private readonly Dictionary<Type, List<Action<IMessage>>> _routes = new Dictionary<Type, List<Action<IMessage>>>();
 
-        public void RegisterHandler<T>(Action<T> handler) where T : IMessage
+        public void RegisterHandler<T>(Func<T,Task> handler) where T : IMessage
         {
             List<Action<IMessage>> handlers;
             if (!_routes.TryGetValue(typeof(T), out handlers))
@@ -40,9 +40,9 @@ namespace CQRSlite.Bus
             List<Action<IMessage>> handlers;
             if (!_routes.TryGetValue(@event.GetType(), out handlers))
                 return Task.CompletedTask;
-            return Task.WhenAll(handlers.Select(x =>
+            return Task.WhenAll(handlers.Select(handler =>
             {
-                x(@event);
+                handler(@event);
                 return Task.CompletedTask;
             }));
         }

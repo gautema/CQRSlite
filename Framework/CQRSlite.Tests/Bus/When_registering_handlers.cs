@@ -7,15 +7,14 @@ namespace CQRSlite.Tests.Bus
 {
     public class When_registering_handlers
     {
-        private BusRegistrar _register;
         private TestServiceLocator _locator;
 
         public When_registering_handlers()
         {
             _locator = new TestServiceLocator();
-            _register = new BusRegistrar(_locator);
+            var register = new BusRegistrar(_locator);
             if (TestHandleRegistrar.HandlerList.Count == 0)
-                _register.Register(GetType());
+                register.Register(GetType());
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using CQRSlite.Commands;
 
 namespace CQRSlite.Tests.Substitutes
@@ -11,18 +12,19 @@ namespace CQRSlite.Tests.Substitutes
 
     public class TestAggregateDoSomethingHandler : ICommandHandler<TestAggregateDoSomething> 
     {
-        public void Handle(TestAggregateDoSomething message)
+        public Task Handle(TestAggregateDoSomething message)
         {
             TimesRun++;
+            return Task.CompletedTask;
         }
 
         public int TimesRun { get; set; }
     }
 	public class TestAggregateDoSomethingElseHandler : ICommandHandler<TestAggregateDoSomething>
     {
-        public void Handle(TestAggregateDoSomething message)
+        public Task Handle(TestAggregateDoSomething message)
         {
-
+            return Task.CompletedTask;
         }
     }
 }

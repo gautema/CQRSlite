@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace CQRSlite.Config
 {
@@ -57,10 +58,10 @@ namespace CQRSlite.Config
                 .Single(mi => mi.GetParameters().Count() == 1)
                 .MakeGenericMethod(commandType);
 
-            var del = new Action<dynamic>(x =>
+            var del = new Func<dynamic, Task>(x =>
             {
                 dynamic handler = _serviceLocator.GetService(executorType);
-                handler.Handle(x);
+                return handler.Handle(x);
             });
 
             registerExecutorMethod.Invoke(bus, new object[] { del });
