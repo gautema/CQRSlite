@@ -62,7 +62,15 @@ namespace CQRSlite.Tests.Bus
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
             await Assert.ThrowsAsync<ConcurrencyException>(
                 async () => await _bus.Send(new TestAggregateDoSomething {ExpectedVersion = 30}));
+        }
 
+        [Fact]
+        public async Task ShouldWaitForSendToFinish()
+        {
+            var handler = new TestAggregateDoSomethingHandler();
+            _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
+            await _bus.Send(new TestAggregateDoSomething { LongRunning = true });
+            Assert.Equal(1, handler.TimesRun);
         }
     }
 }

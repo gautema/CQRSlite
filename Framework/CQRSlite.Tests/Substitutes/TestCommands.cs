@@ -9,16 +9,18 @@ namespace CQRSlite.Tests.Substitutes
     {
         public Guid Id { get; set; }
         public int ExpectedVersion { get; set; }
+        public bool LongRunning { get; set; }
     }
 
     public class TestAggregateDoSomethingHandler : ICommandHandler<TestAggregateDoSomething> 
     {
-        public Task Handle(TestAggregateDoSomething message)
+        public async Task Handle(TestAggregateDoSomething message)
         {
+            if (message.LongRunning)
+                await Task.Delay(50);
             if(message.ExpectedVersion != TimesRun)
                 throw new ConcurrencyException(message.Id);
             TimesRun++;
-            return Task.CompletedTask;
         }
 
         public int TimesRun { get; set; }

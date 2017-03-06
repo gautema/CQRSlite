@@ -30,7 +30,6 @@ namespace CQRSlite.Bus
                 throw new InvalidOperationException("No handler registered");
             if (handlers.Count != 1)
                 throw new InvalidOperationException("Cannot send to more than one handler");
-
             return handlers[0](command);
         }
 
@@ -39,11 +38,7 @@ namespace CQRSlite.Bus
             List<Func<IMessage, Task>> handlers;
             if (!_routes.TryGetValue(@event.GetType(), out handlers))
                 return Task.CompletedTask;
-            return Task.WhenAll(handlers.Select(handler =>
-            {
-                handler(@event);
-                return Task.CompletedTask;
-            }));
+            return Task.WhenAll(handlers.Select(handler => handler(@event)));
         }
     }
 }
