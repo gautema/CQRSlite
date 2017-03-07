@@ -32,8 +32,10 @@
   <files>
     <file src="Framework\CQRSlite\bin\Release\netstandard1.3\CQRSlite.dll" target="lib\netstandard1.3\CQRSlite.dll" />
     <file src="Framework\CQRSlite\bin\Release\netstandard1.3\CQRSlite.pdb" target="lib\netstandard1.3\CQRSlite.pdb" />
+    <file src="Framework\CQRSlite\bin\Release\netstandard1.3\CQRSlite.deps.json" target="lib\netstandard1.3\CQRSlite.deps.json" />
     <file src="Framework\CQRSlite\bin\Release\netstandard1.5\CQRSlite.dll" target="lib\netstandard1.5\CQRSlite.dll" />
     <file src="Framework\CQRSlite\bin\Release\netstandard1.5\CQRSlite.pdb" target="lib\netstandard1.5\CQRSlite.pdb" />
+    <file src="Framework\CQRSlite\bin\Release\netstandard1.5\CQRSlite.deps.json" target="lib\netstandard1.5\CQRSlite.deps.json" />
     <file src="Framework\CQRSlite\bin\Release\net451\CQRSlite.dll" target="lib\net451\CQRSlite.dll" />
     <file src="Framework\CQRSlite\bin\Release\net451\CQRSlite.pdb" target="lib\net451\CQRSlite.pdb" />
   </files>
