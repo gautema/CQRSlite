@@ -19,6 +19,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSWeb", "Sample\CQRSWeb\C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSTest", "Sample\CQRSTest\CQRSTest.csproj", "{DE6E654C-00A3-4829-AABF-42F534078D00}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D88E36CC-4CB2-436D-881B-5B6BB4174B42}"
+	ProjectSection(SolutionItems) = preProject
+		CQRSlite.nuspec = CQRSlite.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
