@@ -9,7 +9,7 @@
     <iconUrl>https://raw.githubusercontent.com/gautema/gautema_logo/master/gautema_logo64.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</description>
-    <copyright>Copyright 2016</copyright>
+    <copyright>Copyright 2017</copyright>
     <dependencies>
       <group targetFramework=".NETFramework4.6.1">
       </group>
