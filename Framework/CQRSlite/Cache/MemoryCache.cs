@@ -40,7 +40,7 @@ namespace CQRSlite.Cache
 #if NET461
             return _cache.Contains(id.ToString());
 #else
-            return _cache.TryGetValue(id, out o);
+            return _cache.TryGetValue(id, out o) && o != null;
 #endif
         }
 
