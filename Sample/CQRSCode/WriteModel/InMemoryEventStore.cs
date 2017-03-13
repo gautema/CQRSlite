@@ -20,8 +20,7 @@ namespace CQRSCode.WriteModel
         {
             foreach (var @event in events)
             {
-                List<IEvent> list;
-                _inMemoryDb.TryGetValue(@event.Id, out list);
+                _inMemoryDb.TryGetValue(@event.Id, out var list);
                 if (list == null)
                 {
                     list = new List<IEvent>();
@@ -34,8 +33,7 @@ namespace CQRSCode.WriteModel
 
         public Task<IEnumerable<IEvent>> Get<T>(Guid aggregateId, int fromVersion)
         {
-            List<IEvent> events;
-            _inMemoryDb.TryGetValue(aggregateId, out events);
+            _inMemoryDb.TryGetValue(aggregateId, out var events);
             return Task.FromResult(events?.Where(x => x.Version > fromVersion) ?? new List<IEvent>());
         }
     }

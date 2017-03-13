@@ -21,10 +21,9 @@ namespace CQRSlite.Tests.Cache
             _memoryCache = new MemoryCache();
             _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _memoryCache);
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
-            ManualResetEvent resetEvent;
             var field = _rep.GetType().GetField("_locks", BindingFlags.Static | BindingFlags.NonPublic);
             _locks = (ConcurrentDictionary<Guid, ManualResetEvent>)field.GetValue(_rep);
-            _locks.TryGetValue(_aggregate.Id, out resetEvent);
+            _locks.TryGetValue(_aggregate.Id, out var resetEvent);
             _memoryCache.Remove(_aggregate.Id);
             resetEvent.WaitOne(500);
         }
@@ -32,8 +31,7 @@ namespace CQRSlite.Tests.Cache
         [Fact]
         public void Should_remove_lock()
         {
-            ManualResetEvent val;
-            _locks.TryGetValue(_aggregate.Id, out val);
+            _locks.TryGetValue(_aggregate.Id, out var val);
             Assert.Null(val);
         }
 

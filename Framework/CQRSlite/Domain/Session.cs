@@ -13,12 +13,7 @@ namespace CQRSlite.Domain
 
         public Session(IRepository repository)
         {
-            if (repository == null)
-            {
-                throw new ArgumentNullException(nameof(repository));
-            }
-
-            _repository = repository;
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _trackedAggregates = new Dictionary<Guid, AggregateDescriptor>();
         }
 

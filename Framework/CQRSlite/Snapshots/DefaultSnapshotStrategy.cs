@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using CQRSlite.Domain;
 using System.Reflection;
 
@@ -29,7 +28,7 @@ namespace CQRSlite.Snapshots
             }
             var i = aggregate.Version;
 
-            for (var j = 0; j < aggregate.GetUncommittedChanges().Count(); j++)
+            for (var j = 0; j < aggregate.GetUncommittedChanges().Length; j++)
             {
                 if (++i % SnapshotInterval == 0 && i != 0)
                 {

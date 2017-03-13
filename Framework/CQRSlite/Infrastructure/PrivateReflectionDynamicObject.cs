@@ -10,24 +10,13 @@ namespace CQRSlite.Infrastructure
         public object RealObject { get; set; }
         private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-        internal static object WrapObjectIfNeeded(object o)
-        {
-            // Don't wrap primitive types, which don't have many interesting internal APIs
-            if (o == null || o.GetType().GetTypeInfo().IsPrimitive || o is string)
-            {
-                return o;
-            }
-
-            return new PrivateReflectionDynamicObject { RealObject = o };
-        }
-
         // Called when a method is called
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
             result = InvokeMemberOnType(RealObject.GetType(), RealObject, binder.Name, args);
 
-            // Wrap the sub object if necessary. This allows nested anonymous objects to work.
-            result = WrapObjectIfNeeded(result);
+            // Wrap the sub object. This allows nested anonymous objects to work.
+            result = new PrivateReflectionDynamicObject { RealObject = result }; 
 
             return true;
         }

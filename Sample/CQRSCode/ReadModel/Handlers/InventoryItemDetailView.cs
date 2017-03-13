@@ -29,8 +29,7 @@ namespace CQRSCode.ReadModel.Handlers
 
         private InventoryItemDetailsDto GetDetailsItem(Guid id)
         {
-            InventoryItemDetailsDto dto;
-            if(!InMemoryDatabase.Details.TryGetValue(id, out dto))
+            if (!InMemoryDatabase.Details.TryGetValue(id, out var dto))
             {
                 throw new InvalidOperationException("did not find the original inventory this shouldnt happen");
             }

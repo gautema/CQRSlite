@@ -13,7 +13,7 @@ namespace CQRSlite.Domain
         public Guid Id { get; protected set; }
         public int Version { get; protected set; }
 
-        public IEnumerable<IEvent> GetUncommittedChanges()
+        public IEvent[] GetUncommittedChanges()
         {
             lock (_changes)
             {
@@ -21,7 +21,7 @@ namespace CQRSlite.Domain
             }
         }
 
-        public IEnumerable<IEvent> FlushUncommitedChanges()
+        public IEvent[] FlushUncommitedChanges()
         {
             lock (_changes)
             {

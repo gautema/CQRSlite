@@ -1,10 +1,12 @@
-﻿namespace CQRSlite.Infrastructure
+﻿using CQRSlite.Domain;
+
+namespace CQRSlite.Infrastructure
 {
     internal static class PrivateReflectionDynamicObjectExtensions
     {
-        public static dynamic AsDynamic(this object o)
+        public static dynamic AsDynamic(this AggregateRoot o)
         {
-            return PrivateReflectionDynamicObject.WrapObjectIfNeeded(o);
+            return new PrivateReflectionDynamicObject { RealObject = o };
         }
     }
 }

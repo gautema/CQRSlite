@@ -12,6 +12,10 @@ CQRSlite has been made with pluggability in mind. So every standard implementati
 ##Getting started
 A sample project is located with the code, this shows a common usage scenario of the framework. There are some features of CQRSlite, such as snapshotting that the sample does not show. These features are only documented through the tests.
 
+Great introductions to CQRS and CQRSlite have been written by others. Here are two recommended:
+<https://www.codeproject.com/articles/991648/cqrs-a-cross-examination-of-how-it-works>
+<https://exceptionnotfound.net/real-world-cqrs-es-with-asp-net-and-redis-part-1-overview/>
+
 ##Features
 * Command sending and event publishing
 * Unit of work through session with aggregate tracking
@@ -25,7 +29,7 @@ A sample project is located with the code, this shows a common usage scenario of
 To install CQRSlite, it you could either download the files and copy whats needed into your project, you can clone this project and reference it, or you can download releases from nuget. You will have to implement your own eventstore or use an exsiting eventstore with an adapter to fit the IEventStore interface.
 
 ##License
-Copyright 2016 Gaute Magnussen
+Copyright 2017 Gaute Magnussen
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

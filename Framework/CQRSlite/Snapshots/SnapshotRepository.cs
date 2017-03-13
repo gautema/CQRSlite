@@ -17,27 +17,10 @@ namespace CQRSlite.Snapshots
 
         public SnapshotRepository(ISnapshotStore snapshotStore, ISnapshotStrategy snapshotStrategy, IRepository repository, IEventStore eventStore)
         {
-            if (snapshotStore == null)
-            {
-                throw new ArgumentNullException(nameof(snapshotStore));
-            }
-            if (snapshotStrategy == null)
-            {
-                throw new ArgumentNullException(nameof(snapshotStrategy));
-            }
-            if (repository == null)
-            {
-                throw new ArgumentNullException(nameof(repository));
-            }
-            if (eventStore == null)
-            {
-                throw new ArgumentNullException(nameof(eventStore));
-            }
-
-            _snapshotStore = snapshotStore;
-            _snapshotStrategy = snapshotStrategy;
-            _repository = repository;
-            _eventStore = eventStore;
+            _snapshotStore = snapshotStore ?? throw new ArgumentNullException(nameof(snapshotStore));
+            _snapshotStrategy = snapshotStrategy ?? throw new ArgumentNullException(nameof(snapshotStrategy));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
         }
 
         public Task Save<T>(T aggregate, int? exectedVersion = null) where T : AggregateRoot
@@ -59,18 +42,16 @@ namespace CQRSlite.Snapshots
             return aggregate;
         }
 
-        private async Task<int> TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate)
+        private async Task<int> TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate) where T : AggregateRoot
         {
             var version = -1;
-            if (_snapshotStrategy.IsSnapshotable(typeof(T)))
-            {
-                var snapshot = await _snapshotStore.Get(id);
-                if (snapshot != null)
-                {
-                    aggregate.AsDynamic().Restore(snapshot);
-                    version = snapshot.Version;
-                }
-            }
+            if (!_snapshotStrategy.IsSnapshotable(typeof(T)))
+                return version;
+            var snapshot = await _snapshotStore.Get(id);
+            if (snapshot == null)
+                return version;
+            aggregate.AsDynamic().Restore(snapshot);
+            version = snapshot.Version;
             return version;
         }
 
@@ -81,7 +62,7 @@ namespace CQRSlite.Snapshots
                 return Task.CompletedTask;
             }
             var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
-            snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Count();
+            snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
             return _snapshotStore.Save(snapshot);
         }
     }

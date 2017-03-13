@@ -39,7 +39,7 @@ namespace CQRSlite.Tests.Domain
             _aggregate.DoSomething();
             _session.Add(_aggregate);
             _session.Commit();
-            Assert.Equal(0, _aggregate.GetUncommittedChanges().Count());
+            Assert.Equal(0, _aggregate.GetUncommittedChanges().Length);
         }
         
         [Fact]

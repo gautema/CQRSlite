@@ -36,11 +36,10 @@ namespace CQRSlite.Cache
 
         public bool IsTracked(Guid id)
         {
-            object o;
 #if NET461
             return _cache.Contains(id.ToString());
 #else
-            return _cache.TryGetValue(id, out o) && o != null;
+            return _cache.TryGetValue(id, out var o) && o != null;
 #endif
         }
 

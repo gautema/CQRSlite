@@ -17,26 +17,13 @@ namespace CQRSlite.Cache
 
         public CacheRepository(IRepository repository, IEventStore eventStore, ICache cache)
         {
-            if (repository == null)
-            {
-                throw new ArgumentNullException(nameof(repository));
-            }
-            if (eventStore == null)
-            {
-                throw new ArgumentNullException(nameof(eventStore));
-            }
-            if (cache == null)
-            {
-                throw new ArgumentNullException(nameof(cache));
-            }
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
-            _repository = repository;
-            _eventStore = eventStore;
-            _cache = cache;
             _cache.RegisterEvictionCallback(key =>
                      {
-                         ManualResetEvent o;
-                         _locks.TryRemove(key, out o);
+                         _locks.TryRemove(key, out var o);
                          o.Set();
                      });
 
