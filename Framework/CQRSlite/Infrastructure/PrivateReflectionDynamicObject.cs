@@ -10,7 +10,7 @@ namespace CQRSlite.Infrastructure
     internal class PrivateReflectionDynamicObject : DynamicObject
     {
         private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-        private static readonly ConcurrentDictionary<int, MethodInfo> cachedMembers = new ConcurrentDictionary<int, MethodInfo>();
+        private static readonly ConcurrentDictionary<int, CompiledMethodInfo> cachedMembers = new ConcurrentDictionary<int, CompiledMethodInfo>();
 
         public object RealObject { get; set; }
 
@@ -25,10 +25,16 @@ namespace CQRSlite.Infrastructure
                 argtypes[i] = argtype;
                 hash = hash * 31 + argtype.GetHashCode();
             }
-            var method = cachedMembers.GetOrAdd(hash, x => GetMember(type, binder.Name, argtypes));
+            var method = cachedMembers.GetOrAdd(hash, x =>
+            {
+                var m = GetMember(type, binder.Name, argtypes);
+                return m == null ? null : new CompiledMethodInfo(m, type);
+            });
             result = method?.Invoke(RealObject, args);
+
             return true;
         }
+
 
         private static MethodInfo GetMember(Type type, string name, Type[] argtypes)
         {
