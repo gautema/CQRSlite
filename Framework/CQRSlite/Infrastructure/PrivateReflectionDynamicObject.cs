@@ -16,8 +16,11 @@ namespace CQRSlite.Infrastructure
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
+            var methodname = binder.Name;
             var type = RealObject.GetType();
-            var hash = 719 + type.GetHashCode();
+            var hash = 23;
+            hash = hash * 31 + type.GetHashCode();
+            hash = hash * 31 + methodname.GetHashCode();
             var argtypes = new Type[args.Length];
             for (var i = 0; i < args.Length; i++)
             {
@@ -27,7 +30,7 @@ namespace CQRSlite.Infrastructure
             }
             var method = cachedMembers.GetOrAdd(hash, x =>
             {
-                var m = GetMember(type, binder.Name, argtypes);
+                var m = GetMember(type, methodname, argtypes);
                 return m == null ? null : new CompiledMethodInfo(m, type);
             });
             result = method?.Invoke(RealObject, args);
