@@ -9,7 +9,7 @@ This code is located at http://github.com/gregoryyoung/m-r
 
 CQRSlite has been made with pluggability in mind. So every standard implementation should be interchangeable with a custom one if needed.
 
-##Getting started
+## Getting started
 A sample project is located with the code, this shows a common usage scenario of the framework. There are some features of CQRSlite, such as snapshotting that the sample does not show. These features are only documented through the tests.
 
 Great introductions to CQRS and CQRSlite have been written by others. Here are two recommended:
