@@ -1,4 +1,4 @@
-#CQRSlite
+# CQRSlite
 
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/gautema/CQRSLite?branch=master&svg=true)](https://ci.appveyor.com/project/gautema/CQRSLite)
 [![NuGet](https://img.shields.io/nuget/vpre/cqrslite.svg)](https://www.nuget.org/packages/cqrslite)
@@ -16,7 +16,7 @@ Great introductions to CQRS and CQRSlite have been written by others. Here are t
 <https://www.codeproject.com/articles/991648/cqrs-a-cross-examination-of-how-it-works>
 <https://exceptionnotfound.net/real-world-cqrs-es-with-asp-net-and-redis-part-1-overview/>
 
-##Features
+## Features
 * Command sending and event publishing
 * Unit of work through session with aggregate tracking
 * Repository for getting and saving aggregates
@@ -25,10 +25,10 @@ Great introductions to CQRS and CQRSlite have been written by others. Here are t
 * Snapshotting
 * Caching with concurrency checks and updating to latest version
 
-##Installation
+## Installation
 To install CQRSlite, it you could either download the files and copy whats needed into your project, you can clone this project and reference it, or you can download releases from nuget. You will have to implement your own eventstore or use an exsiting eventstore with an adapter to fit the IEventStore interface.
 
-##License
+## License
 Copyright 2017 Gaute Magnussen
 
 Licensed under the Apache License, Version 2.0 (the "License");
