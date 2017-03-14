@@ -61,7 +61,7 @@ namespace CQRSlite.Snapshots
             {
                 return Task.CompletedTask;
             }
-            var snapshot = aggregate.AsDynamic().GetSnapshot().RealObject;
+            var snapshot = aggregate.AsDynamic().GetSnapshot();
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
             return _snapshotStore.Save(snapshot);
         }
