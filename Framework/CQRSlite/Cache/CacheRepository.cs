@@ -24,7 +24,7 @@ namespace CQRSlite.Cache
             _cache.RegisterEvictionCallback(key =>
                      {
                          _locks.TryRemove(key, out var o);
-                         o.Set();
+                         o?.Set();
                      });
 
         }

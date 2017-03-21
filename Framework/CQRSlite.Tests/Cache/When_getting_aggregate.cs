@@ -10,12 +10,12 @@ namespace CQRSlite.Tests.Cache
     {
         private CacheRepository _rep;
         private TestAggregate _aggregate;
-        private ICache _memoryCache;
+        private ICache _cache;
 
         public When_getting_aggregate()
         {
-            _memoryCache = new MemoryCache();
-            _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _memoryCache);
+            _cache = new MemoryCache();
+            _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _cache);
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
         }
 
@@ -42,7 +42,7 @@ namespace CQRSlite.Tests.Cache
         [Fact]
         public async Task Should_get_same_aggregate_from_different_cache_repository()
         {
-            var rep = new CacheRepository(new TestRepository(), new TestInMemoryEventStore(), _memoryCache);
+            var rep = new CacheRepository(new TestRepository(), new TestInMemoryEventStore(), _cache);
             var aggregate = await rep.Get<TestAggregate>(_aggregate.Id);
             Assert.Equal(_aggregate.DidSomethingCount, aggregate.DidSomethingCount);
             Assert.Equal(_aggregate.Id, aggregate.Id);

@@ -17,11 +17,11 @@ namespace CQRSlite.Tests.Cache
 
         public When_saving_same_aggregate_in_parallel()
         {
-            var memoryCache = new MemoryCache();
+            var cache = new MemoryCache();
 
             _testStore = new TestInMemoryEventStore();
-            _rep1 = new CacheRepository(new Repository(_testStore), _testStore, memoryCache);
-            _rep2 = new CacheRepository(new Repository(_testStore), _testStore, memoryCache);
+            _rep1 = new CacheRepository(new Repository(_testStore), _testStore, cache);
+            _rep2 = new CacheRepository(new Repository(_testStore), _testStore, cache);
 
             _aggregate = new TestAggregate(Guid.NewGuid());
             _rep1.Save(_aggregate).Wait();

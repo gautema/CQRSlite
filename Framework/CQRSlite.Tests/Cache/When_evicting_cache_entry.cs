@@ -13,18 +13,18 @@ namespace CQRSlite.Tests.Cache
     {
         private CacheRepository _rep;
         private TestAggregate _aggregate;
-        private MemoryCache _memoryCache;
+        private ICache _cache;
         private ConcurrentDictionary<Guid, ManualResetEvent> _locks;
 
         public When_evicting_cache_entry()
         {
-            _memoryCache = new MemoryCache();
-            _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _memoryCache);
+            _cache = new MemoryCache();
+            _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _cache);
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
             var field = _rep.GetType().GetField("_locks", BindingFlags.Static | BindingFlags.NonPublic);
             _locks = (ConcurrentDictionary<Guid, ManualResetEvent>)field.GetValue(_rep);
             _locks.TryGetValue(_aggregate.Id, out var resetEvent);
-            _memoryCache.Remove(_aggregate.Id);
+            _cache.Remove(_aggregate.Id);
             resetEvent.WaitOne(500);
         }
 
@@ -36,9 +36,16 @@ namespace CQRSlite.Tests.Cache
         }
 
         [Fact]
+        public void Should_not_throw_if_no_lock()
+        {
+            _locks.Clear();
+            _cache.Remove(_aggregate.Id);
+        }
+
+        [Fact]
         public async Task Should_get_new_aggregate_next_get()
         {
-            _memoryCache.Remove(_aggregate.Id);
+            _cache.Remove(_aggregate.Id);
 
             var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
             Assert.NotEqual(_aggregate, aggregate);

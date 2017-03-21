@@ -38,7 +38,6 @@ namespace CQRSlite.Infrastructure
             return true;
         }
 
-
         private static MethodInfo GetMember(Type type, string name, Type[] argtypes)
         {
             while (true)
