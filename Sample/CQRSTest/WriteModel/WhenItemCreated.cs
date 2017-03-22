@@ -9,7 +9,7 @@ using CQRSlite.Events;
 using CQRSlite.Tests.Extensions.TestHelpers;
 using Xunit;
 
-namespace CQRSTests.WriteModel
+namespace CQRSTest.WriteModel
 {
     public class WhenItemCreated : Specification<InventoryItem, InventoryCommandHandlers, CreateInventoryItem>
     {

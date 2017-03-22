@@ -116,7 +116,8 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public Task<IEnumerable<IEvent>> Get<T>(Guid aggregateId, int fromVersion)
         {
-            return Task.FromResult(Events.Where(x => x.Version > fromVersion));
+            var events = Events.Where(x => x.Id == aggregateId && x.Version > fromVersion);
+            return Task.FromResult(events);
         }
     }
 }

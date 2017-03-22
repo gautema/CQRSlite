@@ -9,7 +9,7 @@ using CQRSlite.Events;
 using CQRSlite.Tests.Extensions.TestHelpers;
 using Xunit;
 
-namespace CQRSTests.WriteModel
+namespace CQRSTest.WriteModel
 {
     public class When_item_checked_in : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
     {
