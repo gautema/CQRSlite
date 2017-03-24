@@ -36,7 +36,7 @@ namespace CQRSlite.Tests.Cache
         public async Task Should_update_if_version_changed_in_event_store()
         {
             var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
-            Assert.Equal(3, _aggregate.Version);
+            Assert.Equal(3, aggregate.Version);
         }
 
         [Fact]

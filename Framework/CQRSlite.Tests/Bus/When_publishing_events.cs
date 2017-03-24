@@ -32,7 +32,7 @@ namespace CQRSlite.Tests.Bus
         }
 
         [Fact]
-        public async Task ShouldThrowIfHandlerThrows()
+        public async Task Should_throw_if_handler_throws()
         {
             var handler = new TestAggregateDidSomethingHandler();
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
@@ -41,7 +41,7 @@ namespace CQRSlite.Tests.Bus
         }
 
         [Fact]
-        public async Task ShouldWaitForPublishedToFinish()
+        public async Task Should_wait_for_published_to_finish()
         {
             var handler = new TestAggregateDidSomethingHandler();
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
