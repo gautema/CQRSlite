@@ -26,7 +26,7 @@ namespace CQRSlite.Tests.Cache
             _aggregate = new TestAggregate(Guid.NewGuid());
             _rep1.Save(_aggregate).Wait();
 
-            var t1 = new Task(async () =>
+            var t1 = Task.Run(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
@@ -36,7 +36,7 @@ namespace CQRSlite.Tests.Cache
                 }
             });
 
-            var t2 = new Task(async () =>
+            var t2 = Task.Run(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
@@ -45,7 +45,7 @@ namespace CQRSlite.Tests.Cache
                     await _rep2.Save(aggregate);
                 }
             });
-            var t3 = new Task(async () =>
+            var t3 = Task.Run(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
@@ -54,9 +54,6 @@ namespace CQRSlite.Tests.Cache
                     await _rep2.Save(aggregate);
                 }
             });
-            t1.Start();
-            t2.Start();
-            t3.Start();
 
             Task.WaitAll(t1, t2, t3);
         }
