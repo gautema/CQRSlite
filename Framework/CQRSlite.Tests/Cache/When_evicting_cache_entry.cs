@@ -18,7 +18,7 @@ namespace CQRSlite.Tests.Cache
 
         public When_evicting_cache_entry()
         {
-            _cache = new MemoryCache();
+            _cache = new TestMemoryCache();
             _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _cache);
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
             var field = _rep.GetType().GetField("_locks", BindingFlags.Static | BindingFlags.NonPublic);
