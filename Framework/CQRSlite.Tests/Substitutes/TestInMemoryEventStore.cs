@@ -10,7 +10,7 @@ namespace CQRSlite.Tests.Substitutes
     {
         public readonly List<IEvent> Events = new List<IEvent>();
 
-        public Task Save<T>(IEnumerable<IEvent> events)
+        public Task Save(IEnumerable<IEvent> events)
         {
             lock (Events)
             {
@@ -19,7 +19,7 @@ namespace CQRSlite.Tests.Substitutes
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<IEvent>> Get<T>(Guid aggregateId, int fromVersion)
+        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion)
         {
             lock(Events)
             {

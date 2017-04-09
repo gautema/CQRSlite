@@ -16,7 +16,7 @@ namespace CQRSCode.WriteModel
             _publisher = publisher;
         }
 
-        public async Task Save<T>(IEnumerable<IEvent> events)
+        public async Task Save(IEnumerable<IEvent> events)
         {
             foreach (var @event in events)
             {
@@ -31,7 +31,7 @@ namespace CQRSCode.WriteModel
             }
         }
 
-        public Task<IEnumerable<IEvent>> Get<T>(Guid aggregateId, int fromVersion)
+        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion)
         {
             _inMemoryDb.TryGetValue(aggregateId, out var events);
             return Task.FromResult(events?.Where(x => x.Version > fromVersion) ?? new List<IEvent>());
