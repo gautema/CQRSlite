@@ -26,13 +26,13 @@ namespace CQRSlite.Domain
 
         public async Task Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
-            if (expectedVersion != null && (await _eventStore.Get<T>(aggregate.Id, expectedVersion.Value)).Any())
+            if (expectedVersion != null && (await _eventStore.Get(aggregate.Id, expectedVersion.Value)).Any())
             {
                 throw new ConcurrencyException(aggregate.Id);
             }
 
             var changes = aggregate.FlushUncommitedChanges();
-            await _eventStore.Save<T>(changes);
+            await _eventStore.Save(changes);
 
             if (_publisher != null)
             {
@@ -50,7 +50,7 @@ namespace CQRSlite.Domain
 
         private async Task<T> LoadAggregate<T>(Guid id) where T : AggregateRoot
         {
-            var events = await _eventStore.Get<T>(id, -1);
+            var events = await _eventStore.Get(id, -1);
             if (!events.Any())
             {
                 throw new AggregateNotFoundException(typeof(T), id);
