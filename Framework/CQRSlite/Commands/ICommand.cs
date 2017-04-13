@@ -4,6 +4,6 @@ namespace CQRSlite.Commands
 {
     public interface ICommand : IMessage
     {
-        int ExpectedVersion { get; set; }
+        int ExpectedVersion { get; }
     }
 }
