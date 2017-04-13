@@ -13,7 +13,10 @@ namespace CQRSlite.Cache
         private readonly IRepository _repository;
         private readonly IEventStore _eventStore;
         private readonly ICache _cache;
-        private static readonly ConcurrentDictionary<Guid, ManualResetEvent> _locks = new ConcurrentDictionary<Guid, ManualResetEvent>();
+        private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> _locks =
+            new ConcurrentDictionary<Guid, SemaphoreSlim>();
+
+        private static SemaphoreSlim CreateLock(Guid _) => new SemaphoreSlim(1, 1);
 
         public CacheRepository(IRepository repository, IEventStore eventStore, ICache cache)
         {
@@ -21,71 +24,66 @@ namespace CQRSlite.Cache
             _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
-            _cache.RegisterEvictionCallback(key =>
-                     {
-                         _locks.TryRemove(key, out var o);
-                         o?.Set();
-                     });
-
+            _cache.RegisterEvictionCallback(key => _locks.TryRemove(key, out var o));
         }
 
-        public Task Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
+        public async Task Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
         {
+            var @lock = _locks.GetOrAdd(aggregate.Id, CreateLock);
+            await @lock.WaitAsync();
             try
             {
-                lock (_locks.GetOrAdd(aggregate.Id, _ => new ManualResetEvent(false)))
+                if (aggregate.Id != Guid.Empty && !_cache.IsTracked(aggregate.Id))
                 {
-                    if (aggregate.Id != Guid.Empty && !_cache.IsTracked(aggregate.Id))
-                    {
-                        _cache.Set(aggregate.Id, aggregate);
-                    }
-                    return _repository.Save(aggregate, expectedVersion);
+                    _cache.Set(aggregate.Id, aggregate);
                 }
+                await _repository.Save(aggregate, expectedVersion);
             }
             catch (Exception)
             {
-                lock (_locks.GetOrAdd(aggregate.Id, _ => new ManualResetEvent(false)))
-                {
-                    _cache.Remove(aggregate.Id);
-                }
+                _cache.Remove(aggregate.Id);
                 throw;
+            }
+            finally
+            {
+                @lock.Release();
             }
         }
 
-        public Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
+        public async Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
         {
+            var @lock = _locks.GetOrAdd(aggregateId, CreateLock);
+            await @lock.WaitAsync();
             try
             {
-                lock (_locks.GetOrAdd(aggregateId, _ => new ManualResetEvent(false)))
+                T aggregate;
+                if (_cache.IsTracked(aggregateId))
                 {
-                    T aggregate;
-                    if (_cache.IsTracked(aggregateId))
+                    aggregate = (T)_cache.Get(aggregateId);
+                    var events = await _eventStore.Get(aggregateId, aggregate.Version);
+                    if (events.Any() && events.First().Version != aggregate.Version + 1)
                     {
-                        aggregate = (T)_cache.Get(aggregateId);
-                        var events = _eventStore.Get<T>(aggregateId, aggregate.Version).Result;
-                        if (events.Any() && events.First().Version != aggregate.Version + 1)
-                        {
-                            _cache.Remove(aggregateId);
-                        }
-                        else
-                        {
-                            aggregate.LoadFromHistory(events);
-                            return Task.FromResult(aggregate);
-                        }
+                        _cache.Remove(aggregateId);
                     }
-
-                    aggregate = _repository.Get<T>(aggregateId).Result;
-                    _cache.Set(aggregateId, aggregate);
-                    return Task.FromResult(aggregate);
+                    else
+                    {
+                        aggregate.LoadFromHistory(events);
+                        return aggregate;
+                    }
                 }
+
+                aggregate = await _repository.Get<T>(aggregateId);
+                _cache.Set(aggregateId, aggregate);
+                return aggregate;
             }
             catch (Exception)
             {
-                lock (_locks.GetOrAdd(aggregateId, _ => new ManualResetEvent(false)))
-                {
-                    _cache.Remove(aggregateId);
-                }
+                _cache.Remove(aggregateId);
                 throw;
+            }
+            finally
+            {
+                @lock.Release();
             }
         }
     }

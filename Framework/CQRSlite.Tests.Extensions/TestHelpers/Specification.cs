@@ -107,14 +107,14 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public List<IEvent> Events { get; set; }
 
-        public Task Save<T>(IEnumerable<IEvent> events)
+        public Task Save(IEnumerable<IEvent> events)
         {
             Events.AddRange(events);
             return Task.WhenAll(events.Select(evt =>_publisher.Publish(evt)));
                 
         }
 
-        public Task<IEnumerable<IEvent>> Get<T>(Guid aggregateId, int fromVersion)
+        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion)
         {
             var events = Events.Where(x => x.Id == aggregateId && x.Version > fromVersion);
             return Task.FromResult(events);
