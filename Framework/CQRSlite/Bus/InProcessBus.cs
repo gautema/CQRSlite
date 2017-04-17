@@ -12,7 +12,7 @@ namespace CQRSlite.Bus
     {
         private readonly Dictionary<Type, List<Func<IMessage, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, Task>>>();
 
-        public void RegisterHandler<T>(Func<T,Task> handler) where T : IMessage
+        public void RegisterHandler<T>(Func<T,Task> handler) where T : class, IMessage
         {
             if (!_routes.TryGetValue(typeof(T), out var handlers))
             {
@@ -22,7 +22,7 @@ namespace CQRSlite.Bus
             handlers.Add(x => handler((T)x));
         }
 
-        public Task Send<T>(T command) where T : ICommand
+        public Task Send<T>(T command) where T : class, ICommand
         {
             if (!_routes.TryGetValue(command.GetType(), out var handlers))
                 throw new InvalidOperationException("No handler registered");
@@ -31,7 +31,7 @@ namespace CQRSlite.Bus
             return handlers[0](command);
         }
 
-        public Task Publish<T>(T @event) where T : IEvent
+        public Task Publish<T>(T @event) where T : class, IEvent
         {
             if (!_routes.TryGetValue(@event.GetType(), out var handlers))
                 return Task.CompletedTask;

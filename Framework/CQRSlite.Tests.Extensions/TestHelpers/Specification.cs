@@ -86,7 +86,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             PublishedEvents = new List<IEvent>();
         }
 
-        public Task Publish<T>(T @event) where T : IEvent
+        public Task Publish<T>(T @event) where T : class, IEvent
         {
             PublishedEvents.Add(@event);
             return Task.CompletedTask;
