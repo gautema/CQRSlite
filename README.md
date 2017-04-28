@@ -13,8 +13,8 @@ CQRSlite has been made with pluggability in mind. So every standard implementati
 A sample project is located with the code, this shows a common usage scenario of the framework. There are some features of CQRSlite, such as snapshotting that the sample does not show. These features are only documented through the tests.
 
 Great introductions to CQRS and CQRSlite have been written by others. Here are two recommended:
-<https://www.codeproject.com/articles/991648/cqrs-a-cross-examination-of-how-it-works>
-<https://exceptionnotfound.net/real-world-cqrs-es-with-asp-net-and-redis-part-1-overview/>
+* <https://www.codeproject.com/articles/991648/cqrs-a-cross-examination-of-how-it-works>
+* <https://exceptionnotfound.net/real-world-cqrs-es-with-asp-net-and-redis-part-1-overview/>
 
 ## Features
 * Command sending and event publishing
