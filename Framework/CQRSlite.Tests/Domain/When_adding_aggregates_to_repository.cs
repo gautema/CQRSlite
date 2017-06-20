@@ -20,7 +20,7 @@ namespace CQRSlite.Tests.Domain
         [Fact]
         public async Task Should_throw_if_different_object_with_tracked_guid_is_added()
         {
-            var aggregate = new TestAggregate(Guid.NewGuid());
+            var aggregate = new TestAggregate(GuidIdentity.Create());
             var aggregate2 = new TestAggregate(aggregate.Id);
             await _session.Add(aggregate);
             await Assert.ThrowsAsync<ConcurrencyException>(async () => await _session.Add(aggregate2));
@@ -29,7 +29,7 @@ namespace CQRSlite.Tests.Domain
         [Fact]
         public async Task Should_not_throw_if_object_already_tracked()
         {
-            var aggregate = new TestAggregate(Guid.NewGuid());
+            var aggregate = new TestAggregate(GuidIdentity.Create());
             await _session.Add(aggregate);
             await _session.Add(aggregate);
         }

@@ -6,22 +6,22 @@ namespace CQRSlite.Tests.Substitutes
     public class TestAggregate : AggregateRoot
     {
         private TestAggregate() { }
-        public TestAggregate(Guid id)
+        public TestAggregate(IIdentity id)
         {
             Id = id;
-            ApplyChange(new TestAggregateCreated());
+            ApplyChange(new TestAggregateCreated { Id = Id });
         }
 
         public int DidSomethingCount;
 
         public void DoSomething()
         {
-            ApplyChange(new TestAggregateDidSomething());
+            ApplyChange(new TestAggregateDidSomething { Id = Id });
         }
 
         public void DoSomethingElse()
         {
-            ApplyChange(new TestAggregateDidSomeethingElse());
+            ApplyChange(new TestAggregateDidSomeethingElse { Id = Id });
         }
 
         public void Apply(TestAggregateDidSomething e)

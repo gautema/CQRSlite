@@ -1,6 +1,7 @@
 ﻿using System;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
+using CQRSlite.Domain;
 
 namespace CQRSlite.Tests.Domain
 {
@@ -10,7 +11,7 @@ namespace CQRSlite.Tests.Domain
 
         public When_replaying_events()
         {
-            _aggregate = new TestAggregate(Guid.NewGuid());
+            _aggregate = new TestAggregate(GuidIdentity.Create());
         }
 
         [Fact]

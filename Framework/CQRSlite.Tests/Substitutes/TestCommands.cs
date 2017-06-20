@@ -1,13 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using CQRSlite.Commands;
+using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 
 namespace CQRSlite.Tests.Substitutes
 {
     public class TestAggregateDoSomething : ICommand
     {
-        public Guid Id { get; set; }
+        public IIdentity Id { get; set; }
         public int ExpectedVersion { get; set; }
         public bool LongRunning { get; set; }
     }

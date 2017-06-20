@@ -7,32 +7,32 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestMemoryCache : ICache
     {
-        private readonly Dictionary<Guid, AggregateRoot> _cache = new Dictionary<Guid, AggregateRoot>();
+        private readonly Dictionary<IIdentity, AggregateRoot> _cache = new Dictionary<IIdentity, AggregateRoot>();
 
-        private Action<Guid> _evictionCallback;
+        private Action<IIdentity> _evictionCallback;
 
-        public AggregateRoot Get(Guid id)
+        public AggregateRoot Get(IIdentity id)
         {
             return _cache[id];
         }
 
-        public bool IsTracked(Guid id)
+        public bool IsTracked(IIdentity id)
         {
             return _cache.ContainsKey(id);
         }
 
-        public void RegisterEvictionCallback(Action<Guid> action)
+        public void RegisterEvictionCallback(Action<IIdentity> action)
         {
             _evictionCallback = action;
         }
 
-        public void Remove(Guid id)
+        public void Remove(IIdentity id)
         {
             _cache.Remove(id);
             _evictionCallback(id);
         }
 
-        public void Set(Guid id, AggregateRoot aggregate)
+        public void Set(IIdentity id, AggregateRoot aggregate)
         {
             _cache[id] = aggregate;
         }

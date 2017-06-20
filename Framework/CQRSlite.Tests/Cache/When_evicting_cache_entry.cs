@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Cache;
+using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
 
@@ -14,15 +15,15 @@ namespace CQRSlite.Tests.Cache
         private CacheRepository _rep;
         private TestAggregate _aggregate;
         private ICache _cache;
-        private ConcurrentDictionary<Guid, SemaphoreSlim> _locks;
+        private ConcurrentDictionary<IIdentity, SemaphoreSlim> _locks;
 
         public When_evicting_cache_entry()
         {
             _cache = new TestMemoryCache();
             _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _cache);
-            _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
+            _aggregate = _rep.Get<TestAggregate>(GuidIdentity.Create()).Result;
             var field = _rep.GetType().GetField("_locks", BindingFlags.Static | BindingFlags.NonPublic);
-            _locks = (ConcurrentDictionary<Guid, SemaphoreSlim>)field.GetValue(_rep);
+            _locks = (ConcurrentDictionary<IIdentity, SemaphoreSlim>)field.GetValue(_rep);
             _cache.Remove(_aggregate.Id);
         }
 

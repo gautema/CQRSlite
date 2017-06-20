@@ -13,10 +13,10 @@ namespace CQRSlite.Cache
         private readonly IRepository _repository;
         private readonly IEventStore _eventStore;
         private readonly ICache _cache;
-        private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> _locks =
-            new ConcurrentDictionary<Guid, SemaphoreSlim>();
+        private static readonly ConcurrentDictionary<IIdentity, SemaphoreSlim> _locks =
+            new ConcurrentDictionary<IIdentity, SemaphoreSlim>();
 
-        private static SemaphoreSlim CreateLock(Guid _) => new SemaphoreSlim(1, 1);
+        private static SemaphoreSlim CreateLock(IIdentity _) => new SemaphoreSlim(1, 1);
 
         public CacheRepository(IRepository repository, IEventStore eventStore, ICache cache)
         {
@@ -33,7 +33,7 @@ namespace CQRSlite.Cache
             await @lock.WaitAsync();
             try
             {
-                if (aggregate.Id != Guid.Empty && !_cache.IsTracked(aggregate.Id))
+                if (aggregate.Id.IsValid && !_cache.IsTracked(aggregate.Id))
                 {
                     _cache.Set(aggregate.Id, aggregate);
                 }
@@ -50,7 +50,7 @@ namespace CQRSlite.Cache
             }
         }
 
-        public async Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
+        public async Task<T> Get<T>(IIdentity aggregateId) where T : AggregateRoot
         {
             var @lock = _locks.GetOrAdd(aggregateId, CreateLock);
             await @lock.WaitAsync();

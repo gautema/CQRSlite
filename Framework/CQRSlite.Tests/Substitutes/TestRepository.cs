@@ -18,7 +18,7 @@ namespace CQRSlite.Tests.Substitutes
 
         public AggregateRoot Saved { get; private set; }
 
-        public Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
+        public Task<T> Get<T>(IIdentity aggregateId) where T : AggregateRoot
         {
             var obj = (T) Activator.CreateInstance(typeof (T), true);
             obj.LoadFromHistory(new[] {new TestAggregateDidSomething {Id = aggregateId, Version = 1}});

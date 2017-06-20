@@ -20,11 +20,11 @@ namespace CQRSlite.Tests.Cache
             _testStore = new TestInMemoryEventStore();
             _rep1 = new CacheRepository(new Repository(_testStore), _testStore, new MemoryCache());
 
-            _aggregate1 = new TestAggregate(Guid.NewGuid());
-            _aggregate2 = new TestAggregate(Guid.NewGuid());
+            _aggregate1 = new TestAggregate(GuidIdentity.Create());
+            _aggregate2 = new TestAggregate(GuidIdentity.Create());
 
-            _rep1.Save(_aggregate1);
-            _rep1.Save(_aggregate2);
+            _rep1.Save(_aggregate1).Wait();
+            _rep1.Save(_aggregate2).Wait();
 
             var t1 = new Task(async () =>
             {
@@ -32,7 +32,7 @@ namespace CQRSlite.Tests.Cache
                 {
                     var aggregate = await _rep1.Get<TestAggregate>(_aggregate1.Id);
                     aggregate.DoSomething();
-                    await  _rep1.Save(aggregate);
+                    await _rep1.Save(aggregate);
                 }
             });
 

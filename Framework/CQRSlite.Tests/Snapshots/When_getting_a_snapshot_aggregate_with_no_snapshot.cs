@@ -18,12 +18,12 @@ namespace CQRSlite.Tests.Snapshots
             var snapshotStrategy = new DefaultSnapshotStrategy();
             var repository = new SnapshotRepository(snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
             var session = new Session(repository);
-            _aggregate = session.Get<TestSnapshotAggregate>(Guid.NewGuid()).Result;
+            _aggregate = session.Get<TestSnapshotAggregate>(GuidIdentity.Create()).Result;
         }
 
 	    private class NullSnapshotStore : ISnapshotStore
 	    {
-	        public Task<Snapshot> Get(Guid id)
+	        public Task<Snapshot> Get(IIdentity id)
 	        {
 	            return Task.FromResult<Snapshot>(null);
 	        }

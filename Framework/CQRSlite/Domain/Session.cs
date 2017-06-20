@@ -9,12 +9,12 @@ namespace CQRSlite.Domain
     public class Session : ISession
     {
         private readonly IRepository _repository;
-        private readonly Dictionary<Guid, AggregateDescriptor> _trackedAggregates;
+        private readonly Dictionary<IIdentity, AggregateDescriptor> _trackedAggregates;
 
         public Session(IRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _trackedAggregates = new Dictionary<Guid, AggregateDescriptor>();
+            _trackedAggregates = new Dictionary<IIdentity, AggregateDescriptor>();
         }
 
         public Task Add<T>(T aggregate) where T : AggregateRoot
@@ -30,7 +30,7 @@ namespace CQRSlite.Domain
             return Task.CompletedTask;
         }
 
-        public async Task<T> Get<T>(Guid id, int? expectedVersion = null) where T : AggregateRoot
+        public async Task<T> Get<T>(IIdentity id, int? expectedVersion = null) where T : AggregateRoot
         {
             if (IsTracked(id))
             {
@@ -52,7 +52,7 @@ namespace CQRSlite.Domain
             return aggregate;
         }
 
-        private bool IsTracked(Guid id)
+        private bool IsTracked(IIdentity id)
         {
             return _trackedAggregates.ContainsKey(id);
         }

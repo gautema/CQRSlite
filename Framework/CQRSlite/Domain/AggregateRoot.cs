@@ -10,7 +10,7 @@ namespace CQRSlite.Domain
     {
         private readonly List<IEvent> _changes = new List<IEvent>();
 
-        public Guid Id { get; protected set; }
+        public IIdentity Id { get; protected set; }
         public int Version { get; protected set; }
 
         public IEvent[] GetUncommittedChanges()
@@ -29,11 +29,11 @@ namespace CQRSlite.Domain
                 var i = 0;
                 foreach (var @event in changes)
                 {
-                    if (@event.Id == Guid.Empty && Id == Guid.Empty)
+                    if (!@event.Id.IsValid && !Id.IsValid)
                     {
                         throw new AggregateOrEventMissingIdException(GetType(), @event.GetType());
                     }
-                    if (@event.Id == Guid.Empty)
+                    if (!@event.Id.IsValid)
                     {
                         @event.Id = Id;
                     }

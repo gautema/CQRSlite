@@ -1,4 +1,5 @@
 ﻿using System;
+using CQRSlite.Domain;
 using CQRSlite.Snapshots;
 
 namespace CQRSlite.Tests.Substitutes
@@ -7,7 +8,7 @@ namespace CQRSlite.Tests.Substitutes
     {
         public TestSnapshotAggregate()
         {
-            Id = Guid.NewGuid();
+            Id = GuidIdentity.Create();
         }
 
         public bool Restored { get; private set; }
@@ -33,7 +34,7 @@ namespace CQRSlite.Tests.Substitutes
 
         public void DoSomething()
         {
-            ApplyChange(new TestAggregateDidSomething());
+            ApplyChange(new TestAggregateDidSomething { Id = Id });
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CQRSlite.Cache;
+using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
 
@@ -16,7 +17,7 @@ namespace CQRSlite.Tests.Cache
         {
             _testRep = new TestRepository();
             _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), new MemoryCache());
-            _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid()).Result;
+            _aggregate = _testRep.Get<TestAggregate>(GuidIdentity.Create()).Result;
             _aggregate.DoSomething();
             _rep.Save(_aggregate, -1);
         }
@@ -37,9 +38,9 @@ namespace CQRSlite.Tests.Cache
         [Fact]
         public async Task Should_not_cache_empty_id()
         {
-            var aggregate = new TestAggregate(Guid.Empty);
+            var aggregate = new TestAggregate(new GuidIdentity(Guid.Empty));
             await _rep.Save(aggregate);
-            Assert.NotEqual(aggregate, await _rep.Get<TestAggregate>(Guid.Empty));
+            Assert.NotEqual(aggregate, await _rep.Get<TestAggregate>(new GuidIdentity(Guid.Empty)));
         }
     }
 }

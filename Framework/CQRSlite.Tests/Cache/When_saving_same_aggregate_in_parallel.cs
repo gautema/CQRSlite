@@ -23,7 +23,7 @@ namespace CQRSlite.Tests.Cache
             _rep1 = new CacheRepository(new Repository(_testStore), _testStore, cache);
             _rep2 = new CacheRepository(new Repository(_testStore), _testStore, cache);
 
-            _aggregate = new TestAggregate(Guid.NewGuid());
+            _aggregate = new TestAggregate(GuidIdentity.Create());
             _rep1.Save(_aggregate).Wait();
 
             var t1 = Task.Run(async () =>

@@ -21,7 +21,7 @@ namespace CQRSlite.Tests.Domain
             _rep = new Repository(_eventStore);
             _session = new Session(_rep);
 
-            _aggregate = new TestAggregate(Guid.NewGuid());
+            _aggregate = new TestAggregate(GuidIdentity.Create());
             _aggregate.DoSomething();
             Task.Run(() => _rep.Save(_aggregate)).Wait();
         }

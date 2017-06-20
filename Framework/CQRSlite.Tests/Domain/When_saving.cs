@@ -77,7 +77,7 @@ namespace CQRSlite.Tests.Domain
         [Fact]
         public async Task Should_set_id()
         {
-            var id = Guid.NewGuid();
+            var id = GuidIdentity.Create();
             var agg = new TestAggregateNoParameterLessConstructor(1, id);
             agg.DoSomething();
             await _session.Add(agg);
@@ -88,7 +88,7 @@ namespace CQRSlite.Tests.Domain
         [Fact]
         public async Task Should_clear_tracked_aggregates()
         {
-            var agg = new TestAggregate(Guid.NewGuid());
+            var agg = new TestAggregate(GuidIdentity.Create());
             await _session.Add(agg);
             agg.DoSomething();
             await _session.Commit();

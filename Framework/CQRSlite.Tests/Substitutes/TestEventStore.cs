@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CQRSlite.Domain;
 using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
@@ -16,9 +17,9 @@ namespace CQRSlite.Tests.Substitutes
             SavedEvents = new List<IEvent>();
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int version)
+        public Task<IEnumerable<IEvent>> Get(IIdentity aggregateId, int version)
         {
-            if (aggregateId == _emptyGuid || aggregateId == Guid.Empty)
+            if (!aggregateId.IsValid)
             {
                 return Task.FromResult((IEnumerable<IEvent>)new List<IEvent>());
             }

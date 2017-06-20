@@ -28,7 +28,7 @@ namespace CQRSlite.Snapshots
             return Task.WhenAll(TryMakeSnapshot(aggregate), _repository.Save(aggregate, exectedVersion));
         }
 
-        public async Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
+        public async Task<T> Get<T>(IIdentity aggregateId) where T : AggregateRoot
         {
             var aggregate = AggregateFactory.CreateAggregate<T>();
             var snapshotVersion = await TryRestoreAggregateFromSnapshot(aggregateId, aggregate);
@@ -42,7 +42,7 @@ namespace CQRSlite.Snapshots
             return aggregate;
         }
 
-        private async Task<int> TryRestoreAggregateFromSnapshot<T>(Guid id, T aggregate) where T : AggregateRoot
+        private async Task<int> TryRestoreAggregateFromSnapshot<T>(IIdentity id, T aggregate) where T : AggregateRoot
         {
             var version = -1;
             if (!_snapshotStrategy.IsSnapshotable(typeof(T)))

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CQRSlite.Domain;
 using CQRSlite.Snapshots;
 
 namespace CQRSlite.Tests.Substitutes
 {
     public class TestInMemorySnapshotStore : ISnapshotStore 
     {
-        public Task<Snapshot> Get(Guid id)
+        public Task<Snapshot> Get(IIdentity id)
         {
             return Task.FromResult(_snapshot);
         }

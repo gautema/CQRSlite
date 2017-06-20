@@ -5,14 +5,14 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestAggregateNoParameterLessConstructor : AggregateRoot
     {
-        public TestAggregateNoParameterLessConstructor(int i, Guid? id = null)
+        public TestAggregateNoParameterLessConstructor(int i, IIdentity id = null)
         {
-            Id = id ?? Guid.NewGuid();
+            Id = id ?? GuidIdentity.Create();
         }
 
         public void DoSomething()
         {
-            ApplyChange(new TestAggregateDidSomething());
+            ApplyChange(new TestAggregateDidSomething{ Id = Id });
         }
     }
 }

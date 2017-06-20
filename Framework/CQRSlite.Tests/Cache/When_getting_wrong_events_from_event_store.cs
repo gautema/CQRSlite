@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CQRSlite.Cache;
+using CQRSlite.Domain;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
 
@@ -16,7 +17,7 @@ namespace CQRSlite.Tests.Cache
         {
             _cache = new MemoryCache();
             _rep = new CacheRepository(new TestRepository(), new TestEventStoreWithBugs(), _cache);
-            _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
+            _aggregate = _rep.Get<TestAggregate>(GuidIdentity.Create()).Result;
         }
 
         [Fact]

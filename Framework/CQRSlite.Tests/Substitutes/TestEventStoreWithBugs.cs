@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CQRSlite.Domain;
 using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
@@ -12,9 +13,9 @@ namespace CQRSlite.Tests.Substitutes
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int version)
+        public Task<IEnumerable<IEvent>> Get(IIdentity aggregateId, int version)
         {
-            if (aggregateId == Guid.Empty)
+            if (!aggregateId.IsValid)
             {
                 return Task.FromResult((IEnumerable<IEvent>)new List<IEvent>());
             }

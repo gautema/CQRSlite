@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CQRSlite.Domain.Exception;
+using CQRSlite.Domain;
 using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
 {
     public class TestAggregateDidSomething : IEvent
     {
-        public Guid Id { get; set; }
+        public IIdentity Id { get; set; }
         public int Version { get; set; }
         public DateTimeOffset TimeStamp { get; set; }
         public bool LongRunning { get; set; }
     }
     public class TestAggregateDidSomeethingElse : IEvent
     {
-        public Guid Id { get; set; }
+        public IIdentity Id { get; set; }
         public int Version { get; set; }
         public DateTimeOffset TimeStamp { get; set; }
     }

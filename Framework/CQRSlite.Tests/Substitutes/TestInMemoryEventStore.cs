@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CQRSlite.Domain;
 using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
@@ -19,7 +20,7 @@ namespace CQRSlite.Tests.Substitutes
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion)
+        public Task<IEnumerable<IEvent>> Get(IIdentity aggregateId, int fromVersion)
         {
             lock(Events)
             {

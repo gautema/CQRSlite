@@ -18,7 +18,7 @@ namespace CQRSlite.Tests.Domain
             _eventStore = new TestInMemoryEventStore();
             _rep = new Repository(_eventStore);
 
-            _aggregate = new TestAggregate(Guid.Empty);
+            _aggregate = new TestAggregate(new GuidIdentity(Guid.Empty));
         }
 
         [Fact]

@@ -34,7 +34,7 @@ namespace CQRSlite.Cache
 
         }
 
-        public bool IsTracked(Guid id)
+        public bool IsTracked(IIdentity id)
         {
 #if NET461
             return _cache.Contains(id.ToString());
@@ -43,7 +43,7 @@ namespace CQRSlite.Cache
 #endif
         }
 
-        public void Set(Guid id, AggregateRoot aggregate)
+        public void Set(IIdentity id, AggregateRoot aggregate)
         {
 #if NET461
             _cache.Add(id.ToString(), aggregate, _policyFactory.Invoke());
@@ -52,7 +52,7 @@ namespace CQRSlite.Cache
 #endif
         }
 
-        public AggregateRoot Get(Guid id)
+        public AggregateRoot Get(IIdentity id)
         {
 #if NET461
             return (AggregateRoot)_cache.Get(id.ToString());
@@ -61,7 +61,7 @@ namespace CQRSlite.Cache
 #endif
         }
 
-        public void Remove(Guid id)
+        public void Remove(IIdentity id)
         {
 #if NET461
             _cache.Remove(id.ToString());
@@ -70,7 +70,7 @@ namespace CQRSlite.Cache
 #endif
         }
 
-        public void RegisterEvictionCallback(Action<Guid> action)
+        public void RegisterEvictionCallback(Action<IIdentity> action)
         {
 #if NET461
             _policyFactory = () => new CacheItemPolicy
@@ -83,7 +83,7 @@ namespace CQRSlite.Cache
 #else
             _cacheOptions.RegisterPostEvictionCallback((key, value, reason, state) =>
             {
-                action.Invoke((Guid) key);
+                action.Invoke((IIdentity) key);
             });
 #endif
         }
