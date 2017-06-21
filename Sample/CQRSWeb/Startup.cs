@@ -9,7 +9,6 @@ using CQRSlite.Events;
 using CQRSlite.Domain;
 using CQRSCode.WriteModel;
 using CQRSlite.Cache;
-using Microsoft.Extensions.Caching.Memory;
 using CQRSCode.ReadModel;
 using CQRSlite.Config;
 using CQRSCode.WriteModel.Handlers;
@@ -22,7 +21,7 @@ namespace CQRSWeb
     public class Startup
     {
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMemoryCache();
 
@@ -33,7 +32,7 @@ namespace CQRSWeb
             services.AddSingleton<IHandlerRegistrar>(y => y.GetService<InProcessBus>());
             services.AddScoped<ISession, Session>();
             services.AddSingleton<IEventStore, InMemoryEventStore>();
-            services.AddScoped<ICache, CQRSlite.Cache.MemoryCache>();
+            services.AddScoped<ICache, MemoryCache>();
             services.AddScoped<IRepository>(y => new CacheRepository(new Repository(y.GetService<IEventStore>()), y.GetService<IEventStore>(), y.GetService<ICache>()));
 
             services.AddTransient<IReadModelFacade, ReadModelFacade>();
@@ -51,13 +50,15 @@ namespace CQRSWeb
                     .WithTransientLifetime()
             );
 
+            // Add framework services.
+            services.AddMvc();
+
             //Register bus
             var serviceProvider = services.BuildServiceProvider();
             var registrar = new BusRegistrar(new DependencyResolver(serviceProvider));
             registrar.Register(typeof(InventoryCommandHandlers));
 
-            // Add framework services.
-            services.AddMvc();
+            return serviceProvider;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
