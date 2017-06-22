@@ -5,6 +5,7 @@ using CQRSCode.ReadModel.Events;
 using CQRSCode.WriteModel.Commands;
 using CQRSCode.WriteModel.Domain;
 using CQRSCode.WriteModel.Handlers;
+using CQRSlite.Domain;
 using CQRSlite.Events;
 using CQRSlite.Tests.Extensions.TestHelpers;
 using Xunit;
@@ -13,7 +14,7 @@ namespace CQRSTest.WriteModel
 {
     public class WhenItemCreated : Specification<InventoryItem, InventoryCommandHandlers, CreateInventoryItem>
     {
-        private Guid _id;
+        private GuidIdentity _id;
         protected override InventoryCommandHandlers BuildHandler()
         {
             return new InventoryCommandHandlers(Session);
@@ -21,7 +22,7 @@ namespace CQRSTest.WriteModel
 
         protected override IEnumerable<IEvent> Given()
         {
-            _id = Guid.NewGuid();
+            _id = GuidIdentity.Create();
             return new List<IEvent>();
         }
 

@@ -1,13 +1,14 @@
 ﻿using System;
+using CQRSlite.Domain;
 
 namespace CQRSCode.ReadModel.Dtos
 {
     public class InventoryItemListDto
     {
-        public Guid Id;
+        public IIdentity Id;
         public string Name;
 
-        public InventoryItemListDto(Guid id, string name)
+        public InventoryItemListDto(IIdentity id, string name)
         {
             Id = id;
             Name = name;

@@ -1,17 +1,18 @@
 ﻿using System;
 using CQRSlite.Commands;
+using CQRSlite.Domain;
 
 namespace CQRSCode.WriteModel.Commands
 {
     public class DeactivateInventoryItem : ICommand 
 	{
-        public DeactivateInventoryItem(Guid id, int originalVersion)
+        public DeactivateInventoryItem(IIdentity id, int originalVersion)
         {
             Id = id;
             ExpectedVersion = originalVersion;
         }
 
-        public Guid Id { get; set; }
+        public IIdentity Id { get; set; }
         public int ExpectedVersion { get; set; }
 	}
 }

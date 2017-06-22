@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CQRSlite.Domain;
 using CQRSCode.ReadModel.Dtos;
 using CQRSCode.ReadModel.Infrastructure;
 
@@ -12,7 +13,7 @@ namespace CQRSCode.ReadModel
             return InMemoryDatabase.List;
         }
 
-        public InventoryItemDetailsDto GetInventoryItemDetails(Guid id)
+        public InventoryItemDetailsDto GetInventoryItemDetails(IIdentity id)
         {
             return InMemoryDatabase.Details[id];
         }

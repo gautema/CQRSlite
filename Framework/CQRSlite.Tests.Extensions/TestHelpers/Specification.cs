@@ -49,7 +49,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         {
             try
             {
-                return await Session.Get<TAggregate>(Guid.Empty);
+                return await Session.Get<TAggregate>(new GuidIdentity(Guid.Empty));
             }
             catch (AggregateNotFoundException)
             {
@@ -67,7 +67,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public Snapshot Snapshot { get; set; }
 
-        public Task<Snapshot> Get(Guid id)
+        public Task<Snapshot> Get(IIdentity id)
         {
             return Task.FromResult(Snapshot);
         }
@@ -114,7 +114,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
                 
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion)
+        public Task<IEnumerable<IEvent>> Get(IIdentity aggregateId, int fromVersion)
         {
             var events = Events.Where(x => x.Id == aggregateId && x.Version > fromVersion);
             return Task.FromResult(events);

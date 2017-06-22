@@ -1,5 +1,6 @@
 ﻿using System;
 using CQRSlite.Commands;
+using CQRSlite.Domain;
 
 namespace CQRSCode.WriteModel.Commands
 {
@@ -7,13 +8,13 @@ namespace CQRSCode.WriteModel.Commands
 	{
         public readonly string Name;
 	    
-        public CreateInventoryItem(Guid id, string name)
+        public CreateInventoryItem(IIdentity id, string name)
         {
             Id = id;
             Name = name;
         }
 
-        public Guid Id { get; set; }
+        public IIdentity Id { get; set; }
         public int ExpectedVersion { get; set; }
 	}
 }

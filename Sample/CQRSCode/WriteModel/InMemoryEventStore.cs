@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CQRSlite.Domain;
 using CQRSlite.Events;
 
 namespace CQRSCode.WriteModel
@@ -9,7 +10,7 @@ namespace CQRSCode.WriteModel
     public class InMemoryEventStore : IEventStore
     {
         private readonly IEventPublisher _publisher;
-        private readonly Dictionary<Guid, List<IEvent>> _inMemoryDb = new Dictionary<Guid, List<IEvent>>();
+        private readonly Dictionary<IIdentity, List<IEvent>> _inMemoryDb = new Dictionary<IIdentity, List<IEvent>>();
 
         public InMemoryEventStore(IEventPublisher publisher)
         {
@@ -31,7 +32,7 @@ namespace CQRSCode.WriteModel
             }
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion)
+        public Task<IEnumerable<IEvent>> Get(IIdentity aggregateId, int fromVersion)
         {
             _inMemoryDb.TryGetValue(aggregateId, out var events);
             return Task.FromResult(events?.Where(x => x.Version > fromVersion) ?? new List<IEvent>());

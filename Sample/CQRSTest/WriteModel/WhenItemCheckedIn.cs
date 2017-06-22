@@ -6,6 +6,7 @@ using CQRSCode.WriteModel.Commands;
 using CQRSCode.WriteModel.Domain;
 using CQRSCode.WriteModel.Handlers;
 using CQRSlite.Events;
+using CQRSlite.Domain;
 using CQRSlite.Tests.Extensions.TestHelpers;
 using Xunit;
 
@@ -13,7 +14,7 @@ namespace CQRSTest.WriteModel
 {
     public class When_item_checked_in : Specification<InventoryItem, InventoryCommandHandlers, CheckInItemsToInventory>
     {
-        private Guid _guid;
+        private GuidIdentity _guid;
         protected override InventoryCommandHandlers BuildHandler()
         {
             return new InventoryCommandHandlers(Session);
@@ -21,7 +22,7 @@ namespace CQRSTest.WriteModel
 
         protected override IEnumerable<IEvent> Given()
         {
-            _guid = Guid.NewGuid();
+            _guid = GuidIdentity.Create();
             return new List<IEvent> { new InventoryItemCreated(_guid, "Jadda"){Version = 1}, new ItemsCheckedInToInventory(_guid, 2){Version = 2} };
         }
 

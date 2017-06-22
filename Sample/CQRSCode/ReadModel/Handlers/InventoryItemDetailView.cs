@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CQRSlite.Domain;
 using CQRSCode.ReadModel.Dtos;
 using CQRSCode.ReadModel.Events;
 using CQRSCode.ReadModel.Infrastructure;
@@ -27,7 +28,7 @@ namespace CQRSCode.ReadModel.Handlers
             return Task.CompletedTask;
         }
 
-        private InventoryItemDetailsDto GetDetailsItem(Guid id)
+        private InventoryItemDetailsDto GetDetailsItem(IIdentity id)
         {
             if (!InMemoryDatabase.Details.TryGetValue(id, out var dto))
             {

@@ -44,7 +44,7 @@ namespace CQRSCode.WriteModel.Domain
         }
 
         private InventoryItem(){}
-        public InventoryItem(Guid id, string name)
+        public InventoryItem(IIdentity id, string name)
         {
             Id = id;
             ApplyChange(new InventoryItemCreated(id, name));
