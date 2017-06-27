@@ -3,6 +3,7 @@ using CQRSlite.Domain.Factories;
 using CQRSlite.Events;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CQRSlite.Domain
@@ -24,33 +25,33 @@ namespace CQRSlite.Domain
             _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
         }
 
-        public async Task Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
+        public async Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
-            if (expectedVersion != null && (await _eventStore.Get(aggregate.Id, expectedVersion.Value)).Any())
+            if (expectedVersion != null && (await _eventStore.Get(aggregate.Id, expectedVersion.Value, cancellationToken)).Any())
             {
                 throw new ConcurrencyException(aggregate.Id);
             }
 
             var changes = aggregate.FlushUncommitedChanges();
-            await _eventStore.Save(changes);
+            await _eventStore.Save(changes, cancellationToken);
 
             if (_publisher != null)
             {
                 foreach (var @event in changes)
                 {
-                    await _publisher.Publish(@event);
+                    await _publisher.Publish(@event, cancellationToken);
                 }
             }
         }
 
-        public Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
+        public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
-            return LoadAggregate<T>(aggregateId);
+            return LoadAggregate<T>(aggregateId, cancellationToken);
         }
 
-        private async Task<T> LoadAggregate<T>(Guid id) where T : AggregateRoot
+        private async Task<T> LoadAggregate<T>(Guid id, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
-            var events = await _eventStore.Get(id, -1);
+            var events = await _eventStore.Get(id, -1, cancellationToken);
             if (!events.Any())
             {
                 throw new AggregateNotFoundException(typeof(T), id);

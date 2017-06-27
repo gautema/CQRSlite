@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Snapshots;
@@ -10,24 +11,27 @@ namespace CQRSlite.Tests.Snapshots
     public class When_getting_a_snapshot_aggregate_with_no_snapshot
     {
         private TestSnapshotAggregate _aggregate;
+        private CancellationToken _token;
+        private TestEventStore _eventStore;
 
         public When_getting_a_snapshot_aggregate_with_no_snapshot()
         {
-            var eventStore = new TestEventStore();
+            _eventStore = new TestEventStore();
             var snapshotStore = new NullSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-            var repository = new SnapshotRepository(snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
+            var repository = new SnapshotRepository(snapshotStore, snapshotStrategy, new Repository(_eventStore), _eventStore);
             var session = new Session(repository);
-            _aggregate = session.Get<TestSnapshotAggregate>(Guid.NewGuid()).Result;
+            _token = new CancellationToken();
+            _aggregate = session.Get<TestSnapshotAggregate>(Guid.NewGuid(), cancellationToken: _token).Result;
         }
 
 	    private class NullSnapshotStore : ISnapshotStore
 	    {
-	        public Task<Snapshot> Get(Guid id)
+	        public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default(CancellationToken))
 	        {
 	            return Task.FromResult<Snapshot>(null);
 	        }
-            public Task Save(Snapshot snapshot)
+            public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default(CancellationToken))
             {
                 return Task.CompletedTask;
             }
@@ -43,6 +47,12 @@ namespace CQRSlite.Tests.Snapshots
         public void Should_not_load_snapshot()
         {
             Assert.False(_aggregate.Restored);
+        }
+
+        [Fact]
+        public void Should_forward_cancellation_token()
+        {
+            Assert.Equal(_token, _eventStore.Token);
         }
     }
 }

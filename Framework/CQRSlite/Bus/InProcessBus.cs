@@ -4,38 +4,39 @@ using CQRSlite.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CQRSlite.Bus
 {
     public class InProcessBus : ICommandSender, IEventPublisher, IHandlerRegistrar
     {
-        private readonly Dictionary<Type, List<Func<IMessage, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, Task>>>();
+        private readonly Dictionary<Type, List<Func<IMessage, CancellationToken, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, CancellationToken, Task>>>();
 
-        public void RegisterHandler<T>(Func<T,Task> handler) where T : class, IMessage
+        public void RegisterHandler<T>(Func<T, CancellationToken, Task> handler) where T : class, IMessage
         {
             if (!_routes.TryGetValue(typeof(T), out var handlers))
             {
-                handlers = new List<Func<IMessage, Task>>();
+                handlers = new List<Func<IMessage, CancellationToken, Task>>();
                 _routes.Add(typeof(T), handlers);
             }
-            handlers.Add(x => handler((T)x));
+            handlers.Add((message, token) => handler((T)message, token));
         }
 
-        public Task Send<T>(T command) where T : class, ICommand
+        public Task Send<T>(T command, CancellationToken cancellationToken = default(CancellationToken)) where T : class, ICommand
         {
             if (!_routes.TryGetValue(command.GetType(), out var handlers))
                 throw new InvalidOperationException("No handler registered");
             if (handlers.Count != 1)
                 throw new InvalidOperationException("Cannot send to more than one handler");
-            return handlers[0](command);
+            return handlers[0](command, cancellationToken);
         }
 
-        public Task Publish<T>(T @event) where T : class, IEvent
+        public Task Publish<T>(T @event, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent
         {
             if (!_routes.TryGetValue(@event.GetType(), out var handlers))
                 return Task.CompletedTask;
-            return Task.WhenAll(handlers.Select(handler => handler(@event)));
+            return Task.WhenAll(handlers.Select(handler => handler(@event, cancellationToken)));
         }
     }
 }

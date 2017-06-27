@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Bus;
 using CQRSlite.Messages;
@@ -10,9 +11,9 @@ namespace CQRSlite.Tests.Substitutes
     {
         public static readonly IList<TestHandlerListItem> HandlerList = new List<TestHandlerListItem>();
 
-        public void RegisterHandler<T>(Func<T,Task> handler) where T : class, IMessage
+        public void RegisterHandler<T>(Func<T, CancellationToken, Task> handler) where T : class, IMessage
         {
-            HandlerList.Add(new TestHandlerListItem {Type = typeof(T),Handler = handler});
+            HandlerList.Add(new TestHandlerListItem {Type = typeof(T), Handler = handler});
         }
     }
 

@@ -22,7 +22,11 @@ namespace CQRSTest.WriteModel
         protected override IEnumerable<IEvent> Given()
         {
             _guid = Guid.NewGuid();
-            return new List<IEvent> { new InventoryItemCreated(_guid, "Jadda"){Version = 1}, new ItemsCheckedInToInventory(_guid, 2){Version = 2} };
+            return new List<IEvent>
+            {
+                new InventoryItemCreated(_guid, "Jadda") {Version = 1},
+                new ItemsCheckedInToInventory(_guid, 2) {Version = 2}
+            };
         }
 
         protected override CheckInItemsToInventory When()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
@@ -11,11 +12,13 @@ namespace CQRSlite.Tests.Cache
         private CacheRepository _rep;
         private TestAggregate _aggregate;
         private ICache _cache;
+        private TestEventStore _testEventStore;
 
         public When_getting_aggregate()
         {
+            _testEventStore = new TestEventStore();
             _cache = new MemoryCache();
-            _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _cache);
+            _rep = new CacheRepository(new TestRepository(), _testEventStore, _cache);
             _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
         }
 
@@ -47,6 +50,14 @@ namespace CQRSlite.Tests.Cache
             Assert.Equal(_aggregate.DidSomethingCount, aggregate.DidSomethingCount);
             Assert.Equal(_aggregate.Id, aggregate.Id);
             Assert.Equal(_aggregate.Version, aggregate.Version);
+        }
+
+        [Fact]
+        public async Task Should_forward_cancellation_token()
+        {
+            var token = new CancellationToken();
+            await _rep.Get<TestAggregate>(_aggregate.Id, token);
+            Assert.Equal(token, _testEventStore.Token);
         }
     }
 }

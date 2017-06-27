@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSCode.ReadModel.Dtos;
 using CQRSCode.ReadModel.Events;
@@ -13,13 +14,13 @@ namespace CQRSCode.ReadModel.Handlers
 											IEventHandler<ItemsRemovedFromInventory>,
 											IEventHandler<ItemsCheckedInToInventory>
     {
-        public Task Handle(InventoryItemCreated message)
+        public Task Handle(InventoryItemCreated message, CancellationToken token)
         {
             InMemoryDatabase.Details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0, message.Version));
             return Task.CompletedTask;
         }
 
-        public Task Handle(InventoryItemRenamed message)
+        public Task Handle(InventoryItemRenamed message, CancellationToken token)
         {
             var d = GetDetailsItem(message.Id);
             d.Name = message.NewName;
@@ -36,7 +37,7 @@ namespace CQRSCode.ReadModel.Handlers
             return dto;
         }
 
-        public Task Handle(ItemsRemovedFromInventory message)
+        public Task Handle(ItemsRemovedFromInventory message, CancellationToken token)
         {
             var dto = GetDetailsItem(message.Id);
             dto.CurrentCount -= message.Count;
@@ -44,7 +45,7 @@ namespace CQRSCode.ReadModel.Handlers
             return Task.CompletedTask;
         }
 
-        public Task Handle(ItemsCheckedInToInventory message)
+        public Task Handle(ItemsCheckedInToInventory message, CancellationToken token)
         {
             var dto = GetDetailsItem(message.Id);
             dto.CurrentCount += message.Count;
@@ -52,7 +53,7 @@ namespace CQRSCode.ReadModel.Handlers
             return Task.CompletedTask;
         }
 
-        public Task Handle(InventoryItemDeactivated message)
+        public Task Handle(InventoryItemDeactivated message, CancellationToken token)
         {
             InMemoryDatabase.Details.Remove(message.Id);
             return Task.CompletedTask;

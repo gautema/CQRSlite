@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CQRSlite.Domain
@@ -17,7 +18,7 @@ namespace CQRSlite.Domain
             _trackedAggregates = new Dictionary<Guid, AggregateDescriptor>();
         }
 
-        public Task Add<T>(T aggregate) where T : AggregateRoot
+        public Task Add<T>(T aggregate, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
             if (!IsTracked(aggregate.Id))
             {
@@ -30,7 +31,7 @@ namespace CQRSlite.Domain
             return Task.CompletedTask;
         }
 
-        public async Task<T> Get<T>(Guid id, int? expectedVersion = null) where T : AggregateRoot
+        public async Task<T> Get<T>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
             if (IsTracked(id))
             {
@@ -42,12 +43,12 @@ namespace CQRSlite.Domain
                 return trackedAggregate;
             }
 
-            var aggregate = await _repository.Get<T>(id);
+            var aggregate = await _repository.Get<T>(id, cancellationToken);
             if (expectedVersion != null && aggregate.Version != expectedVersion)
             {
                 throw new ConcurrencyException(id);
             }
-            await Add(aggregate);
+            await Add(aggregate, cancellationToken);
 
             return aggregate;
         }
@@ -57,9 +58,9 @@ namespace CQRSlite.Domain
             return _trackedAggregates.ContainsKey(id);
         }
 
-        public async Task Commit()
+        public async Task Commit(CancellationToken cancellationToken = default(CancellationToken))
         {
-            await Task.WhenAll(_trackedAggregates.Values.Select(x => _repository.Save(x.Aggregate, x.Version)));
+            await Task.WhenAll(_trackedAggregates.Values.Select(x => _repository.Save(x.Aggregate, x.Version, cancellationToken)));
             _trackedAggregates.Clear();
         }
     }

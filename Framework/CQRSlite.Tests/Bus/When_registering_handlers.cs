@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using CQRSlite.Config;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
@@ -7,7 +8,7 @@ namespace CQRSlite.Tests.Bus
 {
     public class When_registering_handlers
     {
-        private TestServiceLocator _locator;
+        private readonly TestServiceLocator _locator;
 
         public When_registering_handlers()
         {
@@ -29,7 +30,7 @@ namespace CQRSlite.Tests.Bus
             foreach (var item in TestHandleRegistrar.HandlerList)
             {
                 var @event = Activator.CreateInstance(item.Type);
-                item.Handler(@event);
+                item.Handler(@event, new CancellationToken());
             }
             foreach (var handler in _locator.Handlers)
             {

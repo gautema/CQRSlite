@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
@@ -95,6 +96,17 @@ namespace CQRSlite.Tests.Domain
             _eventStore.Events.Clear();
 
             await Assert.ThrowsAsync<AggregateNotFoundException>(async () => await _session.Get<TestAggregate>(agg.Id));
+        }
+
+        [Fact]
+        public async Task Should_forward_cancellation_token()
+        {
+            var token = new CancellationToken();
+            var agg = new TestAggregate(Guid.NewGuid());
+            await _session.Add(agg, token);
+            agg.DoSomething();
+            await _session.Commit(token);
+            Assert.Equal(token, _eventStore.Token);
         }
     }
 }

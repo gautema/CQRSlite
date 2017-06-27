@@ -27,17 +27,17 @@ namespace CQRSlite.Cache
             _cache.RegisterEvictionCallback(key => _locks.TryRemove(key, out var o));
         }
 
-        public async Task Save<T>(T aggregate, int? expectedVersion = null) where T : AggregateRoot
+        public async Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
             var @lock = _locks.GetOrAdd(aggregate.Id, CreateLock);
-            await @lock.WaitAsync();
+            await @lock.WaitAsync(cancellationToken);
             try
             {
                 if (aggregate.Id != Guid.Empty && !_cache.IsTracked(aggregate.Id))
                 {
                     _cache.Set(aggregate.Id, aggregate);
                 }
-                await _repository.Save(aggregate, expectedVersion);
+                await _repository.Save(aggregate, expectedVersion, cancellationToken);
             }
             catch (Exception)
             {
@@ -50,17 +50,17 @@ namespace CQRSlite.Cache
             }
         }
 
-        public async Task<T> Get<T>(Guid aggregateId) where T : AggregateRoot
+        public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
             var @lock = _locks.GetOrAdd(aggregateId, CreateLock);
-            await @lock.WaitAsync();
+            await @lock.WaitAsync(cancellationToken);
             try
             {
                 T aggregate;
                 if (_cache.IsTracked(aggregateId))
                 {
                     aggregate = (T)_cache.Get(aggregateId);
-                    var events = await _eventStore.Get(aggregateId, aggregate.Version);
+                    var events = await _eventStore.Get(aggregateId, aggregate.Version, cancellationToken);
                     if (events.Any() && events.First().Version != aggregate.Version + 1)
                     {
                         _cache.Remove(aggregateId);
@@ -72,7 +72,7 @@ namespace CQRSlite.Cache
                     }
                 }
 
-                aggregate = await _repository.Get<T>(aggregateId);
+                aggregate = await _repository.Get<T>(aggregateId, cancellationToken);
                 _cache.Set(aggregateId, aggregate);
                 return aggregate;
             }

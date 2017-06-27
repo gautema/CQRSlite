@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Snapshots;
 using CQRSlite.Tests.Substitutes;
@@ -9,23 +10,26 @@ namespace CQRSlite.Tests.Snapshots
     public class When_saving_a_snapshotable_aggregate
     {
         private readonly TestSnapshotStore _snapshotStore;
+        private readonly TestInMemoryEventStore _eventStore;
+        private CancellationToken _token;
 
         public When_saving_a_snapshotable_aggregate()
         {
-            var eventStore = new TestInMemoryEventStore();
+            _eventStore = new TestInMemoryEventStore();
             _snapshotStore = new TestSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
-            var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
+            var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(_eventStore), _eventStore);
             var session = new Session(repository);
             var aggregate = new TestSnapshotAggregate();
+            _token = new CancellationToken();
             for (var i = 0; i < 200; i++)
             {
                 aggregate.DoSomething();
             }
             Task.Run(async () =>
             {
-                await session.Add(aggregate);
-                await session.Commit();
+                await session.Add(aggregate, _token);
+                await session.Commit(_token);
             }).Wait();
         }
 
@@ -39,6 +43,12 @@ namespace CQRSlite.Tests.Snapshots
         public void Should_save_last_version_number()
         {
             Assert.Equal(200, _snapshotStore.SavedVersion);
+        }
+
+        [Fact]
+        public void Should_forward_cancellation_token()
+        {
+            Assert.Equal(_token, _eventStore.Token);
         }
     }
 }

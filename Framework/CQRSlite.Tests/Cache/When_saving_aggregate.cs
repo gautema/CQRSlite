@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Cache;
 using CQRSlite.Tests.Substitutes;
@@ -11,14 +12,16 @@ namespace CQRSlite.Tests.Cache
         private CacheRepository _rep;
         private TestAggregate _aggregate;
         private TestRepository _testRep;
+        private TestInMemoryEventStore _testEventStore;
 
         public When_saving_aggregate()
         {
             _testRep = new TestRepository();
-            _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), new MemoryCache());
+            _testEventStore = new TestInMemoryEventStore();
+            _rep = new CacheRepository(_testRep, _testEventStore, new MemoryCache());
             _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid()).Result;
             _aggregate.DoSomething();
-            _rep.Save(_aggregate, -1);
+            _rep.Save(_aggregate, -1).Wait();
         }
 
         [Fact]
@@ -40,6 +43,15 @@ namespace CQRSlite.Tests.Cache
             var aggregate = new TestAggregate(Guid.Empty);
             await _rep.Save(aggregate);
             Assert.NotEqual(aggregate, await _rep.Get<TestAggregate>(Guid.Empty));
+        }
+
+        [Fact]
+        public async Task Should_forward_cancellation_token()
+        {
+            var token = new CancellationToken();
+            var aggregate = new TestAggregate(Guid.Empty);
+            await _rep.Save(aggregate, cancellationToken: token);
+            Assert.Equal(token, _testEventStore.Token);
         }
     }
 }

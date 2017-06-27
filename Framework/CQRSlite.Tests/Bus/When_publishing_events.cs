@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Bus;
 using CQRSlite.Domain.Exception;
@@ -47,6 +48,16 @@ namespace CQRSlite.Tests.Bus
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
             await _bus.Publish(new TestAggregateDidSomething {LongRunning = true});
             Assert.Equal(1, handler.TimesRun);
+        }
+
+        [Fact]
+        public async Task Should_forward_cancellation_token()
+        {
+            var token = new CancellationToken();
+            var handler = new TestAggregateDidSomethingHandler();
+            _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
+            await _bus.Publish(new TestAggregateDidSomething { LongRunning = true }, token);
+            Assert.Equal(token, handler.Token);
         }
     }
 }

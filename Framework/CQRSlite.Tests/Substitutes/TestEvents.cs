@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Events;
@@ -21,18 +22,20 @@ namespace CQRSlite.Tests.Substitutes
 
     public class TestAggregateDidSomethingHandler : IEventHandler<TestAggregateDidSomething>
     {
-        public async Task Handle(TestAggregateDidSomething message)
+        public async Task Handle(TestAggregateDidSomething message, CancellationToken token)
         {
             if (message.LongRunning)
-                await Task.Delay(50);
+                await Task.Delay(50, token);
             lock (message)
             {
                 if(message.Version == -10)
                     throw new ConcurrencyException(message.Id);
                 TimesRun++;
+                Token = token;
             }
         }
 
+        public CancellationToken Token { get; private set; }
         public int TimesRun { get; private set; }
     }
 }

@@ -3,6 +3,7 @@ using CQRSCode.WriteModel.Commands;
 using CQRSlite.Commands;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CQRSWeb.Controllers
@@ -36,9 +37,9 @@ namespace CQRSWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add(string name)
+        public async Task<ActionResult> Add(string name, CancellationToken cancellationToken)
         {
-            await _commandSender.Send(new CreateInventoryItem(Guid.NewGuid(), name));
+            await _commandSender.Send(new CreateInventoryItem(Guid.NewGuid(), name), cancellationToken);
             return RedirectToAction("Index");
         }
 
@@ -49,15 +50,15 @@ namespace CQRSWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ChangeName(Guid id, string name, int version)
+        public async Task<ActionResult> ChangeName(Guid id, string name, int version, CancellationToken cancellationToken)
         {
-            await _commandSender.Send(new RenameInventoryItem(id, name, version));
+            await _commandSender.Send(new RenameInventoryItem(id, name, version), cancellationToken);
             return RedirectToAction("Index");
         }
 
-        public async Task<ActionResult> Deactivate(Guid id, int version)
+        public async Task<ActionResult> Deactivate(Guid id, int version, CancellationToken cancellationToken)
         {
-            await _commandSender.Send(new DeactivateInventoryItem(id, version));
+            await _commandSender.Send(new DeactivateInventoryItem(id, version), cancellationToken);
             return RedirectToAction("Index");
         }
 
@@ -68,9 +69,9 @@ namespace CQRSWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CheckIn(Guid id, int number, int version)
+        public async Task<ActionResult> CheckIn(Guid id, int number, int version, CancellationToken cancellationToken)
         {
-            await _commandSender.Send(new CheckInItemsToInventory(id, number, version));
+            await _commandSender.Send(new CheckInItemsToInventory(id, number, version), cancellationToken);
             return RedirectToAction("Index");
         }
 
@@ -81,9 +82,9 @@ namespace CQRSWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Remove(Guid id, int number, int version)
+        public async Task<ActionResult> Remove(Guid id, int number, int version, CancellationToken cancellationToken)
         {
-            await _commandSender.Send(new RemoveItemsFromInventory(id, number, version));
+            await _commandSender.Send(new RemoveItemsFromInventory(id, number, version), cancellationToken);
             return RedirectToAction("Index");
         }
     }
