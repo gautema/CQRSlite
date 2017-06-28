@@ -10,6 +10,7 @@ namespace CQRSlite.Tests.Substitutes
     public class TestInMemoryEventStore : IEventStore 
     {
         public readonly List<IEvent> Events = new List<IEvent>();
+        public CancellationToken Token { get; set; }
 
         public Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -21,14 +22,15 @@ namespace CQRSlite.Tests.Substitutes
             return Task.CompletedTask;
         }
 
-        public CancellationToken Token { get; set; }
-
         public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default(CancellationToken))
         {
             Token = cancellationToken;
             lock(Events)
             {
-                return Task.FromResult((IEnumerable<IEvent>)Events.Where(x => x.Version > fromVersion && x.Id == aggregateId).OrderBy(x => x.Version).ToList());
+                return Task.FromResult((IEnumerable<IEvent>)Events
+                    .Where(x => (x.Version > fromVersion) && x.Id == aggregateId)
+                    .OrderBy(x => x.Version)
+                    .ToList());
             }
         }
     }

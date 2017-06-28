@@ -21,7 +21,7 @@ namespace CQRSlite.Tests.Cache
             _aggregate.DoSomething();
             try
             {
-                _rep.Save(_aggregate, 100);
+                _rep.Save(_aggregate, 100).Wait();
             }
             catch (Exception) { }
         }
