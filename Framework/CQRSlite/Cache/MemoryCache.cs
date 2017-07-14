@@ -23,7 +23,9 @@ namespace CQRSlite.Cache
 
 #if NET461
             _cache = System.Runtime.Caching.MemoryCache.Default;
-            _policyFactory = () => new CacheItemPolicy();
+            _policyFactory = () => new CacheItemPolicy {
+                SlidingExpiration = TimeSpan.FromMinutes(15)
+            };
 #else
             _cacheOptions = new MemoryCacheEntryOptions
             {
@@ -75,6 +77,7 @@ namespace CQRSlite.Cache
 #if NET461
             _policyFactory = () => new CacheItemPolicy
             {
+                SlidingExpiration = TimeSpan.FromMinutes(15),
                 RemovedCallback = x =>
                 {
                     action.Invoke(Guid.Parse(x.CacheItem.Key));
