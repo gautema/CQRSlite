@@ -64,11 +64,20 @@ namespace CQRSlite.Domain
             ApplyChange(@event, true);
         }
 
+        /// <summary>
+        /// Allow a derived class to provide a separate implementation of calling domain class event handlers
+        /// </summary>
+        /// <param name="event">the event</param>
+        protected virtual void OnApply(IEvent @event)
+        {
+            this.AsDynamic().Apply(@event);
+        }
+
         private void ApplyChange(IEvent @event, bool isNew)
         {
             lock (_changes)
             {
-                this.AsDynamic().Apply(@event);
+                OnApply(@event);
                 if (isNew)
                 {
                     _changes.Add(@event);
