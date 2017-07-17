@@ -29,7 +29,7 @@ namespace CQRSCode.ReadModel.Handlers
             return Task.CompletedTask;
         }
 
-        private InventoryItemDetailsDto GetDetailsItem(Guid id)
+        private static InventoryItemDetailsDto GetDetailsItem(Guid id)
         {
             if (!InMemoryDatabase.Details.TryGetValue(id, out var dto))
             {

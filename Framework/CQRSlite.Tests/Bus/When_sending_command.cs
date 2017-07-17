@@ -25,7 +25,7 @@ namespace CQRSlite.Tests.Bus
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
             await _bus.Send(new TestAggregateDoSomething());
 
-            Assert.Equal(1,handler.TimesRun);
+            Assert.Equal(1, handler.TimesRun);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace CQRSlite.Tests.Bus
         {
             var handler = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
-            await _bus.Send(new TestAggregateDoSomething { LongRunning = true });
+            await _bus.Send(new TestAggregateDoSomething {LongRunning = true});
             Assert.Equal(1, handler.TimesRun);
         }
 
@@ -80,7 +80,7 @@ namespace CQRSlite.Tests.Bus
             var token = new CancellationToken();
             var handler = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
-            await _bus.Send(new TestAggregateDoSomething { LongRunning = true }, token);
+            await _bus.Send(new TestAggregateDoSomething(), token);
             Assert.Equal(token, handler.Token);
         }
     }

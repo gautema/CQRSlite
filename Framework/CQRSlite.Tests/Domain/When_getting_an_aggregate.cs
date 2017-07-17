@@ -30,7 +30,7 @@ namespace CQRSlite.Tests.Domain
         public async Task Should_apply_events()
         {
             var aggregate = await _session.Get<TestAggregate>(Guid.NewGuid());
-            Assert.Equal(2,aggregate.DidSomethingCount);
+            Assert.Equal(2, aggregate.DidSomethingCount);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace CQRSlite.Tests.Domain
             var agg = new TestAggregate(Guid.NewGuid());
             await _session.Add(agg);
             var aggregate = await _session.Get<TestAggregate>(agg.Id);
-            Assert.Equal(agg,aggregate);
+	        Assert.Equal(agg, aggregate);
 	    }
 
         [Fact]
@@ -73,7 +73,7 @@ namespace CQRSlite.Tests.Domain
             var id = Guid.NewGuid();
             var aggregate = await _session.Get<TestAggregate>(id);
 
-            Assert.Equal(3,aggregate.Version);
+            Assert.Equal(3, aggregate.Version);
         }
 
         [Fact]

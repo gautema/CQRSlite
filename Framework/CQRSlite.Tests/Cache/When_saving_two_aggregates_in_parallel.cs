@@ -23,8 +23,8 @@ namespace CQRSlite.Tests.Cache
             _aggregate1 = new TestAggregate(Guid.NewGuid());
             _aggregate2 = new TestAggregate(Guid.NewGuid());
 
-            _rep1.Save(_aggregate1);
-            _rep1.Save(_aggregate2);
+            _rep1.Save(_aggregate1).Wait();
+            _rep1.Save(_aggregate2).Wait();
 
             var t1 = new Task(async () =>
             {

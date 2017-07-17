@@ -29,7 +29,7 @@ namespace CQRSlite.Tests.Cache
         [Fact]
         public void Should_remove_lock()
         {
-            Assert.False(_locks.TryGetValue(_aggregate.Id, out var val));
+            Assert.False(_locks.TryGetValue(_aggregate.Id, out var _));
         }
 
         [Fact]

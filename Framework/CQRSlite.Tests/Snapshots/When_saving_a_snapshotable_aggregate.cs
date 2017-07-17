@@ -22,6 +22,7 @@ namespace CQRSlite.Tests.Snapshots
             var session = new Session(repository);
             var aggregate = new TestSnapshotAggregate();
             _token = new CancellationToken();
+
             for (var i = 0; i < 200; i++)
             {
                 aggregate.DoSomething();

@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using CQRSlite.Messages;
 
 namespace CQRSlite.Config
 {
@@ -76,7 +75,7 @@ namespace CQRSlite.Config
             registerExecutorMethod.Invoke(registrar, new object[] {del});
         }
 
-        private bool IsCancellable(Type @interface)
+        private static bool IsCancellable(Type @interface)
         {
             return @interface.GetGenericTypeDefinition() == typeof(ICancellableCommandHandler<>)
                    || @interface.GetGenericTypeDefinition() == typeof(ICancellableEventHandler<>);

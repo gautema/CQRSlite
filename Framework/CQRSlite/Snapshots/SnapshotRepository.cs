@@ -34,9 +34,8 @@ namespace CQRSlite.Snapshots
             var aggregate = AggregateFactory.CreateAggregate<T>();
             var snapshotVersion = await TryRestoreAggregateFromSnapshot(aggregateId, aggregate, cancellationToken);
             if (snapshotVersion == -1)
-            {
                 return await _repository.Get<T>(aggregateId, cancellationToken);
-            }
+
             var events = (await _eventStore.Get(aggregateId, snapshotVersion, cancellationToken)).Where(desc => desc.Version > snapshotVersion);
             aggregate.LoadFromHistory(events);
 
@@ -59,9 +58,8 @@ namespace CQRSlite.Snapshots
         private Task TryMakeSnapshot(AggregateRoot aggregate)
         {
             if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
-            {
                 return Task.CompletedTask;
-            }
+
             var snapshot = aggregate.AsDynamic().GetSnapshot();
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
             return _snapshotStore.Save(snapshot);

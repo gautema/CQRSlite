@@ -56,7 +56,7 @@ namespace CQRSlite.Tests.Bus
             var token = new CancellationToken();
             var handler = new TestAggregateDidSomethingHandler();
             _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
-            await _bus.Publish(new TestAggregateDidSomething { LongRunning = true }, token);
+            await _bus.Publish(new TestAggregateDidSomething {LongRunning = true}, token);
             Assert.Equal(token, handler.Token);
         }
     }

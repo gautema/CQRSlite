@@ -13,6 +13,7 @@ namespace CQRSlite.Cache
         private readonly IRepository _repository;
         private readonly IEventStore _eventStore;
         private readonly ICache _cache;
+
         private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> _locks =
             new ConcurrentDictionary<Guid, SemaphoreSlim>();
 
@@ -24,10 +25,11 @@ namespace CQRSlite.Cache
             _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
-            _cache.RegisterEvictionCallback(key => _locks.TryRemove(key, out var o));
+            _cache.RegisterEvictionCallback(key => _locks.TryRemove(key, out var _));
         }
 
-        public async Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
+        public async Task Save<T>(T aggregate, int? expectedVersion = null,
+            CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
             var @lock = _locks.GetOrAdd(aggregate.Id, CreateLock);
             await @lock.WaitAsync(cancellationToken);
@@ -50,7 +52,8 @@ namespace CQRSlite.Cache
             }
         }
 
-        public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
+        public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken))
+            where T : AggregateRoot
         {
             var @lock = _locks.GetOrAdd(aggregateId, CreateLock);
             await @lock.WaitAsync(cancellationToken);
@@ -59,7 +62,7 @@ namespace CQRSlite.Cache
                 T aggregate;
                 if (_cache.IsTracked(aggregateId))
                 {
-                    aggregate = (T)_cache.Get(aggregateId);
+                    aggregate = (T) _cache.Get(aggregateId);
                     var events = await _eventStore.Get(aggregateId, aggregate.Version, cancellationToken);
                     if (events.Any() && events.First().Version != aggregate.Version + 1)
                     {

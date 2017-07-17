@@ -28,6 +28,5 @@ namespace CQRSlite.Tests.Substitutes
         {
             DidSomethingCount++;
         }
-
     }
 }

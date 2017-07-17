@@ -49,7 +49,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             }
             else
             {
-                throw new InvalidCastException($"{nameof(handler)} is not a CommandHandler of {typeof(TCommand)}");
+                throw new InvalidCastException($"{nameof(handler)} is not a command handler of type {typeof(TCommand)}");
             }
 
             Snapshot = snapshotstorage.Snapshot;
