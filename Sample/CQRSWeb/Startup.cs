@@ -12,9 +12,9 @@ using CQRSlite.Cache;
 using CQRSCode.ReadModel;
 using CQRSlite.Config;
 using CQRSCode.WriteModel.Handlers;
-using Scrutor;
 using System.Reflection;
 using System.Linq;
+using CQRSlite.Messages;
 
 namespace CQRSWeb
 {
@@ -42,9 +42,9 @@ namespace CQRSWeb
                 .FromAssemblies(typeof(InventoryCommandHandlers).GetTypeInfo().Assembly)
                     .AddClasses(classes => classes.Where(x => {
                         var allInterfaces = x.GetInterfaces();
-                        return 
-                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(ICommandHandler<>)) ||
-                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(IEventHandler<>));
+                        return
+                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(IHandler<>)) ||
+                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(ICancellableHandler<>));
                     }))
                     .AsSelf()
                     .WithTransientLifetime()
