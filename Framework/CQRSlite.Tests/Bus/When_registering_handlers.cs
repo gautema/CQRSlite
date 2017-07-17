@@ -21,7 +21,7 @@ namespace CQRSlite.Tests.Bus
         [Fact]
         public void Should_register_all_handlers()
         {
-            Assert.Equal(3, TestHandleRegistrar.HandlerList.Count);
+            Assert.Equal(5, TestHandleRegistrar.HandlerList.Count);
         }
 
         [Fact]

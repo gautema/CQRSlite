@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using CQRSlite.Messages;
 
 namespace CQRSlite.Config
 {
@@ -54,21 +55,43 @@ namespace CQRSlite.Config
                 .Single(mi => mi.GetParameters().Length == 1)
                 .MakeGenericMethod(commandType);
 
-            var del = new Func<dynamic, CancellationToken, Task>((x, token) =>
+            Func<dynamic, CancellationToken, Task> del;
+            if (IsCancellable(@interface))
             {
-                dynamic handler = _serviceLocator.GetService(executorType);
-                return handler.Handle(x, token);
-            });
+                del = (x, token) =>
+                {
+                    dynamic handler = _serviceLocator.GetService(executorType);
+                    return handler.Handle(x, token);
+                };
+            }
+            else
+            {
+                del = (x, token) =>
+                {
+                    dynamic handler = _serviceLocator.GetService(executorType);
+                    return handler.Handle(x);
+                };
+            }
 
-            registerExecutorMethod.Invoke(registrar, new object[] { del });
+            registerExecutorMethod.Invoke(registrar, new object[] {del});
+        }
+
+        private bool IsCancellable(Type @interface)
+        {
+            return @interface.GetGenericTypeDefinition() == typeof(ICancellableCommandHandler<>)
+                   || @interface.GetGenericTypeDefinition() == typeof(ICancellableEventHandler<>);
         }
 
         private static IEnumerable<Type> ResolveMessageHandlerInterface(Type type)
         {
             return type
                 .GetInterfaces()
-                .Where(i => i.GetTypeInfo().IsGenericType && (i.GetGenericTypeDefinition() == typeof(ICommandHandler<>)
-                                                || i.GetGenericTypeDefinition() == typeof(IEventHandler<>)));
+                .Where(i => i.GetTypeInfo().IsGenericType &&
+                            (i.GetGenericTypeDefinition() == typeof(ICommandHandler<>)
+                             || i.GetGenericTypeDefinition() == typeof(IEventHandler<>)
+                             || i.GetGenericTypeDefinition() == typeof(ICancellableCommandHandler<>)
+                             || i.GetGenericTypeDefinition() == typeof(ICancellableEventHandler<>)
+                            ));
         }
     }
 }

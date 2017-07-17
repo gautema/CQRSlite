@@ -13,7 +13,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 {
     public abstract class Specification<TAggregate, THandler, TCommand> 
         where TAggregate: AggregateRoot
-        where THandler : class, ICommandHandler<TCommand>
+        where THandler : class, ICancellableCommandHandler<TCommand>
         where TCommand : ICommand
     {
 

@@ -8,15 +8,16 @@ using CQRSlite.Events;
 
 namespace CQRSCode.ReadModel.Handlers
 {
-    public class InventoryItemDetailView : IEventHandler<InventoryItemCreated>,
-											IEventHandler<InventoryItemDeactivated>,
-											IEventHandler<InventoryItemRenamed>,
-											IEventHandler<ItemsRemovedFromInventory>,
-											IEventHandler<ItemsCheckedInToInventory>
+    public class InventoryItemDetailView : ICancellableEventHandler<InventoryItemCreated>,
+        ICancellableEventHandler<InventoryItemDeactivated>,
+        ICancellableEventHandler<InventoryItemRenamed>,
+        ICancellableEventHandler<ItemsRemovedFromInventory>,
+        ICancellableEventHandler<ItemsCheckedInToInventory>
     {
         public Task Handle(InventoryItemCreated message, CancellationToken token)
         {
-            InMemoryDatabase.Details.Add(message.Id, new InventoryItemDetailsDto(message.Id, message.Name, 0, message.Version));
+            InMemoryDatabase.Details.Add(message.Id,
+                new InventoryItemDetailsDto(message.Id, message.Name, 0, message.Version));
             return Task.CompletedTask;
         }
 

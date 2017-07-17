@@ -7,9 +7,9 @@ using CQRSlite.Events;
 
 namespace CQRSCode.ReadModel.Handlers
 {
-	public class InventoryListView : IEventHandler<InventoryItemCreated>,
-										IEventHandler<InventoryItemRenamed>,
-										IEventHandler<InventoryItemDeactivated>
+	public class InventoryListView : ICancellableEventHandler<InventoryItemCreated>,
+	    ICancellableEventHandler<InventoryItemRenamed>,
+	    ICancellableEventHandler<InventoryItemDeactivated>
     {
         public Task Handle(InventoryItemCreated message, CancellationToken token)
         {

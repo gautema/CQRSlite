@@ -7,11 +7,11 @@ using CQRSlite.Domain;
 
 namespace CQRSCode.WriteModel.Handlers
 {
-    public class InventoryCommandHandlers : ICommandHandler<CreateInventoryItem>,
-											ICommandHandler<DeactivateInventoryItem>,
-											ICommandHandler<RemoveItemsFromInventory>,
-											ICommandHandler<CheckInItemsToInventory>,
-											ICommandHandler<RenameInventoryItem>
+    public class InventoryCommandHandlers : ICancellableCommandHandler<CreateInventoryItem>,
+        ICancellableCommandHandler<DeactivateInventoryItem>,
+        ICancellableCommandHandler<RemoveItemsFromInventory>,
+        ICancellableCommandHandler<CheckInItemsToInventory>,
+        ICancellableCommandHandler<RenameInventoryItem>
     {
         private readonly ISession _session;
 
