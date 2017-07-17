@@ -7,7 +7,7 @@ using CQRSlite.Domain;
 
 namespace CQRSCode.WriteModel.Handlers
 {
-    public class InventoryCommandHandlers : ICancellableCommandHandler<CreateInventoryItem>,
+    public class InventoryCommandHandlers : ICommandHandler<CreateInventoryItem>,
         ICancellableCommandHandler<DeactivateInventoryItem>,
         ICancellableCommandHandler<RemoveItemsFromInventory>,
         ICancellableCommandHandler<CheckInItemsToInventory>,
@@ -20,11 +20,11 @@ namespace CQRSCode.WriteModel.Handlers
             _session = session;
         }
 
-        public async Task Handle(CreateInventoryItem message, CancellationToken token)
+        public async Task Handle(CreateInventoryItem message)
         {
             var item = new InventoryItem(message.Id, message.Name);
-            await _session.Add(item, token);
-            await _session.Commit(token);
+            await _session.Add(item);
+            await _session.Commit();
         }
 
         public async Task Handle(DeactivateInventoryItem message, CancellationToken token)

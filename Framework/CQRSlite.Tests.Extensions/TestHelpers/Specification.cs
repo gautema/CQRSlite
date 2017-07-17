@@ -13,7 +13,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 {
     public abstract class Specification<TAggregate, THandler, TCommand> 
         where TAggregate: AggregateRoot
-        where THandler : class, ICancellableCommandHandler<TCommand>
+        where THandler : class
         where TCommand : ICommand
     {
 
@@ -38,8 +38,19 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             Session = new Session(repository);
             Aggregate = GetAggregate().Result;
 
-            var handler = BuildHandler();
-            handler.Handle(When());
+            dynamic handler = BuildHandler();
+            if (handler is ICancellableCommandHandler<TCommand>)
+            {
+                handler.Handle(When(), new CancellationToken());
+            }
+            else if(handler is ICommandHandler<TCommand>)
+            {
+                handler.Handle(When());
+            }
+            else
+            {
+                throw new InvalidCastException($"{nameof(handler)} is not a CommandHandler of {typeof(TCommand)}");
+            }
 
             Snapshot = snapshotstorage.Snapshot;
             PublishedEvents = eventpublisher.PublishedEvents;
