@@ -21,7 +21,7 @@ namespace CQRSlite.Tests.Substitutes
         public bool LongRunning { get; set; }
     }
 
-    public class TestAggregateDoSomethingHandler : ICancellableCommandHandler<TestAggregateDoSomething>, IEventHandler<TestAggregateDidSomeethingElse>
+    public class TestAggregateDoSomethingHandler : ICancellableCommandHandler<TestAggregateDoSomething>
     {
         public async Task Handle(TestAggregateDoSomething message, CancellationToken token)
         {
@@ -33,21 +33,18 @@ namespace CQRSlite.Tests.Substitutes
             Token = token;
         }
 
-        public Task Handle(TestAggregateDidSomeethingElse message)
+        public int TimesRun { get; set; }
+        public CancellationToken Token { get; set; }
+
+    }
+	public class TestAggregateDoSomethingElseHandler : ICommandHandler<TestAggregateDoSomethingElse>
+    {
+        public Task Handle(TestAggregateDoSomethingElse message)
         {
             TimesRun++;
             return Task.CompletedTask;
         }
 
         public int TimesRun { get; set; }
-        public CancellationToken Token { get; set; }
-
-    }
-	public class TestAggregateDoSomethingElseHandler : ICancellableCommandHandler<TestAggregateDoSomething>
-    {
-        public Task Handle(TestAggregateDoSomething message, CancellationToken token)
-        {
-            return Task.CompletedTask;
-        }
     }
 }

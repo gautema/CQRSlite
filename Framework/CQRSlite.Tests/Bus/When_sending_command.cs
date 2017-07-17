@@ -21,6 +21,16 @@ namespace CQRSlite.Tests.Bus
         [Fact]
         public async Task Should_run_handler()
         {
+            var handler = new TestAggregateDoSomethingElseHandler();
+            _bus.RegisterHandler<TestAggregateDoSomethingElse>((x, token) => handler.Handle(x));
+            await _bus.Send(new TestAggregateDoSomethingElse());
+
+            Assert.Equal(1, handler.TimesRun);
+        }
+
+        [Fact]
+        public async Task Should_run_cancellation_handler()
+        {
             var handler = new TestAggregateDoSomethingHandler();
             _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
             await _bus.Send(new TestAggregateDoSomething());
@@ -31,9 +41,9 @@ namespace CQRSlite.Tests.Bus
         [Fact]
         public async Task Should_throw_if_more_handlers()
         {
-            var x = new TestAggregateDoSomethingHandler();
-            _bus.RegisterHandler<TestAggregateDoSomething>(x.Handle);
-            _bus.RegisterHandler<TestAggregateDoSomething>(x.Handle);
+            var handler = new TestAggregateDoSomethingHandler();
+            _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
+            _bus.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
 
             await Assert.ThrowsAsync<InvalidOperationException>(async () => await _bus.Send(new TestAggregateDoSomething()));
         }

@@ -14,7 +14,7 @@ namespace CQRSlite.Tests.Substitutes
         public bool LongRunning { get; set; }
     }
 
-    public class TestAggregateDidSomeethingElse : IEvent
+    public class TestAggregateDidSomethingElse : IEvent
     {
         public Guid Id { get; set; }
         public int Version { get; set; }
@@ -22,7 +22,7 @@ namespace CQRSlite.Tests.Substitutes
     }
 
     public class TestAggregateDidSomethingHandler : ICancellableEventHandler<TestAggregateDidSomething>,
-        IEventHandler<TestAggregateDidSomeethingElse>
+        IEventHandler<TestAggregateDidSomethingElse>
     {
         public async Task Handle(TestAggregateDidSomething message, CancellationToken token)
         {
@@ -37,7 +37,7 @@ namespace CQRSlite.Tests.Substitutes
             }
         }
 
-        public Task Handle(TestAggregateDidSomeethingElse message)
+        public Task Handle(TestAggregateDidSomethingElse message)
         {
             TimesRun++;
             return Task.CompletedTask;

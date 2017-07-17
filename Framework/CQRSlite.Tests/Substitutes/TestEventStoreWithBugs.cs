@@ -24,7 +24,7 @@ namespace CQRSlite.Tests.Substitutes
             {
                 new TestAggregateDidSomething {Id = aggregateId, Version = 3},
                 new TestAggregateDidSomething {Id = aggregateId, Version = 2},
-                new TestAggregateDidSomeethingElse {Id = aggregateId, Version = 1}
+                new TestAggregateDidSomethingElse {Id = aggregateId, Version = 1}
             });
         }
     }
