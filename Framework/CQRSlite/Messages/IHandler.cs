@@ -2,7 +2,7 @@
 
 namespace CQRSlite.Messages
 {
-    public interface IHandler<in T> where T : IMessage
+    public interface IHandler<in T> : IMessageHandler<T> where T : IMessage
     {
         Task Handle(T message);
     }

@@ -13,7 +13,7 @@ namespace CQRSlite.Bus
     {
         private readonly Dictionary<Type, List<Func<IMessage, CancellationToken, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, CancellationToken, Task>>>();
 
-        public void RegisterHandler<T>(Func<T, CancellationToken, Task> handler) where T : class, IMessage
+        public void RegisterHandler<T, H>(Func<T, CancellationToken, Task> handler) where T : class, IMessage where H : class, IMessageHandler<T>
         {
             if (!_routes.TryGetValue(typeof(T), out var handlers))
             {

@@ -20,8 +20,8 @@ namespace CQRSlite.Tests.Bus
         public async Task Should_publish_to_all_handlers()
         {
             var handler = new TestAggregateDidSomethingHandler();
-            _bus.RegisterHandler<TestAggregateDidSomethingElse>((x, token) => handler.Handle(x));
-            _bus.RegisterHandler<TestAggregateDidSomethingElse>((x, token) => handler.Handle(x));
+            _bus.RegisterHandler<TestAggregateDidSomethingElse, TestAggregateDidSomethingHandler>((x, token) => handler.Handle(x));
+            _bus.RegisterHandler<TestAggregateDidSomethingElse, TestAggregateDidSomethingHandler>((x, token) => handler.Handle(x));
             await _bus.Publish(new TestAggregateDidSomethingElse());
             Assert.Equal(2, handler.TimesRun);
         }
@@ -30,8 +30,8 @@ namespace CQRSlite.Tests.Bus
         public async Task Should_publish_to_all_cancellation_handlers()
         {
             var handler = new TestAggregateDidSomethingHandler();
-            _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
-            _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
+            _bus.RegisterHandler<TestAggregateDidSomething, TestAggregateDidSomethingHandler>(handler.Handle);
+            _bus.RegisterHandler<TestAggregateDidSomething, TestAggregateDidSomethingHandler>(handler.Handle);
             await _bus.Publish(new TestAggregateDidSomething());
             Assert.Equal(2, handler.TimesRun);
         }
@@ -46,7 +46,7 @@ namespace CQRSlite.Tests.Bus
         public async Task Should_throw_if_handler_throws()
         {
             var handler = new TestAggregateDidSomethingHandler();
-            _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
+            _bus.RegisterHandler<TestAggregateDidSomething, TestAggregateDidSomethingHandler>(handler.Handle);
             await Assert.ThrowsAsync<ConcurrencyException>(
                 async () => await _bus.Publish(new TestAggregateDidSomething {Version = -10}));
         }
@@ -55,7 +55,7 @@ namespace CQRSlite.Tests.Bus
         public async Task Should_wait_for_published_to_finish()
         {
             var handler = new TestAggregateDidSomethingHandler();
-            _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
+            _bus.RegisterHandler<TestAggregateDidSomething, TestAggregateDidSomethingHandler>(handler.Handle);
             await _bus.Publish(new TestAggregateDidSomething {LongRunning = true});
             Assert.Equal(1, handler.TimesRun);
         }
@@ -65,7 +65,7 @@ namespace CQRSlite.Tests.Bus
         {
             var token = new CancellationToken();
             var handler = new TestAggregateDidSomethingHandler();
-            _bus.RegisterHandler<TestAggregateDidSomething>(handler.Handle);
+            _bus.RegisterHandler<TestAggregateDidSomething, TestAggregateDidSomethingHandler>(handler.Handle);
             await _bus.Publish(new TestAggregateDidSomething {LongRunning = true}, token);
             Assert.Equal(token, handler.Token);
         }

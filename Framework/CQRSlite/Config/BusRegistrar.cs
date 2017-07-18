@@ -50,9 +50,9 @@ namespace CQRSlite.Config
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public)
                 .Where(mi => mi.Name == "RegisterHandler")
                 .Where(mi => mi.IsGenericMethod)
-                .Where(mi => mi.GetGenericArguments().Length == 1)
+                .Where(mi => mi.GetGenericArguments().Length == 2)
                 .Single(mi => mi.GetParameters().Length == 1)
-                .MakeGenericMethod(commandType);
+                .MakeGenericMethod(commandType, executorType);
 
             Func<dynamic, CancellationToken, Task> del;
             if (IsCancellable(@interface))
