@@ -68,7 +68,7 @@ namespace CQRSlite.Domain
         {
             lock (_changes)
             {
-                this.AsDynamic().Apply(@event);
+                Apply(@event);
                 if (isNew)
                 {
                     _changes.Add(@event);
@@ -79,6 +79,11 @@ namespace CQRSlite.Domain
                     Version++;
                 }
             }
+        }
+
+        protected virtual void Apply(IEvent @event)
+        {
+            this.AsDynamic().Apply(@event);
         }
     }
 }
