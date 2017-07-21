@@ -1,28 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{693A83BF-7B14-459E-B245-82B7B9AF810E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{DC63AD03-D195-4E43-8120-0BD27AC86D46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite", "Framework\CQRSlite\CQRSlite.csproj", "{71DFCD1D-AC1E-4CAE-9998-C747662DBF0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSlite", "Framework\CQRSlite\CQRSlite.csproj", "{71DFCD1D-AC1E-4CAE-9998-C747662DBF0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Tests", "Framework\CQRSlite.Tests\CQRSlite.Tests.csproj", "{2694E1AD-335F-467B-9C0C-4979871830D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSlite.Tests", "Framework\CQRSlite.Tests\CQRSlite.Tests.csproj", "{2694E1AD-335F-467B-9C0C-4979871830D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSlite.Tests.Extensions", "Framework\CQRSlite.Tests.Extensions\CQRSlite.Tests.Extensions.csproj", "{0A3F1993-C603-4CD9-BCB3-5791255B54AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSlite.Tests.Extensions", "Framework\CQRSlite.Tests.Extensions\CQRSlite.Tests.Extensions.csproj", "{0A3F1993-C603-4CD9-BCB3-5791255B54AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSCode", "Sample\CQRSCode\CQRSCode.csproj", "{94A8AD91-1300-471D-AAC0-F6F310A54927}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSCode", "Sample\CQRSCode\CQRSCode.csproj", "{94A8AD91-1300-471D-AAC0-F6F310A54927}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSWeb", "Sample\CQRSWeb\CQRSWeb.csproj", "{C1214159-C75F-4CAC-82BD-A5E4E3F7F0E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSWeb", "Sample\CQRSWeb\CQRSWeb.csproj", "{C1214159-C75F-4CAC-82BD-A5E4E3F7F0E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSTest", "Sample\CQRSTest\CQRSTest.csproj", "{DE6E654C-00A3-4829-AABF-42F534078D00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSTest", "Sample\CQRSTest\CQRSTest.csproj", "{DE6E654C-00A3-4829-AABF-42F534078D00}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D88E36CC-4CB2-436D-881B-5B6BB4174B42}"
 	ProjectSection(SolutionItems) = preProject
 		CQRSlite.nuspec = CQRSlite.nuspec
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSLite.AspNetCore", "Framework\CQRSLite.AspNetCore\CQRSLite.AspNetCore.csproj", "{FA7677D3-5620-4DEE-975B-5002C263537E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{DE6E654C-00A3-4829-AABF-42F534078D00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE6E654C-00A3-4829-AABF-42F534078D00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE6E654C-00A3-4829-AABF-42F534078D00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA7677D3-5620-4DEE-975B-5002C263537E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA7677D3-5620-4DEE-975B-5002C263537E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA7677D3-5620-4DEE-975B-5002C263537E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA7677D3-5620-4DEE-975B-5002C263537E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +71,6 @@ Global
 		{94A8AD91-1300-471D-AAC0-F6F310A54927} = {DC63AD03-D195-4E43-8120-0BD27AC86D46}
 		{C1214159-C75F-4CAC-82BD-A5E4E3F7F0E2} = {DC63AD03-D195-4E43-8120-0BD27AC86D46}
 		{DE6E654C-00A3-4829-AABF-42F534078D00} = {DC63AD03-D195-4E43-8120-0BD27AC86D46}
+		{FA7677D3-5620-4DEE-975B-5002C263537E} = {693A83BF-7B14-459E-B245-82B7B9AF810E}
 	EndGlobalSection
 EndGlobal
