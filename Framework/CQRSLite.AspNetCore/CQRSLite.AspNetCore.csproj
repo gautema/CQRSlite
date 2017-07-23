@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+     <TargetFrameworks>netstandard1.6</TargetFrameworks>
+     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>

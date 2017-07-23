@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CQRSlite.nuspec = CQRSlite.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRSLite.AspNetCore", "Framework\CQRSLite.AspNetCore\CQRSLite.AspNetCore.csproj", "{FA7677D3-5620-4DEE-975B-5002C263537E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSLite.AspNetCore", "Framework\CQRSLite.AspNetCore\CQRSLite.AspNetCore.csproj", "{FA7677D3-5620-4DEE-975B-5002C263537E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
