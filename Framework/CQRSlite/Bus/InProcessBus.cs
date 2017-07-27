@@ -35,7 +35,8 @@ namespace CQRSlite.Bus
         public Task Publish<T>(T @event, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent
         {
             if (!_routes.TryGetValue(@event.GetType(), out var handlers))
-                return Task.CompletedTask;
+                return Task.FromResult(0);
+
             return Task.WhenAll(handlers.Select(handler => handler(@event, cancellationToken)));
         }
     }

@@ -11,7 +11,7 @@
     <description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</description>
     <copyright>Copyright 2017</copyright>
     <dependencies>
-      <group targetFramework=".NETFramework4.6.1">
+      <group targetFramework=".NETFramework4.5.2">
       </group>
       <group targetFramework=".NETStandard1.3">
         <dependency id="NETStandard.Library" version="1.6.1" />
@@ -36,7 +36,7 @@
     <file src="Framework\CQRSlite\bin\Release\netstandard1.5\CQRSlite.dll" target="lib\netstandard1.5\CQRSlite.dll" />
     <file src="Framework\CQRSlite\bin\Release\netstandard1.5\CQRSlite.pdb" target="lib\netstandard1.5\CQRSlite.pdb" />
     <file src="Framework\CQRSlite\bin\Release\netstandard1.5\CQRSlite.deps.json" target="lib\netstandard1.5\CQRSlite.deps.json" />
-    <file src="Framework\CQRSlite\bin\Release\net461\CQRSlite.dll" target="lib\net461\CQRSlite.dll" />
-    <file src="Framework\CQRSlite\bin\Release\net461\CQRSlite.pdb" target="lib\net461\CQRSlite.pdb" />
+    <file src="Framework\CQRSlite\bin\Release\net452\CQRSlite.dll" target="lib\net452\CQRSlite.dll" />
+    <file src="Framework\CQRSlite\bin\Release\net452\CQRSlite.pdb" target="lib\net452\CQRSlite.pdb" />
   </files>
 </package>
