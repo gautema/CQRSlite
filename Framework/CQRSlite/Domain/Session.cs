@@ -28,11 +28,7 @@ namespace CQRSlite.Domain
             {
                 throw new ConcurrencyException(aggregate.Id);
             }
-#if NET452
             return Task.FromResult(0);
-#else
-            return Task.CompletedTask;
-#endif
         }
 
         public async Task<T> Get<T>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot

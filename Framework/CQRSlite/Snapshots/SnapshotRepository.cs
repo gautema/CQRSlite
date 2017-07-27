@@ -58,11 +58,7 @@ namespace CQRSlite.Snapshots
         private Task TryMakeSnapshot(AggregateRoot aggregate)
         {
             if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
-#if NET452
                 return Task.FromResult(0);
-#else
-                return Task.CompletedTask;
-#endif
 
             var snapshot = aggregate.AsDynamic().GetSnapshot();
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
