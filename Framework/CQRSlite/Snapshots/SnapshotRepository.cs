@@ -59,7 +59,7 @@ namespace CQRSlite.Snapshots
         {
             if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
 #if NET452
-                return new Task(() => { });
+                return Task.FromResult(0);
 #else
                 return Task.CompletedTask;
 #endif

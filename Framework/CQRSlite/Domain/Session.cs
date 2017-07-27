@@ -29,7 +29,7 @@ namespace CQRSlite.Domain
                 throw new ConcurrencyException(aggregate.Id);
             }
 #if NET452
-            return new Task(() => { });
+            return Task.FromResult(0);
 #else
             return Task.CompletedTask;
 #endif

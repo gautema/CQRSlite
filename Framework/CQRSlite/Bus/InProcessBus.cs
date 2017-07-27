@@ -36,7 +36,7 @@ namespace CQRSlite.Bus
         {
             if (!_routes.TryGetValue(@event.GetType(), out var handlers))
 #if NET452
-                return new Task(() => { });
+                return Task.FromResult(0);
 #else
                 return Task.CompletedTask;
 #endif

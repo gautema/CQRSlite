@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;netstandard1.5;net461;net452</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard1.5;net452</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
@@ -17,11 +17,6 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.2" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461' ">
-    <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net452' ">
     <Reference Include="System.Runtime.Caching" />
