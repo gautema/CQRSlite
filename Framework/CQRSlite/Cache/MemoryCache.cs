@@ -1,6 +1,6 @@
 ﻿using System;
 using CQRSlite.Domain;
-#if NET461
+#if NET461 || NET452
 using System.Runtime.Caching;
 #else
 using Microsoft.Extensions.Caching.Memory;
@@ -10,7 +10,7 @@ namespace CQRSlite.Cache
 {
     public class MemoryCache : ICache
     {
-#if NET461
+#if NET461 || NET452
         private readonly System.Runtime.Caching.MemoryCache _cache;
         private Func<CacheItemPolicy> _policyFactory;
 #else
@@ -21,7 +21,7 @@ namespace CQRSlite.Cache
         public MemoryCache()
         {
 
-#if NET461
+#if NET461 || NET452
             _cache = System.Runtime.Caching.MemoryCache.Default;
             _policyFactory = () => new CacheItemPolicy {
                 SlidingExpiration = TimeSpan.FromMinutes(15)
@@ -38,7 +38,7 @@ namespace CQRSlite.Cache
 
         public bool IsTracked(Guid id)
         {
-#if NET461
+#if NET461 || NET452
             return _cache.Contains(id.ToString());
 #else
             return _cache.TryGetValue(id, out var o) && o != null;
@@ -47,7 +47,7 @@ namespace CQRSlite.Cache
 
         public void Set(Guid id, AggregateRoot aggregate)
         {
-#if NET461
+#if NET461 || NET452
             _cache.Add(id.ToString(), aggregate, _policyFactory.Invoke());
 #else
             _cache.Set(id, aggregate, _cacheOptions);
@@ -56,7 +56,7 @@ namespace CQRSlite.Cache
 
         public AggregateRoot Get(Guid id)
         {
-#if NET461
+#if NET461 || NET452
             return (AggregateRoot)_cache.Get(id.ToString());
 #else
             return (AggregateRoot) _cache.Get(id);
@@ -65,7 +65,7 @@ namespace CQRSlite.Cache
 
         public void Remove(Guid id)
         {
-#if NET461
+#if NET461 || NET452
             _cache.Remove(id.ToString());
 #else
             _cache.Remove(id);
@@ -74,7 +74,7 @@ namespace CQRSlite.Cache
 
         public void RegisterEvictionCallback(Action<Guid> action)
         {
-#if NET461
+#if NET461 || NET452
             _policyFactory = () => new CacheItemPolicy
             {
                 SlidingExpiration = TimeSpan.FromMinutes(15),
