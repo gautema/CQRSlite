@@ -1,4 +1,4 @@
-﻿using CQRSlite.Config;
+﻿using CQRSlite.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

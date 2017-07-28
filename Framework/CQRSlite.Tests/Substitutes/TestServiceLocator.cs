@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using CQRSlite.Bus;
-using CQRSlite.Config;
+using CQRSlite.Routing;
 
 namespace CQRSlite.Tests.Substitutes
 {

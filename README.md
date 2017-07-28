@@ -21,7 +21,7 @@ Great introductions to CQRS and CQRSlite have been written by others. Here are t
 * Unit of work through session with aggregate tracking
 * Repository for getting and saving aggregates
 * Optimistic concurrency checking
-* In process bus with auto registration of handlers
+* Message router with auto registration of handlers
 * Snapshotting
 * Caching with concurrency checks and updating to latest version
 
