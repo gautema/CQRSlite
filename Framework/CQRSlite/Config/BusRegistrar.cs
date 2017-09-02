@@ -47,7 +47,7 @@ namespace CQRSlite.Config
 
             var registerExecutorMethod = registrar
                 .GetType()
-                .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(mi => mi.Name == "RegisterHandler")
                 .Where(mi => mi.IsGenericMethod)
                 .Where(mi => mi.GetGenericArguments().Length == 1)
