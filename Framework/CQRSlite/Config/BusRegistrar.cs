@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Config
 {
@@ -60,12 +61,7 @@ namespace CQRSlite.Config
                 del = (x, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType);
-                    var method = handler.GetType()
-                        .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                        .Where(mi => mi.Name == "Handle")
-                        .Single(mi => mi.GetParameters().Length == 2 &&
-                                      mi.GetParameters()[0].ParameterType == x.GetType());
-                    return (Task)method.Invoke(handler, new[] { x, token });
+                    return handler.AsDynamic().Handle(x, token);
                 };
             }
             else
@@ -73,12 +69,7 @@ namespace CQRSlite.Config
                 del = (x, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType);
-                    var method = handler.GetType()
-                        .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                        .Where(mi => mi.Name == "Handle")
-                        .Single(mi => mi.GetParameters().Length == 1 &&
-                                      mi.GetParameters()[0].ParameterType == x.GetType());
-                    return (Task)method.Invoke(handler, new[] { x });
+                    return handler.AsDynamic().Handle(x);
                 };
             }
 

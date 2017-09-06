@@ -4,7 +4,7 @@ namespace CQRSlite.Infrastructure
 {
     internal static class PrivateReflectionDynamicObjectExtensions
     {
-        public static dynamic AsDynamic(this AggregateRoot o)
+        public static dynamic AsDynamic(this object o)
         {
             return new PrivateReflectionDynamicObject { RealObject = o };
         }
