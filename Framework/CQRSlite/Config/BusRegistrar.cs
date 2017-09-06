@@ -54,25 +54,35 @@ namespace CQRSlite.Config
                 .Single(mi => mi.GetParameters().Length == 1)
                 .MakeGenericMethod(commandType);
 
-            Func<dynamic, CancellationToken, Task> del;
+            Func<object, CancellationToken, Task> del;
             if (IsCancellable(@interface))
             {
                 del = (x, token) =>
                 {
-                    dynamic handler = _serviceLocator.GetService(executorType);
-                    return handler.Handle(x, token);
+                    var handler = _serviceLocator.GetService(executorType);
+                    var method = handler.GetType()
+                        .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                        .Where(mi => mi.Name == "Handle")
+                        .Single(mi => mi.GetParameters().Length == 2 &&
+                                      mi.GetParameters()[0].ParameterType == x.GetType());
+                    return (Task)method.Invoke(handler, new[] { x, token });
                 };
             }
             else
             {
                 del = (x, token) =>
                 {
-                    dynamic handler = _serviceLocator.GetService(executorType);
-                    return handler.Handle(x);
+                    var handler = _serviceLocator.GetService(executorType);
+                    var method = handler.GetType()
+                        .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                        .Where(mi => mi.Name == "Handle")
+                        .Single(mi => mi.GetParameters().Length == 1 &&
+                                      mi.GetParameters()[0].ParameterType == x.GetType());
+                    return (Task)method.Invoke(handler, new[] { x });
                 };
             }
 
-            registerExecutorMethod.Invoke(registrar, new object[] {del});
+            registerExecutorMethod.Invoke(registrar, new object[] { del });
         }
 
         private static bool IsCancellable(Type @interface)
