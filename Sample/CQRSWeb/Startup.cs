@@ -3,18 +3,17 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using CQRSlite.Bus;
 using CQRSlite.Commands;
 using CQRSlite.Events;
 using CQRSlite.Domain;
 using CQRSCode.WriteModel;
-using CQRSlite.Cache;
+using CQRSlite.Caching;
 using CQRSCode.ReadModel;
-using CQRSlite.Config;
 using CQRSCode.WriteModel.Handlers;
 using System.Reflection;
 using System.Linq;
 using CQRSlite.Messages;
+using CQRSlite.Routing;
 
 namespace CQRSWeb
 {
@@ -26,10 +25,10 @@ namespace CQRSWeb
             services.AddMemoryCache();
 
             //Add Cqrs services
-            services.AddSingleton<InProcessBus>(new InProcessBus());
-            services.AddSingleton<ICommandSender>(y => y.GetService<InProcessBus>());
-            services.AddSingleton<IEventPublisher>(y => y.GetService<InProcessBus>());
-            services.AddSingleton<IHandlerRegistrar>(y => y.GetService<InProcessBus>());
+            services.AddSingleton<Router>(new Router());
+            services.AddSingleton<ICommandSender>(y => y.GetService<Router>());
+            services.AddSingleton<IEventPublisher>(y => y.GetService<Router>());
+            services.AddSingleton<IHandlerRegistrar>(y => y.GetService<Router>());
             services.AddScoped<ISession, Session>();
             services.AddSingleton<IEventStore, InMemoryEventStore>();
             services.AddScoped<ICache, MemoryCache>();
@@ -53,9 +52,9 @@ namespace CQRSWeb
             // Add framework services.
             services.AddMvc();
 
-            //Register bus
+            //Register router
             var serviceProvider = services.BuildServiceProvider();
-            var registrar = new BusRegistrar(new DependencyResolver(serviceProvider));
+            var registrar = new RouteRegistrar(new DependencyResolver(serviceProvider));
             registrar.Register(typeof(InventoryCommandHandlers));
 
             return serviceProvider;

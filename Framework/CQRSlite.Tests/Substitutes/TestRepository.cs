@@ -7,10 +7,11 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestRepository : IRepository
     {
+        public bool Throw { set; private get; }
         public Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
             Saved = aggregate;
-            if (expectedVersion == 100)
+            if (Throw)
             {
                 throw new Exception();
             }
@@ -21,6 +22,10 @@ namespace CQRSlite.Tests.Substitutes
 
         public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
+            if (Throw)
+            {
+                throw new Exception();
+            }
             var obj = (T) Activator.CreateInstance(typeof (T), true);
             obj.LoadFromHistory(new[] {new TestAggregateDidSomething {Id = aggregateId, Version = 1}});
             return Task.FromResult(obj);

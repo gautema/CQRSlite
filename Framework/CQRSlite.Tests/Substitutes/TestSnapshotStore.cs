@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CQRSlite.Snapshots;
+using CQRSlite.Snapshotting;
 
 namespace CQRSlite.Tests.Substitutes
 {

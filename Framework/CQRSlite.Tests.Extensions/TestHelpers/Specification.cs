@@ -7,7 +7,7 @@ using CQRSlite.Commands;
 using CQRSlite.Domain;
 using CQRSlite.Domain.Exception;
 using CQRSlite.Events;
-using CQRSlite.Snapshots;
+using CQRSlite.Snapshotting;
 
 namespace CQRSlite.Tests.Extensions.TestHelpers
 {

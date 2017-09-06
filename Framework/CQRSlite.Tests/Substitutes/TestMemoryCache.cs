@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using CQRSlite.Cache;
+using CQRSlite.Caching;
 using CQRSlite.Domain;
 
 namespace CQRSlite.Tests.Substitutes
