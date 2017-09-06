@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Config
 {
@@ -47,32 +48,32 @@ namespace CQRSlite.Config
 
             var registerExecutorMethod = registrar
                 .GetType()
-                .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(mi => mi.Name == "RegisterHandler")
                 .Where(mi => mi.IsGenericMethod)
                 .Where(mi => mi.GetGenericArguments().Length == 1)
                 .Single(mi => mi.GetParameters().Length == 1)
                 .MakeGenericMethod(commandType);
 
-            Func<dynamic, CancellationToken, Task> del;
+            Func<object, CancellationToken, Task> del;
             if (IsCancellable(@interface))
             {
                 del = (x, token) =>
                 {
-                    dynamic handler = _serviceLocator.GetService(executorType);
-                    return handler.Handle(x, token);
+                    var handler = _serviceLocator.GetService(executorType);
+                    return handler.AsDynamic().Handle(x, token);
                 };
             }
             else
             {
                 del = (x, token) =>
                 {
-                    dynamic handler = _serviceLocator.GetService(executorType);
-                    return handler.Handle(x);
+                    var handler = _serviceLocator.GetService(executorType);
+                    return handler.AsDynamic().Handle(x);
                 };
             }
 
-            registerExecutorMethod.Invoke(registrar, new object[] {del});
+            registerExecutorMethod.Invoke(registrar, new object[] { del });
         }
 
         private static bool IsCancellable(Type @interface)

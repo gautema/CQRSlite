@@ -21,7 +21,8 @@ namespace CQRSlite.Tests.Bus
         [Fact]
         public void Should_register_all_handlers()
         {
-            Assert.Equal(4, TestHandleRegistrar.HandlerList.Count);
+            // 4 public declared handlers, one internal declared
+            Assert.Equal(5, TestHandleRegistrar.HandlerList.Count);
         }
 
         [Fact]

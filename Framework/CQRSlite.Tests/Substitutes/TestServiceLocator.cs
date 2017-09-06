@@ -23,18 +23,25 @@ namespace CQRSlite.Tests.Substitutes
                 Handlers.Add(handler);
                 return handler;
             }
+            if (type == typeof(TestAggregateDidSomethingInternalHandler))
+            {
+                var handler = new TestAggregateDidSomethingInternalHandler();
+                Handlers.Add(handler);
+                return handler;
+            }
             if (type == typeof(TestAggregateDoSomethingElseHandler))
             {
                 var handler = new TestAggregateDoSomethingElseHandler();
                 Handlers.Add(handler);
                 return handler;
             }
-            else
+            if (type == typeof(TestAggregateDoSomethingHandler))
             {
                 var handler = new TestAggregateDoSomethingHandler();
                 Handlers.Add(handler);
                 return handler;
             }
+            throw new ArgumentException("Type not registered");
         }
     }
 }
