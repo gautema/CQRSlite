@@ -59,7 +59,8 @@ namespace CQRSlite.Routing
             {
                 del = (x, token) =>
                 {
-                    var handler = _serviceLocator.GetService(executorType);
+                    var handler = _serviceLocator.GetService(executorType) ?? 
+                        throw new ArgumentNullException(nameof(executorType));
                     return (Task) handler.Invoke("Handle",x, token);
                 };
             }
@@ -67,7 +68,8 @@ namespace CQRSlite.Routing
             {
                 del = (x, token) =>
                 {
-                    var handler = _serviceLocator.GetService(executorType);
+                    var handler = _serviceLocator.GetService(executorType) ?? 
+                        throw new ArgumentNullException(nameof(executorType));
                     return (Task) handler.Invoke("Handle", x);
                 };
             }
