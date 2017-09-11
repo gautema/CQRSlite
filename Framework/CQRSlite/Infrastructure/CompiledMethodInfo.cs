@@ -6,8 +6,7 @@ namespace CQRSlite.Infrastructure
 {
     internal class CompiledMethodInfo
     {
-        private delegate object ReturnValueDelegate(object instance, object[] arguments);
-        private delegate void VoidDelegate(object instance, object[] arguments);
+        private readonly Func<object, object[], object> _func;
 
         public CompiledMethodInfo(MethodInfo methodInfo, Type type)
         {
@@ -24,20 +23,22 @@ namespace CQRSlite.Infrastructure
             var callExpression = Expression.Call(!methodInfo.IsStatic ? Expression.Convert(instanceExpression,type) : null, methodInfo, argumentExpressions);
             if (callExpression.Type == typeof(void))
             {
-                var voidDelegate = Expression.Lambda<VoidDelegate>(callExpression, instanceExpression, argumentsExpression).Compile();
-                Delegate = (instance, arguments) => { voidDelegate(instance, arguments); return null; };
+                var action = Expression.Lambda<Action<object, object[]>>(callExpression, instanceExpression, argumentsExpression).Compile();
+                _func = (instance, arguments) =>
+                {
+                    action(instance, arguments);
+                    return null;
+                };
             }
             else
             {
-                Delegate = Expression.Lambda<ReturnValueDelegate>(Expression.Convert(callExpression, typeof(object)), instanceExpression, argumentsExpression).Compile();
+                _func = Expression.Lambda<Func<object, object[], object>>(Expression.Convert(callExpression, typeof(object)), instanceExpression, argumentsExpression).Compile();
             }
         }
 
-        private ReturnValueDelegate Delegate { get; }
-
         public object Invoke(object instance, params object[] arguments)
         {
-            return Delegate(instance, arguments);
+            return _func(instance, arguments);
         }
     }
 }
