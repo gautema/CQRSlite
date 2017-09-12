@@ -54,7 +54,7 @@ namespace CQRSWeb
 
             //Register router
             var serviceProvider = services.BuildServiceProvider();
-            var registrar = new RouteRegistrar(new DependencyResolver(serviceProvider));
+            var registrar = new RouteRegistrar(serviceProvider);
             registrar.Register(typeof(InventoryCommandHandlers));
 
             return serviceProvider;

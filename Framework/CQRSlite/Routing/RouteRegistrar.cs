@@ -12,16 +12,16 @@ namespace CQRSlite.Routing
 {
     public class RouteRegistrar
     {
-        private readonly IServiceLocator _serviceLocator;
+        private readonly IServiceProvider _serviceLocator;
 
-        public RouteRegistrar(IServiceLocator serviceLocator)
+        public RouteRegistrar(IServiceProvider serviceLocator)
         {
             _serviceLocator = serviceLocator ?? throw new ArgumentNullException(nameof(serviceLocator));
         }
 
         public void Register(params Type[] typesFromAssemblyContainingMessages)
         {
-            var registrar = _serviceLocator.GetService<IHandlerRegistrar>();
+            var registrar = (IHandlerRegistrar)_serviceLocator.GetService(typeof(IHandlerRegistrar));
 
             foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
             {
