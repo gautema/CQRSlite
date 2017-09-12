@@ -55,27 +55,27 @@ namespace CQRSlite.Routing
                 .Single(mi => mi.GetParameters().Length == 1)
                 .MakeGenericMethod(commandType);
 
-            Func<object, CancellationToken, Task> del;
+            Func<object, CancellationToken, Task> func;
             if (IsCancellable(@interface))
             {
-                del = (x, token) =>
+                func = (@event, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke("Handle",x, token);
+                    return (Task) handler.Invoke("Handle", @event, token);
                 };
             }
             else
             {
-                del = (x, token) =>
+                func = (@event, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke("Handle", x);
+                    return (Task) handler.Invoke("Handle", @event);
                 };
             }
 
-            registerExecutorMethod.Invoke(registrar, new object[] { del });
+            registerExecutorMethod.Invoke(registrar, new object[] { func });
         }
 
         private static bool IsCancellable(Type @interface)
