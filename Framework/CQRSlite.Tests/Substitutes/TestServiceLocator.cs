@@ -7,9 +7,12 @@ namespace CQRSlite.Tests.Substitutes
     public class TestServiceLocator : IServiceProvider
     {
         public readonly List<dynamic> Handlers = new List<dynamic>();
+        public bool ReturnNull { get; set; }
 
         public object GetService(Type type)
         {
+            if (ReturnNull)
+                return null;
             if(type == typeof(IHandlerRegistrar))
                 return new TestHandleRegistrar();
             if (type == typeof(TestAggregateDidSomethingHandler))

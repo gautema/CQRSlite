@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using CQRSlite.Routing;
+using CQRSlite.Routing.Exception;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
 
@@ -14,8 +16,7 @@ namespace CQRSlite.Tests.Routing
         {
             _locator = new TestServiceLocator();
             var register = new RouteRegistrar(_locator);
-            if (TestHandleRegistrar.HandlerList.Count == 0)
-                register.Register(GetType());
+            register.Register(GetType());
         }
 
         [Fact]
@@ -26,16 +27,30 @@ namespace CQRSlite.Tests.Routing
         }
 
         [Fact]
-        public void Should_be_able_to_run_all_handlers()
+        public async Task Should_be_able_to_run_all_handlers()
         {
             foreach (var item in TestHandleRegistrar.HandlerList)
             {
                 var @event = Activator.CreateInstance(item.Type);
-                item.Handler(@event, new CancellationToken());
+                await item.Handler(@event, new CancellationToken());
             }
             foreach (var handler in _locator.Handlers)
             {
                 Assert.Equal(1, handler.TimesRun);
+            }
+        }
+
+        [Fact]
+        public async Task Unresolved_handlers_should_throw()
+        {
+            _locator.ReturnNull = true;
+            foreach (var item in TestHandleRegistrar.HandlerList)
+            {
+                var @event = Activator.CreateInstance(item.Type);
+                await Assert.ThrowsAsync<HandlerNotResolvedException>(async () =>
+                {
+                    await item.Handler(@event, new CancellationToken());
+                });
             }
         }
     }

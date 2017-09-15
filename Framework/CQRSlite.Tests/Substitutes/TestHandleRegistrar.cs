@@ -9,10 +9,11 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestHandleRegistrar : IHandlerRegistrar
     {
-        public static readonly IList<TestHandlerListItem> HandlerList = new List<TestHandlerListItem>();
+        public static readonly List<TestHandlerListItem> HandlerList = new List<TestHandlerListItem>();
 
         public void RegisterHandler<T>(Func<T, CancellationToken, Task> handler) where T : class, IMessage
         {
+            HandlerList.RemoveAll(x => x.Type == typeof(T));
             HandlerList.Add(new TestHandlerListItem {Type = typeof(T), Handler = handler});
         }
     }

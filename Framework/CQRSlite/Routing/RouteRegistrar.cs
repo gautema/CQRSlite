@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CQRSlite.Commands;
 using CQRSlite.Events;
 using CQRSlite.Infrastructure;
+using CQRSlite.Routing.Exception;
 
 namespace CQRSlite.Routing
 {
@@ -60,7 +61,7 @@ namespace CQRSlite.Routing
                 del = (x, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
-                        throw new ArgumentNullException(nameof(executorType));
+                        throw new HandlerNotResolvedException(nameof(executorType));
                     return (Task) handler.Invoke("Handle",x, token);
                 };
             }
@@ -69,7 +70,7 @@ namespace CQRSlite.Routing
                 del = (x, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
-                        throw new ArgumentNullException(nameof(executorType));
+                        throw new HandlerNotResolvedException(nameof(executorType));
                     return (Task) handler.Invoke("Handle", x);
                 };
             }
