@@ -63,5 +63,11 @@ namespace CQRSlite.Domain
             await Task.WhenAll(_trackedAggregates.Values.Select(x => _repository.Save(x.Aggregate, x.Version, cancellationToken)));
             _trackedAggregates.Clear();
         }
+
+        private class AggregateDescriptor
+        {
+            public AggregateRoot Aggregate { get; set; }
+            public int Version { get; set; }
+        }
     }
 }
