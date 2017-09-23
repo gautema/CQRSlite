@@ -23,4 +23,8 @@
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Domain\ITest.cs" />
+    <Compile Remove="Domain\Test.cs" />
+  </ItemGroup>
 </Project>
