@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Add";
+}
+<h2>Add</h2>
+@using (Html.BeginForm()) {
+    <p>
+        Name: @Html.TextBox("Name")<br />
+        <button name="submit">Submit</button>
+        <a href="/">Back</a>
+    </p>
+
+}

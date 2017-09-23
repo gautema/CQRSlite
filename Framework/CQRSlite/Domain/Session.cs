@@ -12,10 +12,12 @@ namespace CQRSlite.Domain
         private readonly IRepository _repository;
         private readonly Dictionary<Guid, AggregateDescriptor> _trackedAggregates;
 
+        public string Name { get; set; }
+
         public Session(IRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _trackedAggregates = new Dictionary<Guid, AggregateDescriptor>();
+            _trackedAggregates = new Dictionary<Guid, AggregateDescriptor>();            
         }
 
         public Task Add<T>(T aggregate, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot

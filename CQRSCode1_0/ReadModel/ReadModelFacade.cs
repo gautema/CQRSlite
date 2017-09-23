@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using CQRSCode.ReadModel.Dtos;
-using CQRSCode.ReadModel.Infrastructure;
+using CQRSCode1_0.ReadModel.Dtos;
+using CQRSCode1_0.ReadModel.Infrastructure;
 using CQRSlite.Domain;
 
-namespace CQRSCode.ReadModel
+namespace CQRSCode1_0.ReadModel
 {
     public class ReadModelFacade : IReadModelFacade
     {
