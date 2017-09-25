@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CQRSlite.Caching;
 using CQRSlite.Domain;
 
@@ -11,14 +12,14 @@ namespace CQRSlite.Tests.Substitutes
 
         private Action<Guid> _evictionCallback;
 
-        public AggregateRoot Get(Guid id)
+        public Task<AggregateRoot> Get(Guid id)
         {
-            return _cache[id];
+            return Task.FromResult(_cache[id]);
         }
 
-        public bool IsTracked(Guid id)
+        public Task<bool> IsTracked(Guid id)
         {
-            return _cache.ContainsKey(id);
+            return Task.FromResult(_cache.ContainsKey(id));
         }
 
         public void RegisterEvictionCallback(Action<Guid> action)
@@ -26,15 +27,17 @@ namespace CQRSlite.Tests.Substitutes
             _evictionCallback = action;
         }
 
-        public void Remove(Guid id)
+        public Task Remove(Guid id)
         {
             _cache.Remove(id);
             _evictionCallback(id);
+            return Task.CompletedTask;
         }
 
-        public void Set(Guid id, AggregateRoot aggregate)
+        public Task Set(Guid id, AggregateRoot aggregate)
         {
             _cache[id] = aggregate;
+            return Task.CompletedTask;
         }
     }
 }

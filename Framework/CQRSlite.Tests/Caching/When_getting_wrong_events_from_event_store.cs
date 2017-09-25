@@ -23,7 +23,7 @@ namespace CQRSlite.Tests.Caching
         public async Task Should_evict_old_object_from_cache()
         {
             await _rep.Get<TestAggregate>(_aggregate.Id);
-            var aggregate = _cache.Get(_aggregate.Id);
+            var aggregate = await _cache.Get(_aggregate.Id);
             Assert.NotEqual(_aggregate, aggregate);
         }
 

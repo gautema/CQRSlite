@@ -42,7 +42,7 @@ namespace CQRSlite.Tests.Caching
         [Fact]
         public async Task Should_get_new_aggregate_next_get()
         {
-            _cache.Remove(_aggregate.Id);
+            await _cache.Remove(_aggregate.Id);
 
             var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
             Assert.NotEqual(_aggregate, aggregate);

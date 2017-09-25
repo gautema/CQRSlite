@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Domain;
 #if NET452
 using System.Runtime.Caching;
@@ -36,40 +37,42 @@ namespace CQRSlite.Caching
 
         }
 
-        public bool IsTracked(Guid id)
+        public Task<bool> IsTracked(Guid id)
         {
 #if NET452
-            return _cache.Contains(id.ToString());
+            return Task.FromResult(_cache.Contains(id.ToString()));
 #else
-            return _cache.TryGetValue(id, out var o) && o != null;
+            return Task.FromResult(_cache.TryGetValue(id, out var o) && o != null);
 #endif
         }
 
-        public void Set(Guid id, AggregateRoot aggregate)
+        public Task Set(Guid id, AggregateRoot aggregate)
         {
 #if NET452
             _cache.Add(id.ToString(), aggregate, _policyFactory.Invoke());
 #else
             _cache.Set(id, aggregate, _cacheOptions);
 #endif
+            return Task.FromResult(0);
         }
 
-        public AggregateRoot Get(Guid id)
+        public Task<AggregateRoot> Get(Guid id)
         {
 #if NET452
-            return (AggregateRoot)_cache.Get(id.ToString());
+            return Task.FromResult((AggregateRoot)_cache.Get(id.ToString()));
 #else
-            return (AggregateRoot) _cache.Get(id);
+            return Task.FromResult((AggregateRoot) _cache.Get(id));
 #endif
         }
 
-        public void Remove(Guid id)
+        public Task Remove(Guid id)
         {
 #if NET452
             _cache.Remove(id.ToString());
 #else
             _cache.Remove(id);
 #endif
+            return Task.FromResult(0);
         }
 
         public void RegisterEvictionCallback(Action<Guid> action)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CQRSlite.Caching;
 using CQRSlite.Tests.Substitutes;
 using Xunit;
@@ -28,9 +29,9 @@ namespace CQRSlite.Tests.Caching
         }
 
         [Fact]
-        public void Should_evict_old_object_from_cache()
+        public async Task Should_evict_old_object_from_cache()
         {
-            var aggregate = _cache.Get(_aggregate.Id);
+            var aggregate = await _cache.Get(_aggregate.Id);
             Assert.Null(aggregate);
         }
     }
