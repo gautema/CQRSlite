@@ -62,11 +62,21 @@ namespace CQRSlite.Tests.Substitutes
         {
             TimesRun++;
             Token = token;
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         public CancellationToken Token { get; private set; }
         public int TimesRun { get; private set; }
     }
 
+    public class AllHandler : IEventHandler<IEvent>
+    {
+        public Task Handle(IEvent message)
+        {
+            TimesRun++;
+            return Task.CompletedTask;
+        }
+
+        public int TimesRun { get; private set; }
+    }
 }

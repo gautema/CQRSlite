@@ -62,7 +62,7 @@ namespace CQRSlite.Routing
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke("Handle", @event, token);
+                    return (Task) handler.Invoke("Handle", false, @event, token);
                 };
             }
             else
@@ -71,7 +71,7 @@ namespace CQRSlite.Routing
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke("Handle", @event);
+                    return (Task) handler.Invoke("Handle", false, @event);
                 };
             }
 

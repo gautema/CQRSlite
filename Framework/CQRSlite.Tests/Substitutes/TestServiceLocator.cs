@@ -13,8 +13,10 @@ namespace CQRSlite.Tests.Substitutes
         {
             if (ReturnNull)
                 return null;
+
             if(type == typeof(IHandlerRegistrar))
                 return new TestHandleRegistrar();
+
             if (type == typeof(TestAggregateDidSomethingHandler))
             {
                 var handler = new TestAggregateDidSomethingHandler();
@@ -39,7 +41,13 @@ namespace CQRSlite.Tests.Substitutes
                 Handlers.Add(handler);
                 return handler;
             }
-            throw new ArgumentException("Type not registered");
+            if (type == typeof(AllHandler))
+            {
+                var handler = new AllHandler();
+                Handlers.Add(handler);
+                return handler;
+            }
+            throw new ArgumentException($"Type {type.Name} not registered");
         }
     }
 }

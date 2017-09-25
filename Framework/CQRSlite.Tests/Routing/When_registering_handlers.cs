@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Routing;
@@ -22,8 +25,8 @@ namespace CQRSlite.Tests.Routing
         [Fact]
         public void Should_register_all_handlers()
         {
-            // 4 public declared handlers, one internal declared
-            Assert.Equal(5, TestHandleRegistrar.HandlerList.Count);
+            // 5 public declared handlers, one internal declared
+            Assert.Equal(6, TestHandleRegistrar.HandlerList.Count);
         }
 
         [Fact]
@@ -31,13 +34,18 @@ namespace CQRSlite.Tests.Routing
         {
             foreach (var item in TestHandleRegistrar.HandlerList)
             {
-                var @event = Activator.CreateInstance(item.Type);
-                await item.Handler(@event, new CancellationToken());
+                var eventtypes = GetEventTypesMatching(item.Type);
+                foreach (var type in eventtypes)
+                {
+                    var @event = Activator.CreateInstance(type);
+                    await item.Handler(@event, new CancellationToken());
+                }
             }
             foreach (var handler in _locator.Handlers)
             {
                 Assert.Equal(1, handler.TimesRun);
             }
+            Assert.Equal(9, _locator.Handlers.Count);
         }
 
         [Fact]
@@ -46,12 +54,21 @@ namespace CQRSlite.Tests.Routing
             _locator.ReturnNull = true;
             foreach (var item in TestHandleRegistrar.HandlerList)
             {
-                var @event = Activator.CreateInstance(item.Type);
-                await Assert.ThrowsAsync<HandlerNotResolvedException>(async () =>
+                var eventtypes = GetEventTypesMatching(item.Type);
+                foreach (var type in eventtypes)
                 {
-                    await item.Handler(@event, new CancellationToken());
-                });
+                    var @event = Activator.CreateInstance(type);
+                    await Assert.ThrowsAsync<HandlerNotResolvedException>(async () =>
+                    {
+                        await item.Handler(@event, new CancellationToken());
+                    });
+                }
             }
+        }
+
+        private IEnumerable<Type> GetEventTypesMatching(Type type)
+        {
+            return GetType().GetTypeInfo().Assembly.GetTypes().Where(x => type.GetTypeInfo().IsAssignableFrom(x));
         }
     }
 }

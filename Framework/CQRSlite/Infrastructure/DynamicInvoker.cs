@@ -11,26 +11,27 @@ namespace CQRSlite.Infrastructure
         private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
         private static readonly ConcurrentDictionary<int, CompiledMethodInfo> cachedMembers = new ConcurrentDictionary<int, CompiledMethodInfo>();
 
-        internal static object Invoke<T>(this T obj, string methodname, params object[] args)
+        internal static object Invoke<T>(this T obj, string methodname, bool exactMatch, params object[] args)
         {
-            GetTypeAndHash(obj, methodname, args, out var type, out var hash);
+            GetTypeAndHash(obj, methodname, args, exactMatch, out var type, out var hash);
             var method = cachedMembers.GetOrAdd(hash, x =>
             {
                 var argtypes = GetArgTypes(args);
-                var m = GetMember(type, methodname, argtypes);
+                var m = GetMember(type, methodname, argtypes, exactMatch);
                 return m == null ? null : new CompiledMethodInfo(m, type);
             });
             return method?.Invoke(obj, args);
         }
 
-        private static void GetTypeAndHash<T>(T obj, string methodname, object[] args, 
+        private static void GetTypeAndHash<T>(T obj, string methodname, IReadOnlyList<object> args, bool exactMatch,
             out Type type, out int hash)
         {
             type = obj.GetType();
             hash = 23;
             hash = hash * 31 + type.GetHashCode();
             hash = hash * 31 + methodname.GetHashCode();
-            for (var index = 0; index < args.Length; index++)
+            hash = hash * 31 + exactMatch.GetHashCode();
+            for (var index = 0; index < args.Count; index++)
             {
                 var t = args[index];
                 var argtype = t.GetType();
@@ -49,14 +50,17 @@ namespace CQRSlite.Infrastructure
             return argtypes;
         }
 
-        private static MethodInfo GetMember(Type type, string name, Type[] argtypes)
+        private static MethodInfo GetMember(Type type, string name, Type[] argtypes, bool exactMatch)
         {
             while (true)
             {
-                var member = type.GetMethods(bindingFlags)
-                    .FirstOrDefault(m => m.Name == name && m.GetParameters().Select(p => p.ParameterType)
-                                             .SequenceEqual(argtypes));
-
+                var methods = type.GetMethods(bindingFlags);
+                var member = methods.FirstOrDefault(m =>
+                                 m.Name == name && m.GetParameters().Select(p => p.ParameterType)
+                                     .SequenceEqual(argtypes)) ??
+                             methods.FirstOrDefault(m =>
+                                 m.Name == name && m.GetParameters().Select(p => p.ParameterType).ToArray()
+                                     .Matches(argtypes, exactMatch));
                 if (member != null)
                 {
                     return member;
@@ -68,6 +72,18 @@ namespace CQRSlite.Infrastructure
                 }
                 type = t;
             }
+        }
+
+        private static bool Matches(this Type[] arr, Type[] args, bool exactMatch)
+        {
+            if (arr.Length != args.Length) return false;
+            if (exactMatch) return false;
+            for (var i = 0; i < args.Length; i++)
+            {
+                if (!arr[i].IsAssignableFrom(args[i]))
+                    return false;
+            }
+            return true;
         }
     }
 }

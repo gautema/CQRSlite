@@ -83,7 +83,7 @@ namespace CQRSlite.Domain
 
         protected virtual void Apply(IEvent @event)
         {
-            this.Invoke("Apply", @event);
+            this.Invoke("Apply", true, @event);
         }
     }
 }
