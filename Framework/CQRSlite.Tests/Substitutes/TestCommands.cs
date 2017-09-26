@@ -37,14 +37,19 @@ namespace CQRSlite.Tests.Substitutes
         public CancellationToken Token { get; set; }
 
     }
-	public class TestAggregateDoSomethingElseHandler : ICommandHandler<TestAggregateDoSomethingElse>
+	public class TestAggregateDoSomethingElseHandler : AbstractTestAggregateDoSomethingElseHandler
     {
-        public Task Handle(TestAggregateDoSomethingElse message)
+        public override Task Handle(TestAggregateDoSomethingElse message)
         {
             TimesRun++;
             return Task.CompletedTask;
         }
 
         public int TimesRun { get; set; }
+    }
+
+    public abstract class AbstractTestAggregateDoSomethingElseHandler : ICommandHandler<TestAggregateDoSomethingElse>
+    {
+        public abstract Task Handle(TestAggregateDoSomethingElse message);
     }
 }

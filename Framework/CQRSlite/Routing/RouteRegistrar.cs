@@ -30,7 +30,7 @@ namespace CQRSlite.Routing
                 var executorTypes = executorsAssembly
                     .GetTypes()
                     .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
-                    .Where(e => e.Interfaces != null && e.Interfaces.Any());
+                    .Where(e => e.Interfaces != null && e.Interfaces.Any() && !e.Type.GetTypeInfo().IsAbstract);
 
                 foreach (var executorType in executorTypes)
                 {
