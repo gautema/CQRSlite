@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -13,7 +12,8 @@ namespace CQRSlite.Infrastructure
 
         internal static object Invoke<T>(this T obj, string methodname, bool exactMatch, params object[] args)
         {
-            GetTypeAndHash(obj, methodname, args, exactMatch, out var type, out var hash);
+            var type = obj.GetType();
+            var hash = Hash(type,  methodname, args);
             var method = cachedMembers.GetOrAdd(hash, x =>
             {
                 var argtypes = GetArgTypes(args);
@@ -23,26 +23,23 @@ namespace CQRSlite.Infrastructure
             return method?.Invoke(obj, args);
         }
 
-        private static void GetTypeAndHash<T>(T obj, string methodname, IReadOnlyList<object> args, bool exactMatch,
-            out Type type, out int hash)
+        private static int Hash(Type type, string methodname, object[] args)
         {
-            type = obj.GetType();
-            hash = 23;
+            var hash = 23;
             hash = hash * 31 + type.GetHashCode();
             hash = hash * 31 + methodname.GetHashCode();
-            hash = hash * 31 + exactMatch.GetHashCode();
-            for (var index = 0; index < args.Count; index++)
+            for (var index = 0; index < args.Length; index++)
             {
-                var t = args[index];
-                var argtype = t.GetType();
+                var argtype = args[index].GetType();
                 hash = hash * 31 + argtype.GetHashCode();
             }
+            return hash;
         }
 
-        private static Type[] GetArgTypes(IReadOnlyList<object> args)
+        private static Type[] GetArgTypes(object[] args)
         {
-            var argtypes = new Type[args.Count];
-            for (var i = 0; i < args.Count; i++)
+            var argtypes = new Type[args.Length];
+            for (var i = 0; i < args.Length; i++)
             {
                 var argtype = args[i].GetType();
                 argtypes[i] = argtype;
@@ -54,13 +51,13 @@ namespace CQRSlite.Infrastructure
         {
             while (true)
             {
-                var methods = type.GetMethods(bindingFlags);
-                var member = methods.FirstOrDefault(m =>
-                                 m.Name == name && m.GetParameters().Select(p => p.ParameterType)
-                                     .SequenceEqual(argtypes)) ??
-                             methods.FirstOrDefault(m =>
-                                 m.Name == name && m.GetParameters().Select(p => p.ParameterType).ToArray()
-                                     .Matches(argtypes, exactMatch));
+                var member = type.GetMethods(bindingFlags)
+                    .FirstOrDefault(m => m.Name == name && m.GetParameters().Select(p => p.ParameterType)
+                                             .SequenceEqual(argtypes));
+                if (member == null && !exactMatch)
+                    member = type.GetMethods(bindingFlags)
+                        .FirstOrDefault(m => m.Name == name && m.GetParameters().Select(p => p.ParameterType).ToArray()
+                                                 .Matches(argtypes));
                 if (member != null)
                 {
                     return member;
@@ -74,10 +71,9 @@ namespace CQRSlite.Infrastructure
             }
         }
 
-        private static bool Matches(this Type[] arr, Type[] args, bool exactMatch)
+        private static bool Matches(this Type[] arr, Type[] args)
         {
             if (arr.Length != args.Length) return false;
-            if (exactMatch) return false;
             for (var i = 0; i < args.Length; i++)
             {
                 if (!arr[i].IsAssignableFrom(args[i]))
