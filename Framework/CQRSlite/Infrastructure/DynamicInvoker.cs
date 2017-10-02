@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -8,19 +8,30 @@ namespace CQRSlite.Infrastructure
     internal static class DynamicInvoker
     {
         private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-        private static readonly ConcurrentDictionary<int, CompiledMethodInfo> cachedMembers = new ConcurrentDictionary<int, CompiledMethodInfo>();
+        private static volatile Dictionary<int, CompiledMethodInfo> _cachedMembers = new Dictionary<int, CompiledMethodInfo>();
+        private static readonly object _lockObj = new object();
 
         internal static object Invoke<T>(this T obj, string methodname, bool exactMatch, params object[] args)
         {
             var type = obj.GetType();
             var hash = Hash(type,  methodname, args);
-            var method = cachedMembers.GetOrAdd(hash, x =>
+            var exists = _cachedMembers.TryGetValue(hash, out var method);
+            if (exists) return method?.Invoke(obj, args);
+            lock (_lockObj)
             {
+                //Recheck if exist inside lock in case another thread has added it.
+                exists = _cachedMembers.TryGetValue(hash, out method);
+                var dict = new Dictionary<int, CompiledMethodInfo>(_cachedMembers);
+                if (exists) return method?.Invoke(obj, args);
+
                 var argtypes = GetArgTypes(args);
                 var m = GetMember(type, methodname, argtypes, exactMatch);
-                return m == null ? null : new CompiledMethodInfo(m, type);
-            });
-            return method?.Invoke(obj, args);
+                method = m == null ? null : new CompiledMethodInfo(m, type);
+
+                dict.Add(hash, method);
+                _cachedMembers = dict;
+                return method?.Invoke(obj, args);
+            }
         }
 
         private static int Hash(Type type, string methodname, object[] args)
