@@ -9,6 +9,9 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace CQRSlite.Caching
 {
+    /// <summary>
+    /// A cache implementation that has cache in memory and 15 minutes sliding expiration.
+    /// </summary>
     public class MemoryCache : ICache
     {
 #if NET452

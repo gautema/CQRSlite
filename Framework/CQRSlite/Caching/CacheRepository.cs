@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace CQRSlite.Caching
 {
+    /// <summary>
+    /// Thread safe repository decorator that can cache aggregates.
+    /// </summary>
     public class CacheRepository : IRepository
     {
         private readonly IRepository _repository;
@@ -19,6 +22,12 @@ namespace CQRSlite.Caching
 
         private static SemaphoreSlim CreateLock(Guid _) => new SemaphoreSlim(1, 1);
 
+        /// <summary>
+        /// Initialize a new instance of CacheRepository
+        /// </summary>
+        /// <param name="repository">Reposiory that gets aggregate from event store</param>
+        /// <param name="eventStore">Eventstore where concurrency checking can be fetched from</param>
+        /// <param name="cache">Implementation of the cache</param>
         public CacheRepository(IRepository repository, IEventStore eventStore, ICache cache)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));

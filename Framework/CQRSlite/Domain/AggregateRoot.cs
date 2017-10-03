@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace CQRSlite.Domain
 {
+    /// <summary>
+    /// Class to inherit all aggregates from
+    /// </summary>
     public abstract class AggregateRoot
     {
         private readonly List<IEvent> _changes = new List<IEvent>();
@@ -21,6 +24,10 @@ namespace CQRSlite.Domain
             }
         }
 
+        /// <summary>
+        /// Returns all uncommited changes and clears aggregate of them.
+        /// </summary>
+        /// <returns>Array of new uncommited events</returns>
         public IEvent[] FlushUncommitedChanges()
         {
             lock (_changes)
@@ -47,6 +54,10 @@ namespace CQRSlite.Domain
             }
         }
 
+        /// <summary>
+        /// Load an aggregate from an enumerable of events.
+        /// </summary>
+        /// <param name="history"></param>
         public void LoadFromHistory(IEnumerable<IEvent> history)
         {
             foreach (var e in history)
@@ -81,6 +92,10 @@ namespace CQRSlite.Domain
             }
         }
 
+        /// <summary>
+        /// Overrideable method for invoking events on aggregate
+        /// </summary>
+        /// <param name="event">Event to invoke</param>
         protected virtual void Apply(IEvent @event)
         {
             this.Invoke("Apply", true, @event);

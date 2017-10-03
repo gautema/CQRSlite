@@ -2,6 +2,10 @@
 
 namespace CQRSlite.Snapshotting
 {
+    /// <summary>
+    /// Class to inherit aggregates that should be snapshotted from.
+    /// </summary>
+    /// <typeparam name="T">Type of memento object capturing aggregate state</typeparam>
     public abstract class SnapshotAggregateRoot<T> : AggregateRoot where T : Snapshot
     {
         public T GetSnapshot()

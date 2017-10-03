@@ -11,15 +11,26 @@ using CQRSlite.Routing.Exception;
 
 namespace CQRSlite.Routing
 {
+    /// <summary>
+    /// Automatic registration of all handlers in assembly
+    /// </summary>
     public class RouteRegistrar
     {
         private readonly IServiceProvider _serviceLocator;
 
+        /// <summary>
+        /// Initialize a new instance of <cref>RouteRegister</cref> class.
+        /// </summary>
+        /// <param name="serviceLocator">Service locator that can resolve all handlers</param>
         public RouteRegistrar(IServiceProvider serviceLocator)
         {
             _serviceLocator = serviceLocator ?? throw new ArgumentNullException(nameof(serviceLocator));
         }
 
+        /// <summary>
+        /// Register all command and event handlers in assembly
+        /// </summary>
+        /// <param name="typesFromAssemblyContainingMessages">List of assemblies to scan for handlers.</param>
         public void Register(params Type[] typesFromAssemblyContainingMessages)
         {
             var registrar = (IHandlerRegistrar)_serviceLocator.GetService(typeof(IHandlerRegistrar));

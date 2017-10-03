@@ -9,6 +9,9 @@ using CQRSlite.Messages;
 
 namespace CQRSlite.Routing
 {
+    /// <summary>
+    /// Default router implementation for sending commands and publishing events.
+    /// </summary>
     public class Router : ICommandSender, IEventPublisher, IHandlerRegistrar
     {
         private readonly Dictionary<Type, List<Func<IMessage, CancellationToken, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, CancellationToken, Task>>>();

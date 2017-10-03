@@ -4,6 +4,10 @@ using CQRSlite.Domain;
 
 namespace CQRSlite.Snapshotting
 {
+    /// <summary>
+    /// Default implementaion of snapshot strategy interface/
+    /// Snapshots aggregates of type SnapshotAggregateRoot every 100th event.
+    /// </summary>
     public class DefaultSnapshotStrategy : ISnapshotStrategy
     {
         private const int snapshotInterval = 100;
