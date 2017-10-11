@@ -79,7 +79,7 @@ namespace CQRSlite.Domain
         {
             lock (_changes)
             {
-                Apply(@event);
+                ApplyEvent(@event);
                 if (isNew)
                 {
                     _changes.Add(@event);
@@ -93,12 +93,14 @@ namespace CQRSlite.Domain
         }
 
         /// <summary>
-        /// Overrideable method for invoking events on aggregate
+        /// Overrideable method for applying events on aggregate
+        /// This is called interally when rehydrating aggregates.
+        /// Can be overridden if you want custom handling.
         /// </summary>
-        /// <param name="event">Event to invoke</param>
-        protected virtual void Apply(IEvent @event)
+        /// <param name="event">Event to apply</param>
+        protected virtual void ApplyEvent(IEvent @event)
         {
-            this.Invoke("Apply", true, @event);
+            this.Invoke("Apply", @event);
         }
     }
 }

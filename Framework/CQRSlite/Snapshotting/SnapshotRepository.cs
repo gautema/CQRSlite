@@ -59,7 +59,7 @@ namespace CQRSlite.Snapshotting
             var snapshot = await _snapshotStore.Get(id, cancellationToken);
             if (snapshot == null)
                 return -1;
-            aggregate.Invoke("Restore", true, snapshot);
+            aggregate.Invoke("Restore", snapshot);
             return snapshot.Version;
         }
 
@@ -68,7 +68,7 @@ namespace CQRSlite.Snapshotting
             if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
                 return Task.FromResult(0);
 
-            dynamic snapshot = aggregate.Invoke("GetSnapshot", true);
+            dynamic snapshot = aggregate.Invoke("GetSnapshot");
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
             return _snapshotStore.Save(snapshot);
         }

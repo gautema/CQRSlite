@@ -11,7 +11,7 @@ namespace CQRSlite.Infrastructure
         private static volatile Dictionary<int, CompiledMethodInfo> _cachedMembers = new Dictionary<int, CompiledMethodInfo>();
         private static readonly object _lockObj = new object();
 
-        internal static object Invoke<T>(this T obj, string methodname, bool exactMatch, params object[] args)
+        internal static object Invoke<T>(this T obj, string methodname, params object[] args)
         {
             var type = obj.GetType();
             var hash = Hash(type,  methodname, args);
@@ -25,7 +25,7 @@ namespace CQRSlite.Infrastructure
                 if (exists) return method?.Invoke(obj, args);
 
                 var argtypes = GetArgTypes(args);
-                var m = GetMember(type, methodname, argtypes, exactMatch);
+                var m = GetMember(type, methodname, argtypes);
                 method = m == null ? null : new CompiledMethodInfo(m, type);
 
                 dict.Add(hash, method);
@@ -58,17 +58,14 @@ namespace CQRSlite.Infrastructure
             return argtypes;
         }
 
-        private static MethodInfo GetMember(Type type, string name, Type[] argtypes, bool exactMatch)
+        private static MethodInfo GetMember(Type type, string name, Type[] argtypes)
         {
             while (true)
             {
-                var member = type.GetMethods(bindingFlags)
-                    .FirstOrDefault(m => m.Name == name && m.GetParameters().Select(p => p.ParameterType)
-                                             .SequenceEqual(argtypes));
-                if (member == null && !exactMatch)
-                    member = type.GetMethods(bindingFlags)
-                        .FirstOrDefault(m => m.Name == name && m.GetParameters().Select(p => p.ParameterType).ToArray()
-                                                 .Matches(argtypes));
+                var methods = type.GetMethods(bindingFlags).Where(m => m.Name == name).ToArray();
+                var member = methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).SequenceEqual(argtypes)) ??
+                             methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).ToArray().Matches(argtypes));
+
                 if (member != null)
                 {
                     return member;
