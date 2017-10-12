@@ -3,6 +3,7 @@ using CQRSlite.Events;
 using CQRSlite.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CQRSlite.Domain
 {
@@ -57,38 +58,30 @@ namespace CQRSlite.Domain
         /// <summary>
         /// Load an aggregate from an enumerable of events.
         /// </summary>
-        /// <param name="history"></param>
+        /// <param name="history">All events to be loaded.</param>
         public void LoadFromHistory(IEnumerable<IEvent> history)
         {
-            foreach (var e in history)
+            lock (_changes)
             {
-                if (e.Version != Version + 1)
+                foreach (var e in history.ToArray())
                 {
-                    throw new EventsOutOfOrderException(e.Id);
+                    if (e.Version != Version + 1)
+                    {
+                        throw new EventsOutOfOrderException(e.Id);
+                    }
+                    ApplyEvent(e);
+                    Id = e.Id;
+                    Version++;
                 }
-                ApplyChange(e, false);
             }
         }
 
         protected void ApplyChange(IEvent @event)
         {
-            ApplyChange(@event, true);
-        }
-
-        private void ApplyChange(IEvent @event, bool isNew)
-        {
             lock (_changes)
             {
                 ApplyEvent(@event);
-                if (isNew)
-                {
-                    _changes.Add(@event);
-                }
-                else
-                {
-                    Id = @event.Id;
-                    Version++;
-                }
+                _changes.Add(@event);
             }
         }
 
