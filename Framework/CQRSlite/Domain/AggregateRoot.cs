@@ -49,7 +49,7 @@ namespace CQRSlite.Domain
                     @event.Version = Version + i;
                     @event.TimeStamp = DateTimeOffset.UtcNow;
                 }
-                Version = Version + _changes.Count;
+                Version = Version + changes.Length;
                 _changes.Clear();
                 return changes;
             }
