@@ -63,7 +63,26 @@ namespace CQRSlite.Infrastructure
             while (true)
             {
                 var methods = type.GetMethods(bindingFlags).Where(m => m.Name == name).ToArray();
-                var member = methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).SequenceEqual(argtypes)) ??
+
+				// Dirty fix for the issue #62 (https://github.com/gautema/CQRSlite/issues/62)
+				if (methods.Count() == 0)
+				{
+					/* Since we could not find any methods (by name) in the class
+						assume that those methods are located 
+						in an explicitly implemented interface.
+						So keep looking in the interfaces.
+						This is still an extremely bad approach, 
+						since class may implement two different interfaces, 
+						which both have methods with same name.
+					*/
+					foreach (var iface in type.GetInterfaces())
+					{
+						methods = iface.GetMethods().Where(m => m.Name == name).ToArray();
+						if (methods.Count() > 0) break;
+					}
+				}
+
+				var member = methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).SequenceEqual(argtypes)) ??
                              methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).ToArray().Matches(argtypes));
 
                 if (member != null)
