@@ -31,7 +31,7 @@ namespace CQRSlite.Tests.Domain
             _aggregate.DoSomething();
             _session.Add(_aggregate);
             _session.Commit();
-            Assert.Equal(1, _eventStore.Events.Count);
+            Assert.Single(_eventStore.Events);
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace CQRSlite.Tests.Domain
             _aggregate.DoSomething();
             _session.Add(_aggregate);
             _session.Commit();
-            Assert.Equal(0, _aggregate.GetUncommittedChanges().Length);
+            Assert.Empty(_aggregate.GetUncommittedChanges());
         }
         
         [Fact]
@@ -50,7 +50,7 @@ namespace CQRSlite.Tests.Domain
             agg.DoSomething();
             await _session.Add(agg);
             await _session.Commit();
-            Assert.Equal(1, _eventStore.Events.Count);
+            Assert.Single(_eventStore.Events);
         }
 
         [Fact]
