@@ -28,10 +28,11 @@ namespace CQRSlite.Routing
 
         public Task Send<T>(T command, CancellationToken cancellationToken = default(CancellationToken)) where T : class, ICommand
         {
-            if (!_routes.TryGetValue(command.GetType(), out var handlers))
-                throw new InvalidOperationException("No handler registered");
+            var type = command.GetType();
+            if (!_routes.TryGetValue(type, out var handlers))
+                throw new InvalidOperationException(string.Format("No handler registered for {0}", type.FullName));
             if (handlers.Count != 1)
-                throw new InvalidOperationException("Cannot send to more than one handler");
+                throw new InvalidOperationException(string.Format("Cannot send to more than one handler of {0}", type.FullName));
             return handlers[0](command, cancellationToken);
         }
 
