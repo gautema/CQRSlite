@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CQRSlite.Commands;
 using CQRSlite.Events;
 using CQRSlite.Infrastructure;
+using CQRSlite.Messages;
 using CQRSlite.Routing.Exception;
 
 namespace CQRSlite.Routing
@@ -66,6 +67,13 @@ namespace CQRSlite.Routing
                 .Single(mi => mi.GetParameters().Length == 1)
                 .MakeGenericMethod(commandType);
 
+#if NET452 || NETSTANDARD2_0
+            var map = executorType.GetInterfaceMap(@interface);
+            var name = map.TargetMethods.Single().Name;
+#else
+            var name = "Handle";
+#endif
+
             Func<object, CancellationToken, Task> func;
             if (IsCancellable(@interface))
             {
@@ -73,7 +81,7 @@ namespace CQRSlite.Routing
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke("Handle", @event, token);
+                    return (Task) handler.Invoke(name, @event, token);
                 };
             }
             else
@@ -82,7 +90,7 @@ namespace CQRSlite.Routing
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke("Handle", @event);
+                    return (Task) handler.Invoke(name, @event);
                 };
             }
 
@@ -91,8 +99,7 @@ namespace CQRSlite.Routing
 
         private static bool IsCancellable(Type @interface)
         {
-            return @interface.GetGenericTypeDefinition() == typeof(ICancellableCommandHandler<>)
-                   || @interface.GetGenericTypeDefinition() == typeof(ICancellableEventHandler<>);
+            return @interface.GetGenericTypeDefinition() == typeof(ICancellableHandler<>);
         }
 
         private static IEnumerable<Type> ResolveMessageHandlerInterface(Type type)
@@ -100,10 +107,8 @@ namespace CQRSlite.Routing
             return type
                 .GetInterfaces()
                 .Where(i => i.GetTypeInfo().IsGenericType &&
-                            (i.GetGenericTypeDefinition() == typeof(ICommandHandler<>)
-                             || i.GetGenericTypeDefinition() == typeof(IEventHandler<>)
-                             || i.GetGenericTypeDefinition() == typeof(ICancellableCommandHandler<>)
-                             || i.GetGenericTypeDefinition() == typeof(ICancellableEventHandler<>)
+                            (i.GetGenericTypeDefinition() == typeof(IHandler<>)
+                             || i.GetGenericTypeDefinition() == typeof(ICancellableHandler<>)
                             ));
         }
     }
