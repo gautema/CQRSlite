@@ -4,8 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using CQRSlite.Commands;
-using CQRSlite.Events;
 using CQRSlite.Infrastructure;
 using CQRSlite.Messages;
 using CQRSlite.Routing.Exception;

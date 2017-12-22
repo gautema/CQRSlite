@@ -14,10 +14,12 @@ namespace CQRSlite.Tests.Routing
     public class When_registering_handlers
     {
         private readonly TestServiceLocator _locator;
+        private TestHandleRegistrar _testHandleRegistrar;
 
         public When_registering_handlers()
         {
-            _locator = new TestServiceLocator();
+            _testHandleRegistrar = new TestHandleRegistrar();
+            _locator = new TestServiceLocator(_testHandleRegistrar);
             var register = new RouteRegistrar(_locator);
             register.Register(GetType());
         }
@@ -25,14 +27,13 @@ namespace CQRSlite.Tests.Routing
         [Fact]
         public void Should_register_all_handlers()
         {
-            // 5 public declared handlers, one internal declared
-            Assert.Equal(6, TestHandleRegistrar.HandlerList.Count);
+            Assert.Equal(8, _testHandleRegistrar.HandlerList.Count);
         }
 
         [Fact]
         public async Task Should_be_able_to_run_all_handlers()
         {
-            foreach (var item in TestHandleRegistrar.HandlerList)
+            foreach (var item in _testHandleRegistrar.HandlerList)
             {
                 var eventtypes = GetEventTypesMatching(item.Type);
                 foreach (var type in eventtypes)
@@ -45,14 +46,14 @@ namespace CQRSlite.Tests.Routing
             {
                 Assert.Equal(1, handler.TimesRun);
             }
-            Assert.Equal(9, _locator.Handlers.Count);
+            Assert.Equal(11, _locator.Handlers.Count);
         }
 
         [Fact]
         public async Task Unresolved_handlers_should_throw()
         {
             _locator.ReturnNull = true;
-            foreach (var item in TestHandleRegistrar.HandlerList)
+            foreach (var item in _testHandleRegistrar.HandlerList)
             {
                 var eventtypes = GetEventTypesMatching(item.Type);
                 foreach (var type in eventtypes)
