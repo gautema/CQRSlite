@@ -39,12 +39,28 @@ namespace CQRSlite.Tests.Routing
                 foreach (var type in eventtypes)
                 {
                     var @event = Activator.CreateInstance(type);
+#if NETCOREAPP1_0
+                    try
+                    {
+                        await item.Handler(@event, new CancellationToken());
+                    }
+                    //.NET Core 1.0 version of the library does not support explict interfaces, so these exception is expected
+                    catch (ResolvedHandlerMethodNotFoundException)
+                    {
+                        Assert.Equal(typeof(TestAggregateDoSomething), item.Type);
+                    }
+                    catch (NotImplementedException)
+                    {
+                        Assert.Equal(typeof(TestAggregateDoSomething), item.Type);
+                    }
+#else
                     await item.Handler(@event, new CancellationToken());
+                    foreach (var handler in _locator.Handlers)
+                    {
+                        Assert.Equal(1, handler.TimesRun);
+                    }
+#endif
                 }
-            }
-            foreach (var handler in _locator.Handlers)
-            {
-                Assert.Equal(1, handler.TimesRun);
             }
             Assert.Equal(11, _locator.Handlers.Count);
         }

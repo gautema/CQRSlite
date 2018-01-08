@@ -78,8 +78,8 @@ namespace CQRSlite.Routing
                 func = (@event, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
-                        throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke(name, @event, token);
+                        throw new HandlerNotResolvedException(executorType.Name);
+                    return (Task) (handler.Invoke(name, @event, token) ?? throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
             else
@@ -87,8 +87,8 @@ namespace CQRSlite.Routing
                 func = (@event, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
-                        throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke(name, @event);
+                        throw new HandlerNotResolvedException(executorType.Name);
+                    return (Task) (handler.Invoke(name, @event) ?? throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
 
