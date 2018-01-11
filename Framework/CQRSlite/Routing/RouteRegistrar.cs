@@ -65,30 +65,30 @@ namespace CQRSlite.Routing
                 .Single(mi => mi.GetParameters().Length == 1)
                 .MakeGenericMethod(commandType);
 
-#if NET452 || NETSTANDARD2_0
-            var map = executorType.GetInterfaceMap(@interface);
-            var name = map.TargetMethods.Single().Name;
-#else
-            var name = "Handle";
-#endif
 
             Func<object, CancellationToken, Task> func;
             if (IsCancellable(@interface))
             {
+                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", commandType,
+                    typeof(CancellationToken));
+
                 func = (@event, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(executorType.Name);
-                    return (Task) (handler.Invoke(name, @event, token) ?? throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
+                    return (Task) (handler.Invoke(methodname, @event, token) ??
+                                   throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
             else
             {
+                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", commandType);
                 func = (@event, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(executorType.Name);
-                    return (Task) (handler.Invoke(name, @event) ?? throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
+                    return (Task) (handler.Invoke(methodname, @event) ??
+                                   throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
 

@@ -44,7 +44,7 @@ namespace CQRSlite.Tests.Routing
                     {
                         await item.Handler(@event, new CancellationToken());
                     }
-                    //.NET Core 1.0 version of the library does not support explict interfaces, so these exception is expected
+                    //.NET Core 1.0 version of the library does not support explict interfaces, so these exceptions are expected
                     catch (ResolvedHandlerMethodNotFoundException)
                     {
                         Assert.Equal(typeof(TestAggregateDoSomething), item.Type);
