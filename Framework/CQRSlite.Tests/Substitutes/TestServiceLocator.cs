@@ -6,6 +6,12 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestServiceLocator : IServiceProvider
     {
+        private readonly TestHandleRegistrar _registrar;
+
+        public TestServiceLocator(TestHandleRegistrar registrar)
+        {
+            _registrar = registrar;
+        }
         public readonly List<dynamic> Handlers = new List<dynamic>();
         public bool ReturnNull { get; set; }
 
@@ -15,7 +21,7 @@ namespace CQRSlite.Tests.Substitutes
                 return null;
 
             if(type == typeof(IHandlerRegistrar))
-                return new TestHandleRegistrar();
+                return _registrar;
 
             if (type == typeof(TestAggregateDidSomethingHandler))
             {
@@ -38,6 +44,18 @@ namespace CQRSlite.Tests.Substitutes
             if (type == typeof(TestAggregateDoSomethingHandler))
             {
                 var handler = new TestAggregateDoSomethingHandler();
+                Handlers.Add(handler);
+                return handler;
+            }
+            if (type == typeof(TestAggregateDoSomethingHandlerExplicit))
+            {
+                var handler = new TestAggregateDoSomethingHandlerExplicit();
+                Handlers.Add(handler);
+                return handler;
+            }
+            if (type == typeof(TestAggregateDoSomethingHandlerExplicit2))
+            {
+                var handler = new TestAggregateDoSomethingHandlerExplicit2();
                 Handlers.Add(handler);
                 return handler;
             }

@@ -85,6 +85,15 @@ namespace CQRSlite.Tests.Routing
         }
 
         [Fact]
+        public async Task Should_run_explicitly_implemented_interfaces()
+        {
+            var handler = new TestAggregateDoSomethingHandlerExplicit();
+            _router.RegisterHandler<TestAggregateDoSomething>((x, t) => ((ICommandHandler<TestAggregateDoSomething>)handler).Handle(x));
+            await _router.Send(new TestAggregateDoSomething());
+            Assert.Equal(1, handler.TimesRun);
+        }
+
+        [Fact]
         public async Task Should_forward_cancellation_token()
         {
             var token = new CancellationToken();

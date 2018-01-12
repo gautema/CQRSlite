@@ -4,9 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using CQRSlite.Commands;
-using CQRSlite.Events;
 using CQRSlite.Infrastructure;
+using CQRSlite.Messages;
 using CQRSlite.Routing.Exception;
 
 namespace CQRSlite.Routing
@@ -66,23 +65,30 @@ namespace CQRSlite.Routing
                 .Single(mi => mi.GetParameters().Length == 1)
                 .MakeGenericMethod(commandType);
 
+
             Func<object, CancellationToken, Task> func;
             if (IsCancellable(@interface))
             {
+                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", commandType,
+                    typeof(CancellationToken));
+
                 func = (@event, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
-                        throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke("Handle", @event, token);
+                        throw new HandlerNotResolvedException(executorType.Name);
+                    return (Task) (handler.Invoke(methodname, @event, token) ??
+                                   throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
             else
             {
+                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", commandType);
                 func = (@event, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
-                        throw new HandlerNotResolvedException(nameof(executorType));
-                    return (Task) handler.Invoke("Handle", @event);
+                        throw new HandlerNotResolvedException(executorType.Name);
+                    return (Task) (handler.Invoke(methodname, @event) ??
+                                   throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
 
@@ -91,8 +97,7 @@ namespace CQRSlite.Routing
 
         private static bool IsCancellable(Type @interface)
         {
-            return @interface.GetGenericTypeDefinition() == typeof(ICancellableCommandHandler<>)
-                   || @interface.GetGenericTypeDefinition() == typeof(ICancellableEventHandler<>);
+            return @interface.GetGenericTypeDefinition() == typeof(ICancellableHandler<>);
         }
 
         private static IEnumerable<Type> ResolveMessageHandlerInterface(Type type)
@@ -100,10 +105,8 @@ namespace CQRSlite.Routing
             return type
                 .GetInterfaces()
                 .Where(i => i.GetTypeInfo().IsGenericType &&
-                            (i.GetGenericTypeDefinition() == typeof(ICommandHandler<>)
-                             || i.GetGenericTypeDefinition() == typeof(IEventHandler<>)
-                             || i.GetGenericTypeDefinition() == typeof(ICancellableCommandHandler<>)
-                             || i.GetGenericTypeDefinition() == typeof(ICancellableEventHandler<>)
+                            (i.GetGenericTypeDefinition() == typeof(IHandler<>)
+                             || i.GetGenericTypeDefinition() == typeof(ICancellableHandler<>)
                             ));
         }
     }

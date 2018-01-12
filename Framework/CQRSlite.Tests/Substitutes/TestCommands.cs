@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Commands;
 using CQRSlite.Domain.Exception;
-using CQRSlite.Events;
+using CQRSlite.Messages;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -51,5 +51,30 @@ namespace CQRSlite.Tests.Substitutes
     public abstract class AbstractTestAggregateDoSomethingElseHandler : ICommandHandler<TestAggregateDoSomethingElse>
     {
         public abstract Task Handle(TestAggregateDoSomethingElse message);
+    }
+
+    public class TestAggregateDoSomethingHandlerExplicit : ICommandHandler<TestAggregateDoSomething>
+    {
+        public int TimesRun { get; set; }
+        Task IHandler<TestAggregateDoSomething>.Handle(TestAggregateDoSomething message)
+        {
+            TimesRun++;
+            return Task.CompletedTask;
+        }
+    }
+
+    public class TestAggregateDoSomethingHandlerExplicit2 : ICommandHandler<TestAggregateDoSomething>
+    {
+        public int TimesRun { get; set; }
+        Task IHandler<TestAggregateDoSomething>.Handle(TestAggregateDoSomething message)
+        {
+            TimesRun++;
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(TestAggregateDoSomething message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
