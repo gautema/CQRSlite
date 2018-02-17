@@ -56,7 +56,7 @@ namespace CQRSWeb
             //Register routes
             var serviceProvider = services.BuildServiceProvider();
             var registrar = new RouteRegistrar(new Provider(serviceProvider));
-            registrar.Register(typeof(InventoryCommandHandlers));
+            registrar.RegisterInAssemblyOf(typeof(InventoryCommandHandlers));
 
             return serviceProvider;
         }

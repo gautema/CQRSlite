@@ -11,23 +11,29 @@ using Xunit;
 
 namespace CQRSlite.Tests.Routing
 {
-    public class When_registering_handlers
+    public class When_registering_specific_handlers
     {
         private readonly TestServiceLocator _locator;
         private TestHandleRegistrar _testHandleRegistrar;
 
-        public When_registering_handlers()
+        public When_registering_specific_handlers()
         {
             _testHandleRegistrar = new TestHandleRegistrar();
             _locator = new TestServiceLocator(_testHandleRegistrar);
             var register = new RouteRegistrar(_locator);
-            register.Register(GetType());
+            register.RegisterHandlers(
+                typeof(TestAggregateDoSomethingHandler), 
+                typeof(TestAggregateDoSomethingElseHandler),
+                typeof(AbstractTestAggregateDoSomethingElseHandler),
+                typeof(TestAggregateDoSomethingHandlerExplicit),
+                typeof(TestAggregateDidSomethingHandler),
+                typeof(AllHandler));
         }
 
         [Fact]
         public void Should_register_all_handlers()
         {
-            Assert.Equal(8, _testHandleRegistrar.HandlerList.Count);
+            Assert.Equal(6, _testHandleRegistrar.HandlerList.Count);
         }
 
         [Fact]
@@ -62,7 +68,7 @@ namespace CQRSlite.Tests.Routing
 #endif
                 }
             }
-            Assert.Equal(11, _locator.Handlers.Count);
+            Assert.Equal(9, _locator.Handlers.Count);
         }
 
         [Fact]
