@@ -30,24 +30,41 @@ namespace CQRSlite.Routing
         /// Register all command and event handlers in assembly
         /// </summary>
         /// <param name="typesFromAssemblyContainingMessages">List of assemblies to scan for handlers.</param>
+        [Obsolete("If you want to register all handlers in assembly, use RegisterAllHandlersInSameAssemblyAs. If you want to register specific handlers, use RegisterHandlers.")]
         public void Register(params Type[] typesFromAssemblyContainingMessages)
+        {
+            RegisterAllHandlersInSameAssemblyAs(typesFromAssemblyContainingMessages);
+        }
+
+        /// <summary>
+        /// Register all command and event handlers in assembly
+        /// </summary>
+        /// <param name="typesFromAssemblyContainingMessages">List of assemblies to scan for handlers.</param>
+        public void RegisterAllHandlersInSameAssemblyAs(params Type[] typesFromAssemblyContainingMessages)
+        {
+            foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
+            {
+                RegisterHandlers(typesFromAssemblyContainingMessage.GetTypeInfo().Assembly.GetTypes());
+            }
+        }
+
+        /// <summary>
+        /// Register the specified command and event handlers
+        /// </summary>
+        /// <param name="handlers">List of handlers to register.</param>
+        public void RegisterHandlers(params Type[] handlers)
         {
             var registrar = (IHandlerRegistrar)_serviceLocator.GetService(typeof(IHandlerRegistrar));
 
-            foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
-            {
-                var executorsAssembly = typesFromAssemblyContainingMessage.GetTypeInfo().Assembly;
-                var executorTypes = executorsAssembly
-                    .GetTypes()
-                    .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
-                    .Where(e => e.Interfaces != null && e.Interfaces.Any() && !e.Type.GetTypeInfo().IsAbstract);
+            var executorTypes = handlers
+                .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
+                .Where(e => e.Interfaces != null && e.Interfaces.Any() && !e.Type.GetTypeInfo().IsAbstract);
 
-                foreach (var executorType in executorTypes)
+            foreach (var executorType in executorTypes)
+            {
+                foreach (var @interface in executorType.Interfaces)
                 {
-                    foreach (var @interface in executorType.Interfaces)
-                    {
-                        InvokeHandler(@interface, registrar, executorType.Type);
-                    }
+                    InvokeHandler(@interface, registrar, executorType.Type);
                 }
             }
         }
