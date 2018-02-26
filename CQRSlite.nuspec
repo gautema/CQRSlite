@@ -2,14 +2,14 @@
 <package>
   <metadata>
     <id>CqrsLite</id>
-    <version>0.19.0</version>
+    <version>0.21.0</version>
     <authors>Gaute Magnussen</authors>
     <licenseUrl>https://raw.githubusercontent.com/gautema/CQRSlite/master/README.md</licenseUrl>
     <projectUrl>https://github.com/gautema/cqrslite</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/gautema/gautema_logo/master/gautema_logo64.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</description>
-    <copyright>Copyright 2017</copyright>
+    <copyright>Copyright 2018</copyright>
     <dependencies>
       <group targetFramework=".NETFramework4.5.2">
       </group>
