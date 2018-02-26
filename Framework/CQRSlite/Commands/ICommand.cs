@@ -3,10 +3,9 @@
 namespace CQRSlite.Commands
 {
     /// <summary>
-    /// Defines an command with required fields.
+    /// Defines a command.
     /// </summary>
     public interface ICommand : IMessage
     {
-        int ExpectedVersion { get; }
     }
 }
