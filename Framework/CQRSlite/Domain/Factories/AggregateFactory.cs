@@ -1,21 +1,42 @@
 ﻿using CQRSlite.Domain.Exception;
 using System;
+using System.Linq.Expressions;
 
 namespace CQRSlite.Domain.Factories
 {
-    internal static class AggregateFactory
+    internal static class AggregateFactory<T>
     {
-        public static T CreateAggregate<T>()
+        private static Func<T> _constructor;
+
+        private static volatile object _lock = new object();
+
+        private static Func<T> Constructor
+        {
+            get
+            {
+                if (_constructor == null)
+                {
+                    lock (_lock)
+                    {
+                        if (_constructor != null) return _constructor;
+
+                        var newExpr = Expression.New(typeof(T));
+                        var func = Expression.Lambda<Func<T>>(newExpr);
+                        _constructor = func.Compile();
+                    }
+                }
+
+                return _constructor;
+            }
+        }
+
+        public static T CreateAggregate()
         {
             try
             {
-#if NETSTANDARD1_3
-                return (T)Activator.CreateInstance(typeof(T));
-#else
-                return (T)Activator.CreateInstance(typeof(T), true);
-#endif
+                return Constructor();
             }
-            catch (MissingMethodException)
+            catch (ArgumentException)
             {
                 throw new MissingParameterLessConstructorException(typeof(T));
             }

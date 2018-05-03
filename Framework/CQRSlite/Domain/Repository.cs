@@ -70,7 +70,7 @@ namespace CQRSlite.Domain
                 throw new AggregateNotFoundException(typeof(T), id);
             }
 
-            var aggregate = AggregateFactory.CreateAggregate<T>();
+            var aggregate = AggregateFactory<T>.CreateAggregate();
             aggregate.LoadFromHistory(events);
             return aggregate;
         }

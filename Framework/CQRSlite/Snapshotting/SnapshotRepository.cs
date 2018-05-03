@@ -41,7 +41,7 @@ namespace CQRSlite.Snapshotting
 
         public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
-            var aggregate = AggregateFactory.CreateAggregate<T>();
+            var aggregate = AggregateFactory<T>.CreateAggregate();
             var snapshotVersion = await TryRestoreAggregateFromSnapshot(aggregateId, aggregate, cancellationToken);
             if (snapshotVersion == -1)
                 return await _repository.Get<T>(aggregateId, cancellationToken);
