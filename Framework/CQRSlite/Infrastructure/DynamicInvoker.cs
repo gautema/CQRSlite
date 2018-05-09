@@ -14,7 +14,7 @@ namespace CQRSlite.Infrastructure
         internal static object Invoke<T>(this T obj, string methodname, params object[] args)
         {
             var type = obj.GetType();
-            var hash = Hash(type,  methodname, args);
+            var hash = Hash(type, methodname, args);
             var exists = _cachedMembers.TryGetValue(hash, out var method);
             if (exists) return method?.Invoke(obj, args);
             lock (_lockObj)

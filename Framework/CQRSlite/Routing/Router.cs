@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Commands;
@@ -41,7 +40,12 @@ namespace CQRSlite.Routing
             if (!_routes.TryGetValue(@event.GetType(), out var handlers))
                 return Task.FromResult(0);
 
-            return Task.WhenAll(handlers.Select(handler => handler(@event, cancellationToken)));
+            var tasks = new Task[handlers.Count];
+            for (var index = 0; index < handlers.Count; index++)
+            {
+                tasks[index] = handlers[index](@event, cancellationToken);
+            }
+            return Task.WhenAll(tasks);
         }
     }
 }
