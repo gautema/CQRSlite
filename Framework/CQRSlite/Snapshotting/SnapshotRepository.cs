@@ -71,7 +71,7 @@ namespace CQRSlite.Snapshotting
 
             dynamic snapshot = aggregate.Invoke("GetSnapshot");
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
-            return _snapshotStore.Save(snapshot).ConfigureAwait(false);
+            return _snapshotStore.Save(snapshot);
         }
     }
 }
