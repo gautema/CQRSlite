@@ -49,12 +49,12 @@ namespace CQRSlite.Domain
                 return trackedAggregate;
             }
 
-            var aggregate = await _repository.Get<T>(id, cancellationToken);
+            var aggregate = await _repository.Get<T>(id, cancellationToken).ConfigureAwait(false);
             if (expectedVersion != null && aggregate.Version != expectedVersion)
             {
                 throw new ConcurrencyException(id);
             }
-            await Add(aggregate, cancellationToken);
+            await Add(aggregate, cancellationToken).ConfigureAwait(false);
 
             return aggregate;
         }
@@ -73,7 +73,7 @@ namespace CQRSlite.Domain
                 tasks[i] = _repository.Save(descriptor.Aggregate, descriptor.Version, cancellationToken);
                 i++;
             }
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
             _trackedAggregates.Clear();
         }
 

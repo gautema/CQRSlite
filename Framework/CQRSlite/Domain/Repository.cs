@@ -40,19 +40,19 @@ namespace CQRSlite.Domain
 
         public async Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
-            if (expectedVersion != null && (await _eventStore.Get(aggregate.Id, expectedVersion.Value, cancellationToken)).Any())
+            if (expectedVersion != null && (await _eventStore.Get(aggregate.Id, expectedVersion.Value, cancellationToken).ConfigureAwait(false)).Any())
             {
                 throw new ConcurrencyException(aggregate.Id);
             }
 
             var changes = aggregate.FlushUncommitedChanges();
-            await _eventStore.Save(changes, cancellationToken);
+            await _eventStore.Save(changes, cancellationToken).ConfigureAwait(false);
 
             if (_publisher != null)
             {
                 foreach (var @event in changes)
                 {
-                    await _publisher.Publish(@event, cancellationToken);
+                    await _publisher.Publish(@event, cancellationToken).ConfigureAwait(false);
                 }
             }
         }
@@ -64,7 +64,7 @@ namespace CQRSlite.Domain
 
         private async Task<T> LoadAggregate<T>(Guid id, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
-            var events = await _eventStore.Get(id, -1, cancellationToken);
+            var events = await _eventStore.Get(id, -1, cancellationToken).ConfigureAwait(false);
             if (!events.Any())
             {
                 throw new AggregateNotFoundException(typeof(T), id);

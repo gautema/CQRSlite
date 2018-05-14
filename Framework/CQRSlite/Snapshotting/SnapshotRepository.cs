@@ -42,11 +42,12 @@ namespace CQRSlite.Snapshotting
         public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
             var aggregate = AggregateFactory<T>.CreateAggregate();
-            var snapshotVersion = await TryRestoreAggregateFromSnapshot(aggregateId, aggregate, cancellationToken);
+            var snapshotVersion = await TryRestoreAggregateFromSnapshot(aggregateId, aggregate, cancellationToken).ConfigureAwait(false);
             if (snapshotVersion == -1)
-                return await _repository.Get<T>(aggregateId, cancellationToken);
+                return await _repository.Get<T>(aggregateId, cancellationToken).ConfigureAwait(false);
 
-            var events = (await _eventStore.Get(aggregateId, snapshotVersion, cancellationToken)).Where(desc => desc.Version > snapshotVersion);
+            var events = (await _eventStore.Get(aggregateId, snapshotVersion, cancellationToken).ConfigureAwait(false))
+                .Where(desc => desc.Version > snapshotVersion);
             aggregate.LoadFromHistory(events);
 
             return aggregate;
@@ -56,7 +57,7 @@ namespace CQRSlite.Snapshotting
         {
             if (!_snapshotStrategy.IsSnapshotable(typeof(T)))
                 return -1;
-            var snapshot = await _snapshotStore.Get(id, cancellationToken);
+            var snapshot = await _snapshotStore.Get(id, cancellationToken).ConfigureAwait(false);
             if (snapshot == null)
                 return -1;
             aggregate.Invoke("Restore", snapshot);
@@ -70,7 +71,7 @@ namespace CQRSlite.Snapshotting
 
             dynamic snapshot = aggregate.Invoke("GetSnapshot");
             snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
-            return _snapshotStore.Save(snapshot);
+            return _snapshotStore.Save(snapshot).ConfigureAwait(false);
         }
     }
 }
