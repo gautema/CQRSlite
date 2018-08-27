@@ -54,6 +54,7 @@ namespace CQRSWeb
             services.AddMvc();
 
             //Register routes
+            services.AddHttpContextAccessor(); // No longer registered by default in ASP.NET Core 2.1
             var serviceProvider = services.BuildServiceProvider();
             var registrar = new RouteRegistrar(new Provider(serviceProvider));
             registrar.RegisterInAssemblyOf(typeof(InventoryCommandHandlers));
