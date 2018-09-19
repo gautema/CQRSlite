@@ -8,7 +8,7 @@ using System.Linq;
 namespace CQRSlite.Domain
 {
     /// <summary>
-    /// Class to inherit all aggregates from
+    /// Class to inherit all aggregates from.
     /// </summary>
     public abstract class AggregateRoot
     {
@@ -26,10 +26,10 @@ namespace CQRSlite.Domain
         }
 
         /// <summary>
-        /// Returns all uncommited changes and clears aggregate of them.
+        /// Returns all uncommitted changes and clears aggregate of them.
         /// </summary>
-        /// <returns>Array of new uncommited events</returns>
-        public IEvent[] FlushUncommitedChanges()
+        /// <returns>Array of new uncommitted events</returns>
+        public IEvent[] FlushUncommittedChanges()
         {
             lock (_changes)
             {

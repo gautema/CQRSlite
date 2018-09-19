@@ -26,7 +26,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public void Should_save_uncommited_changes()
+        public void Should_save_uncommitted_changes()
         {
             _aggregate.DoSomething();
             _session.Add(_aggregate);
@@ -35,7 +35,7 @@ namespace CQRSlite.Tests.Domain
         }
 
         [Fact]
-        public void Should_mark_commited_after_commit()
+        public void Should_mark_committed_after_commit()
         {
             _aggregate.DoSomething();
             _session.Add(_aggregate);

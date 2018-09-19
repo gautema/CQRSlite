@@ -45,7 +45,7 @@ namespace CQRSlite.Domain
                 throw new ConcurrencyException(aggregate.Id);
             }
 
-            var changes = aggregate.FlushUncommitedChanges();
+            var changes = aggregate.FlushUncommittedChanges();
             await _eventStore.Save(changes, cancellationToken).ConfigureAwait(false);
 
             if (_publisher != null)
