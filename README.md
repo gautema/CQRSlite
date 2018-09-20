@@ -4,7 +4,7 @@
 [![NuGet](https://img.shields.io/nuget/vpre/cqrslite.svg)](https://www.nuget.org/packages/cqrslite)
 
 ## The framework
-CQRSlite is a small CQRS and Eventsourcing Framework. It is written in C# and targets .NET 4.6.1 and .NET Core. CQRSlite originated as a CQRS sample project Greg Young and I did in the autumn of 2010.
+CQRSlite is a small CQRS and Eventsourcing Framework. It is written in C# and targets .NET 4.5.2 and .NET Core. CQRSlite originated as a CQRS sample project Greg Young and I did in the autumn of 2010.
 This code is located at http://github.com/gregoryyoung/m-r
 
 CQRSlite has been made with pluggability in mind. So every standard implementation should be interchangeable with a custom one if needed.
@@ -29,7 +29,7 @@ Great introductions to CQRS and CQRSlite have been written by others. Here are t
 To install CQRSlite, it you could either download the files and copy whats needed into your project, you can clone this project and reference it, or you can download releases from nuget. You will have to implement your own eventstore or use an exsiting eventstore with an adapter to fit the IEventStore interface.
 
 ## License
-Copyright 2017 Gaute Magnussen
+Copyright 2018 Gaute Magnussen
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
