@@ -8,7 +8,7 @@ namespace CQRSlite.Tests.Snapshotting
 {
     public class When_getting_an_aggregate_with_snapshot
     {
-        private TestSnapshotAggregate _aggregate;
+        private readonly TestSnapshotAggregate _aggregate;
 
         public When_getting_an_aggregate_with_snapshot()
         {

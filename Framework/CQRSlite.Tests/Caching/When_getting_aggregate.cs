@@ -9,10 +9,10 @@ namespace CQRSlite.Tests.Caching
 {
     public class When_getting_aggregate
     {
-        private CacheRepository _rep;
-        private TestAggregate _aggregate;
-        private ICache _cache;
-        private TestEventStore _testEventStore;
+        private readonly CacheRepository _rep;
+        private readonly TestAggregate _aggregate;
+        private readonly ICache _cache;
+        private readonly TestEventStore _testEventStore;
 
         public When_getting_aggregate()
         {

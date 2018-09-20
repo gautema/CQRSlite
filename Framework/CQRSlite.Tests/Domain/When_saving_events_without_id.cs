@@ -9,14 +9,13 @@ namespace CQRSlite.Tests.Domain
 {
     public class When_saving_events_without_id
     {
-        private TestInMemoryEventStore _eventStore;
-        private TestAggregate _aggregate;
-        private Repository _rep;
+        private readonly TestAggregate _aggregate;
+        private readonly Repository _rep;
 
         public When_saving_events_without_id()
         {
-            _eventStore = new TestInMemoryEventStore();
-            _rep = new Repository(_eventStore);
+            var eventStore = new TestInMemoryEventStore();
+            _rep = new Repository(eventStore);
 
             _aggregate = new TestAggregate(Guid.Empty);
         }

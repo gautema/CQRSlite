@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.Routing
 {
     public class When_publishing_events
     {
-        private Router _router;
+        private readonly Router _router;
 
         public When_publishing_events()
         {

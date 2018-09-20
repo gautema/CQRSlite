@@ -8,9 +8,9 @@ namespace CQRSlite.Tests.Caching
 {
     public class When_getting_earlier_than_expected_events_from_event_store
     {
-        private CacheRepository _rep;
-        private TestAggregate _aggregate;
-        private ICache _cache;
+        private readonly CacheRepository _rep;
+        private readonly TestAggregate _aggregate;
+        private readonly ICache _cache;
 
         public When_getting_earlier_than_expected_events_from_event_store()
         {

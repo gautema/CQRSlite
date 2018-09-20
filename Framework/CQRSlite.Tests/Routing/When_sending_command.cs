@@ -11,7 +11,7 @@ namespace CQRSlite.Tests.Routing
 {
     public class When_sending_command
     {
-        private Router _router;
+        private readonly Router _router;
 
         public When_sending_command()
         {

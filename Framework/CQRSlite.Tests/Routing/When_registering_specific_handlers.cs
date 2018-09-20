@@ -14,7 +14,7 @@ namespace CQRSlite.Tests.Routing
     public class When_registering_specific_handlers
     {
         private readonly TestServiceLocator _locator;
-        private TestHandleRegistrar _testHandleRegistrar;
+        private readonly TestHandleRegistrar _testHandleRegistrar;
 
         public When_registering_specific_handlers()
         {

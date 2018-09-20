@@ -10,29 +10,26 @@ namespace CQRSlite.Tests.Caching
 {
     public class When_saving_same_aggregate_in_parallel
     {
-        private CacheRepository _rep1;
-        private CacheRepository _rep2;
-        private TestAggregate _aggregate;
-        private TestInMemoryEventStore _testStore;
+        private readonly TestInMemoryEventStore _testStore;
 
         public When_saving_same_aggregate_in_parallel()
         {
             var cache = new MemoryCache();
 
             _testStore = new TestInMemoryEventStore();
-            _rep1 = new CacheRepository(new Repository(_testStore), _testStore, cache);
-            _rep2 = new CacheRepository(new Repository(_testStore), _testStore, cache);
+            var rep1 = new CacheRepository(new Repository(_testStore), _testStore, cache);
+            var rep2 = new CacheRepository(new Repository(_testStore), _testStore, cache);
 
-            _aggregate = new TestAggregate(Guid.NewGuid());
-            _rep1.Save(_aggregate).Wait();
+            var aggregate1 = new TestAggregate(Guid.NewGuid());
+            rep1.Save(aggregate1).Wait();
 
             var t1 = Task.Run(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
-                    var aggregate = await _rep1.Get<TestAggregate>(_aggregate.Id);
+                    var aggregate = await rep1.Get<TestAggregate>(aggregate1.Id);
                     aggregate.DoSomething();
-                    await _rep1.Save(aggregate);
+                    await rep1.Save(aggregate);
                 }
             });
 
@@ -40,18 +37,18 @@ namespace CQRSlite.Tests.Caching
             {
                 for (var i = 0; i < 100; i++)
                 {
-                    var aggregate = await _rep2.Get<TestAggregate>(_aggregate.Id);
+                    var aggregate = await rep2.Get<TestAggregate>(aggregate1.Id);
                     aggregate.DoSomething();
-                    await _rep2.Save(aggregate);
+                    await rep2.Save(aggregate);
                 }
             });
             var t3 = Task.Run(async () =>
             {
                 for (var i = 0; i < 100; i++)
                 {
-                    var aggregate = await _rep2.Get<TestAggregate>(_aggregate.Id);
+                    var aggregate = await rep2.Get<TestAggregate>(aggregate1.Id);
                     aggregate.DoSomething();
-                    await _rep2.Save(aggregate);
+                    await rep2.Save(aggregate);
                 }
             });
 

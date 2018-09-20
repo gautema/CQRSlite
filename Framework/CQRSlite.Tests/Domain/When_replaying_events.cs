@@ -6,7 +6,7 @@ namespace CQRSlite.Tests.Domain
 {
     public class When_replaying_events
     {
-        private TestAggregate _aggregate;
+        private readonly TestAggregate _aggregate;
 
         public When_replaying_events()
         {

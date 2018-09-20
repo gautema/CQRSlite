@@ -12,7 +12,7 @@ namespace CQRSlite.Tests.Snapshotting
     {
         private readonly TestSnapshotStore _snapshotStore;
         private readonly TestInMemoryEventStore _eventStore;
-        private CancellationToken _token;
+        private readonly CancellationToken _token;
 
         public When_saving_a_not_snapshotable_aggregate()
         {

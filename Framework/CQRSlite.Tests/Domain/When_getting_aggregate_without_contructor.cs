@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.Domain
 {
     public class When_getting_aggregate_without_contructor
     {
-	    private Guid _id;
+	    private readonly Guid _id;
 	    private readonly Repository _repository;
 
         public When_getting_aggregate_without_contructor()
@@ -17,9 +17,9 @@ namespace CQRSlite.Tests.Domain
             _id = Guid.NewGuid();
             var eventStore = new TestInMemoryEventStore();
             _repository = new Repository(eventStore);
-            var aggreagate = new TestAggregateNoParameterLessConstructor(1, _id);
-            aggreagate.DoSomething();
-            Task.Run(() => _repository.Save(aggreagate)).Wait();
+            var aggregate = new TestAggregateNoParameterLessConstructor(1, _id);
+            aggregate.DoSomething();
+            Task.Run(() => _repository.Save(aggregate)).Wait();
         }
 
         [Fact]

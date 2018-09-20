@@ -8,8 +8,8 @@ namespace CQRSlite.Tests.Caching
 {
     public class When_getting_fails
     {
-        private MemoryCache _cache;
-        private Guid _id;
+        private readonly MemoryCache _cache;
+        private readonly Guid _id;
 
         public When_getting_fails()
         {

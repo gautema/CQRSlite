@@ -9,16 +9,15 @@ namespace CQRSlite.Tests.Domain
 {
     public class When_saving_stale_data
     {
-        private TestInMemoryEventStore _eventStore;
-        private TestAggregate _aggregate;
-        private Repository _rep;
-        private Session _session;
+        private readonly TestAggregate _aggregate;
+        private readonly Repository _rep;
+        private readonly Session _session;
 
 
         public When_saving_stale_data()
         {
-            _eventStore = new TestInMemoryEventStore();
-            _rep = new Repository(_eventStore);
+            var eventStore = new TestInMemoryEventStore();
+            _rep = new Repository(eventStore);
             _session = new Session(_rep);
 
             _aggregate = new TestAggregate(Guid.NewGuid());

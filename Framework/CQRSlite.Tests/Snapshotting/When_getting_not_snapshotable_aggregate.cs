@@ -6,32 +6,32 @@ using Xunit;
 
 namespace CQRSlite.Tests.Snapshotting
 {
-    public class When_getting_snapshotable_aggreate
+    public class When_getting_not_snapshotable_aggregate
     {
-        private TestSnapshotStore _snapshotStore;
-        private TestSnapshotAggregate _aggregate;
+        private readonly TestSnapshotStore _snapshotStore;
+        private readonly TestAggregate _aggregate;
 
-        public When_getting_snapshotable_aggreate()
+        public When_getting_not_snapshotable_aggregate()
         {
-            var eventStore = new TestInMemoryEventStore();
+            var eventStore = new TestEventStore();
             _snapshotStore = new TestSnapshotStore();
             var snapshotStrategy = new DefaultSnapshotStrategy();
             var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(eventStore), eventStore);
             var session = new Session(repository);
 
-            _aggregate = session.Get<TestSnapshotAggregate>(Guid.NewGuid()).Result;
+            _aggregate = session.Get<TestAggregate>(Guid.NewGuid()).Result;
         }
 
         [Fact]
-        public void Should_ask_for_snapshot()
+        public void Should_not_ask_for_snapshot()
         {
-            Assert.True(_snapshotStore.VerifyGet);
+            Assert.False(_snapshotStore.VerifyGet);
         }
 
         [Fact]
-        public void Should_run_restore_method()
+        public void Should_restore_from_events()
         {
-            Assert.True(_aggregate.Restored);
+            Assert.Equal(3, _aggregate.Version);
         }
     }
 }

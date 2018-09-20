@@ -10,10 +10,10 @@ namespace CQRSlite.Tests.Caching
 {
     public class When_saving_two_aggregates_in_parallel
     {
-        private CacheRepository _rep1;
-        private TestAggregate _aggregate1;
-        private TestInMemoryEventStore _testStore;
-        private TestAggregate _aggregate2;
+        private readonly CacheRepository _rep1;
+        private readonly TestAggregate _aggregate1;
+        private readonly TestInMemoryEventStore _testStore;
+        private readonly TestAggregate _aggregate2;
 
         public When_saving_two_aggregates_in_parallel()
         {
@@ -66,7 +66,7 @@ namespace CQRSlite.Tests.Caching
         [Fact]
         public async Task Should_distibute_events_correct()
         {
-            var aggregate1 = await _rep1.Get<TestAggregate>(_aggregate2.Id);
+            var aggregate1 = await _rep1.Get<TestAggregate>(_aggregate1.Id);
             Assert.Equal(100, aggregate1.DidSomethingCount);
 
             var aggregate2 = await _rep1.Get<TestAggregate>(_aggregate2.Id);

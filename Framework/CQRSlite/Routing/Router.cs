@@ -29,9 +29,9 @@ namespace CQRSlite.Routing
         {
             var type = command.GetType();
             if (!_routes.TryGetValue(type, out var handlers))
-                throw new InvalidOperationException(string.Format("No handler registered for {0}", type.FullName));
+                throw new InvalidOperationException($"No handler registered for {type.FullName}");
             if (handlers.Count != 1)
-                throw new InvalidOperationException(string.Format("Cannot send to more than one handler of {0}", type.FullName));
+                throw new InvalidOperationException($"Cannot send to more than one handler of {type.FullName}");
             return handlers[0](command, cancellationToken);
         }
 

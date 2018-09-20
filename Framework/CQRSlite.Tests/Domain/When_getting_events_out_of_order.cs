@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.Domain
 {
     public class When_getting_events_out_of_order
     {
-	    private ISession _session;
+	    private readonly ISession _session;
 
         public When_getting_events_out_of_order()
         {

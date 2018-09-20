@@ -10,9 +10,9 @@ namespace CQRSlite.Tests.Snapshotting
 {
     public class When_getting_a_snapshot_aggregate_with_no_snapshot
     {
-        private TestSnapshotAggregate _aggregate;
-        private CancellationToken _token;
-        private TestEventStore _eventStore;
+        private readonly TestSnapshotAggregate _aggregate;
+        private readonly CancellationToken _token;
+        private readonly TestEventStore _eventStore;
 
         public When_getting_a_snapshot_aggregate_with_no_snapshot()
         {

@@ -11,7 +11,7 @@ namespace CQRSlite.Tests.Substitutes
     {
         private readonly Guid _emptyGuid;
         private List<IEvent> SavedEvents { get; }
-        public CancellationToken Token { get; set; }
+        public CancellationToken Token { get; private set; }
 
         public TestEventStore()
         {

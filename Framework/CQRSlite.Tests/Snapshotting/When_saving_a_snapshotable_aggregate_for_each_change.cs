@@ -9,9 +9,9 @@ namespace CQRSlite.Tests.Snapshotting
 {
     public class When_saving_a_snapshotable_aggregate_for_each_change
     {
-        private TestInMemorySnapshotStore _snapshotStore;
-	    private ISession _session;
-	    private TestSnapshotAggregate _aggregate;
+        private readonly TestInMemorySnapshotStore _snapshotStore;
+	    private readonly ISession _session;
+	    private readonly TestSnapshotAggregate _aggregate;
 
         public When_saving_a_snapshotable_aggregate_for_each_change()
         {

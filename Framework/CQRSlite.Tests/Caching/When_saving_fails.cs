@@ -8,22 +8,20 @@ namespace CQRSlite.Tests.Caching
 {
     public class When_saving_fails
     {
-        private CacheRepository _rep;
-        private TestAggregate _aggregate;
-        private TestRepository _testRep;
-        private ICache _cache;
+        private readonly TestAggregate _aggregate;
+        private readonly ICache _cache;
 
         public When_saving_fails()
         {
             _cache = new MemoryCache();
-            _testRep = new TestRepository();
-            _rep = new CacheRepository(_testRep, new TestInMemoryEventStore(), _cache);
-            _aggregate = _testRep.Get<TestAggregate>(Guid.NewGuid()).Result;
+            var testRep = new TestRepository();
+            var rep = new CacheRepository(testRep, new TestInMemoryEventStore(), _cache);
+            _aggregate = testRep.Get<TestAggregate>(Guid.NewGuid()).Result;
             _aggregate.DoSomething();
-            _testRep.Throw = true;
+            testRep.Throw = true;
             try
             {
-                _rep.Save(_aggregate).Wait();
+                rep.Save(_aggregate).Wait();
             }
             catch (Exception) { }
         }

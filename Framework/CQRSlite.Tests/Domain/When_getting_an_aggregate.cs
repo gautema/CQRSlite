@@ -10,8 +10,8 @@ namespace CQRSlite.Tests.Domain
 {
     public class When_getting_an_aggregate
     {
-	    private ISession _session;
-        private TestEventStore _eventStore;
+	    private readonly ISession _session;
+        private readonly TestEventStore _eventStore;
 
         public When_getting_an_aggregate()
         {

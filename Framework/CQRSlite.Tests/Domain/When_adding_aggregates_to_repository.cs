@@ -9,7 +9,7 @@ namespace CQRSlite.Tests.Domain
 {
     public class When_adding_aggregates_to_repository
     {
-        private Session _session;
+        private readonly Session _session;
 
         public When_adding_aggregates_to_repository()
         {
