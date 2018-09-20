@@ -6,40 +6,27 @@ namespace CQRSlite.Domain.Factories
 {
     internal static class AggregateFactory<T>
     {
-        private static Func<T> _constructor;
+        private static readonly Func<T> _constructor = CreateTypeConstructor();
 
-        private static volatile object _lock = new object();
-
-        private static Func<T> Constructor
+        private static Func<T> CreateTypeConstructor()
         {
-            get
+            try
             {
-                if (_constructor == null)
-                {
-                    lock (_lock)
-                    {
-                        if (_constructor != null) return _constructor;
-
-                        var newExpr = Expression.New(typeof(T));
-                        var func = Expression.Lambda<Func<T>>(newExpr);
-                        _constructor = func.Compile();
-                    }
-                }
-
-                return _constructor;
+                var newExpr = Expression.New(typeof(T));
+                var func = Expression.Lambda<Func<T>>(newExpr);
+                return func.Compile();
+            }
+            catch (ArgumentException)
+            {
+                return null;
             }
         }
 
         public static T CreateAggregate()
         {
-            try
-            {
-                return Constructor();
-            }
-            catch (ArgumentException)
-            {
+            if (_constructor == null)
                 throw new MissingParameterLessConstructorException(typeof(T));
-            }
+            return _constructor();
         }
     }
 }
