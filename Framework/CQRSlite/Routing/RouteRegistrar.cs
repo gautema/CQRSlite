@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Infrastructure;
 using CQRSlite.Messages;
+using CQRSlite.Queries;
 using CQRSlite.Routing.Exception;
 
 namespace CQRSlite.Routing
@@ -63,7 +64,7 @@ namespace CQRSlite.Routing
 
         private void InvokeHandler(Type @interface, IHandlerRegistrar registrar, Type executorType)
         {
-            var commandType = @interface.GetGenericArguments()[0];
+            var messageType = @interface.GetGenericArguments()[0];
 
             var registerExecutorMethod = registrar
                 .GetType()
@@ -72,31 +73,31 @@ namespace CQRSlite.Routing
                 .Where(mi => mi.IsGenericMethod)
                 .Where(mi => mi.GetGenericArguments().Length == 1)
                 .Single(mi => mi.GetParameters().Length == 1)
-                .MakeGenericMethod(commandType);
+                .MakeGenericMethod(messageType);
 
 
             Func<object, CancellationToken, Task> func;
             if (IsCancellable(@interface))
             {
-                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", commandType,
+                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", messageType,
                     typeof(CancellationToken));
 
-                func = (@event, token) =>
+                func = (msg, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(executorType.Name);
-                    return (Task) (handler.Invoke(methodname, @event, token) ??
+                    return (Task) (handler.Invoke(methodname, msg, token) ??
                                    throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
             else
             {
-                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", commandType);
-                func = (@event, token) =>
+                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", messageType);
+                func = (msg, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(executorType.Name);
-                    return (Task) (handler.Invoke(methodname, @event) ??
+                    return (Task) (handler.Invoke(methodname, msg) ??
                                    throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
@@ -106,17 +107,29 @@ namespace CQRSlite.Routing
 
         private static bool IsCancellable(Type @interface)
         {
-            return @interface.GetGenericTypeDefinition() == typeof(ICancellableHandler<>);
+            var types = new[]
+            {
+                typeof(ICancellableHandler<>),
+                typeof(ICancellableQueryHandler<,>)
+            };
+
+            return types.Contains(@interface.GetGenericTypeDefinition());
         }
 
         private static IEnumerable<Type> ResolveMessageHandlerInterface(Type type)
         {
+            var types = new[]
+            {
+                typeof(IHandler<>),
+                typeof(ICancellableHandler<>),
+                typeof(IQueryHandler<,>),
+                typeof(ICancellableQueryHandler<,>)
+            };
+
             return type
                 .GetInterfaces()
                 .Where(i => i.GetTypeInfo().IsGenericType &&
-                            (i.GetGenericTypeDefinition() == typeof(IHandler<>)
-                             || i.GetGenericTypeDefinition() == typeof(ICancellableHandler<>)
-                            ));
+                            types.Contains(i.GetGenericTypeDefinition()));
         }
     }
 }

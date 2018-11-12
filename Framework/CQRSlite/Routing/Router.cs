@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using CQRSlite.Commands;
 using CQRSlite.Events;
 using CQRSlite.Messages;
+using CQRSlite.Queries;
 
 namespace CQRSlite.Routing
 {
     /// <summary>
     /// Default router implementation for sending commands and publishing events.
     /// </summary>
-    public class Router : ICommandSender, IEventPublisher, IHandlerRegistrar
+    public class Router : ICommandSender, IEventPublisher, IQueryProcessor, IHandlerRegistrar
     {
         private readonly Dictionary<Type, List<Func<IMessage, CancellationToken, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, CancellationToken, Task>>>();
 
@@ -46,6 +47,16 @@ namespace CQRSlite.Routing
                 tasks[index] = handlers[index](@event, cancellationToken);
             }
             return Task.WhenAll(tasks);
+        }
+
+        public Task<TResponse> Query<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var type = query.GetType();
+            if (!_routes.TryGetValue(type, out var handlers))
+                throw new InvalidOperationException($"No handler registered for {type.FullName}");
+            if (handlers.Count != 1)
+                throw new InvalidOperationException($"Cannot query more than one handler of {type.FullName}");
+            return (Task<TResponse>)handlers[0](query, cancellationToken);
         }
     }
 }

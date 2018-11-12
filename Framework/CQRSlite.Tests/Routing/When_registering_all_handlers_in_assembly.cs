@@ -27,7 +27,7 @@ namespace CQRSlite.Tests.Routing
         [Fact]
         public void Should_register_all_handlers()
         {
-            Assert.Equal(8, _testHandleRegistrar.HandlerList.Count);
+            Assert.Equal(10, _testHandleRegistrar.HandlerList.Count);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace CQRSlite.Tests.Routing
 #endif
                 }
             }
-            Assert.Equal(11, _locator.Handlers.Count);
+            Assert.Equal(13, _locator.Handlers.Count);
         }
 
         [Fact]

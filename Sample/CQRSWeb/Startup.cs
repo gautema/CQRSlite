@@ -8,11 +8,11 @@ using CQRSlite.Events;
 using CQRSlite.Domain;
 using CQRSCode.WriteModel;
 using CQRSlite.Caching;
-using CQRSCode.ReadModel;
 using CQRSCode.WriteModel.Handlers;
 using System.Reflection;
 using System.Linq;
 using CQRSlite.Messages;
+using CQRSlite.Queries;
 using CQRSlite.Routing;
 using Microsoft.AspNetCore.Http;
 using ISession = CQRSlite.Domain.ISession;
@@ -31,12 +31,11 @@ namespace CQRSWeb
             services.AddSingleton<ICommandSender>(y => y.GetService<Router>());
             services.AddSingleton<IEventPublisher>(y => y.GetService<Router>());
             services.AddSingleton<IHandlerRegistrar>(y => y.GetService<Router>());
+            services.AddSingleton<IQueryProcessor>(y => y.GetService<Router>());
             services.AddSingleton<IEventStore, InMemoryEventStore>();
             services.AddSingleton<ICache, MemoryCache>();
             services.AddScoped<IRepository>(y => new CacheRepository(new Repository(y.GetService<IEventStore>()), y.GetService<IEventStore>(), y.GetService<ICache>()));
             services.AddScoped<ISession, Session>();
-
-            services.AddTransient<IReadModelFacade, ReadModelFacade>();
 
             //Scan for commandhandlers and eventhandlers
             services.Scan(scan => scan
@@ -45,7 +44,9 @@ namespace CQRSWeb
                         var allInterfaces = x.GetInterfaces();
                         return
                             allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(IHandler<>)) ||
-                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(ICancellableHandler<>));
+                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(ICancellableHandler<>)) ||
+                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(IQueryHandler<,>)) ||
+                            allInterfaces.Any(y => y.GetTypeInfo().IsGenericType && y.GetTypeInfo().GetGenericTypeDefinition() == typeof(ICancellableQueryHandler<,>));
                     }))
                     .AsSelf()
                     .WithTransientLifetime()

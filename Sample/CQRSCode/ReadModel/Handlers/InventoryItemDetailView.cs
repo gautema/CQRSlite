@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CQRSCode.ReadModel.Dtos;
 using CQRSCode.ReadModel.Events;
 using CQRSCode.ReadModel.Infrastructure;
+using CQRSCode.ReadModel.Queries;
 using CQRSlite.Events;
+using CQRSlite.Queries;
 
 namespace CQRSCode.ReadModel.Handlers
 {
@@ -12,7 +15,8 @@ namespace CQRSCode.ReadModel.Handlers
         ICancellableEventHandler<InventoryItemDeactivated>,
         ICancellableEventHandler<InventoryItemRenamed>,
         ICancellableEventHandler<ItemsRemovedFromInventory>,
-        ICancellableEventHandler<ItemsCheckedInToInventory>
+        ICancellableEventHandler<ItemsCheckedInToInventory>,
+        ICancellableQueryHandler<GetInventoryItemDetails, InventoryItemDetailsDto>
     {
         public Task Handle(InventoryItemCreated message, CancellationToken token)
         {
@@ -58,6 +62,11 @@ namespace CQRSCode.ReadModel.Handlers
         {
             InMemoryDatabase.Details.Remove(message.Id);
             return Task.CompletedTask;
+        }
+
+        public Task<InventoryItemDetailsDto> Handle(GetInventoryItemDetails message, CancellationToken token = default(CancellationToken))
+        {
+            return Task.FromResult(InMemoryDatabase.Details.SingleOrDefault(x => x.Key == message.Id).Value);
         }
     }
 }

@@ -59,6 +59,18 @@ namespace CQRSlite.Tests.Substitutes
                 Handlers.Add(handler);
                 return handler;
             }
+            if (type == typeof(TestGetSomethingHandler))
+            {
+                var handler = new TestGetSomethingHandler();
+                Handlers.Add(handler);
+                return handler;
+            }
+            if (type == typeof(TestGetSomethingHandler2))
+            {
+                var handler = new TestGetSomethingHandler2();
+                Handlers.Add(handler);
+                return handler;
+            }
             if (type == typeof(AllHandler))
             {
                 var handler = new AllHandler();
