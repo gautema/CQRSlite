@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>CqrsLite</id>
-    <version>0.26.0</version>
+    <version>0.27.0</version>
     <authors>Gaute Magnussen</authors>
     <licenseUrl>https://raw.githubusercontent.com/gautema/CQRSlite/master/README.md</licenseUrl>
     <projectUrl>https://github.com/gautema/cqrslite</projectUrl>
@@ -20,7 +20,7 @@
       </group>
       <group targetFramework=".NETStandard2.0">
         <dependency id="Microsoft.CSharp" version="4.5.0" />
-        <dependency id="Microsoft.Extensions.Caching.Memory" version="2.1.2" />
+        <dependency id="Microsoft.Extensions.Caching.Memory" version="2.2.0" />
       </group>
     </dependencies>
   </metadata>
