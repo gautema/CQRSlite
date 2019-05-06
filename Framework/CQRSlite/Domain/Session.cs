@@ -13,7 +13,7 @@ namespace CQRSlite.Domain
     {
         private readonly IRepository _repository;
         private readonly Dictionary<Guid, AggregateDescriptor> _trackedAggregates;
-        
+
         /// <summary>
         /// Initialize Session
         /// </summary>
@@ -66,15 +66,25 @@ namespace CQRSlite.Domain
 
         public async Task Commit(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var tasks = new Task[_trackedAggregates.Count];
-            var i = 0;
-            foreach (var descriptor in _trackedAggregates.Values)
+            try
             {
-                tasks[i] = _repository.Save(descriptor.Aggregate, descriptor.Version, cancellationToken);
-                i++;
+                var tasks = new Task[_trackedAggregates.Count];
+                var i = 0;
+                foreach (var descriptor in _trackedAggregates.Values)
+                {
+                    tasks[i] = _repository.Save(descriptor.Aggregate, descriptor.Version, cancellationToken);
+                    i++;
+                }
+                await Task.WhenAll(tasks).ConfigureAwait(false);
             }
-            await Task.WhenAll(tasks).ConfigureAwait(false);
-            _trackedAggregates.Clear();
+            catch (System.Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                _trackedAggregates.Clear();
+            }
         }
 
         private class AggregateDescriptor
