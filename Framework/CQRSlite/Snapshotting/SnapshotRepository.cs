@@ -9,6 +9,7 @@ using CQRSlite.Infrastructure;
 
 namespace CQRSlite.Snapshotting
 {
+    /// <inheritdoc />
     /// <summary>
     /// Repository decorator that can snapshot aggregates.
     /// </summary>
@@ -24,7 +25,7 @@ namespace CQRSlite.Snapshotting
         /// </summary>
         /// <param name="snapshotStore">ISnapshotStore snapshots should be saved to and fetched from</param>
         /// <param name="snapshotStrategy">ISnapshotStrategy on when to take and if to restore from snapshot</param>
-        /// <param name="repository">Reposiory that gets aggregate from event store</param>
+        /// <param name="repository">Repository that gets aggregate from event store</param>
         /// <param name="eventStore">Event store where events after snapshot can be fetched from</param>
         public SnapshotRepository(ISnapshotStore snapshotStore, ISnapshotStrategy snapshotStrategy, IRepository repository, IEventStore eventStore)
         {
@@ -34,9 +35,9 @@ namespace CQRSlite.Snapshotting
             _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
         }
 
-        public Task Save<T>(T aggregate, int? exectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
+        public Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
         {
-            return Task.WhenAll(TryMakeSnapshot(aggregate), _repository.Save(aggregate, exectedVersion, cancellationToken));
+            return Task.WhenAll(TryMakeSnapshot(aggregate), _repository.Save(aggregate, expectedVersion, cancellationToken));
         }
 
         public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot

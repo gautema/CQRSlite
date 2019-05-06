@@ -4,8 +4,9 @@ using CQRSlite.Domain;
 
 namespace CQRSlite.Snapshotting
 {
+    /// <inheritdoc />
     /// <summary>
-    /// Default implementaion of snapshot strategy interface/
+    /// Default implementation of snapshot strategy interface/
     /// Snapshots aggregates of type SnapshotAggregateRoot every 100th event.
     /// </summary>
     public class DefaultSnapshotStrategy : ISnapshotStrategy

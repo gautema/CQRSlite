@@ -6,7 +6,7 @@ using CQRSlite.Messages;
 namespace CQRSlite.Routing
 {
     /// <summary>
-    /// Interface for handle registation.
+    /// Interface for handle registration.
     /// </summary>
     public interface IHandlerRegistrar
     {

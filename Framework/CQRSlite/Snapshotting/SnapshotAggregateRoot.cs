@@ -2,6 +2,7 @@
 
 namespace CQRSlite.Snapshotting
 {
+    /// <inheritdoc />
     /// <summary>
     /// Class to inherit aggregates that should be snapshotted from.
     /// </summary>

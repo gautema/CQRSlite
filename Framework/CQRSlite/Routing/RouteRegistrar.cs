@@ -92,12 +92,12 @@ namespace CQRSlite.Routing
             }
             else
             {
-                var methodname = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", messageType);
+                var methodName = executorType.GetImplementationNameOfInterfaceMethod(@interface, "Handle", messageType);
                 func = (msg, token) =>
                 {
                     var handler = _serviceLocator.GetService(executorType) ?? 
                         throw new HandlerNotResolvedException(executorType.Name);
-                    return (Task) (handler.Invoke(methodname, msg) ??
+                    return (Task) (handler.Invoke(methodName, msg) ??
                                    throw new ResolvedHandlerMethodNotFoundException(executorType.Name));
                 };
             }
