@@ -77,7 +77,7 @@ namespace CQRSlite.Domain
                 }
                 await Task.WhenAll(tasks).ConfigureAwait(false);
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 throw;
             }
