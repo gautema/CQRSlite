@@ -36,7 +36,7 @@ namespace CQRSlite.Tests.Domain
         [Fact]
         public async Task Should_fail_if_aggregate_do_not_exist()
         {
-            await Assert.ThrowsAsync<AggregateNotFoundException>(async () => await _session.Get<TestAggregate>(Guid.Empty));
+            await Assert.ThrowsAsync<AggregateNotFoundException>(async () => await _session.Get<TestAggregate>(default));
         }
 
         [Fact]

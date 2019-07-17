@@ -61,7 +61,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
         {
             try
             {
-                return await Session.Get<TAggregate>(Guid.Empty);
+                return await Session.Get<TAggregate>(default);
             }
             catch (AggregateNotFoundException)
             {

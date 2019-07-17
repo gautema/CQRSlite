@@ -44,7 +44,7 @@ namespace CQRSlite.Caching
             await @lock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
-                if (aggregate.Id != Guid.Empty && !await _cache.IsTracked(aggregate.Id).ConfigureAwait(false))
+                if (aggregate.Id != default && !await _cache.IsTracked(aggregate.Id).ConfigureAwait(false))
                 {
                     await _cache.Set(aggregate.Id, aggregate).ConfigureAwait(false);
                 }

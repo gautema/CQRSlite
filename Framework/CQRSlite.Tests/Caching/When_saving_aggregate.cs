@@ -40,16 +40,16 @@ namespace CQRSlite.Tests.Caching
         [Fact]
         public async Task Should_not_cache_empty_id()
         {
-            var aggregate = new TestAggregate(Guid.Empty);
+            var aggregate = new TestAggregate(default);
             await _rep.Save(aggregate);
-            Assert.NotEqual(aggregate, await _rep.Get<TestAggregate>(Guid.Empty));
+            Assert.NotEqual(aggregate, await _rep.Get<TestAggregate>(default));
         }
 
         [Fact]
         public async Task Should_forward_cancellation_token()
         {
             var token = new CancellationToken();
-            var aggregate = new TestAggregate(Guid.Empty);
+            var aggregate = new TestAggregate(default);
             await _rep.Save(aggregate, cancellationToken: token);
             Assert.Equal(token, _testEventStore.Token);
         }

@@ -37,11 +37,11 @@ namespace CQRSlite.Domain
                 var i = 0;
                 foreach (var e in changes)
                 {
-                    if (e.Id == Guid.Empty && Id == Guid.Empty)
+                    if (e.Id == default && Id == default)
                     {
                         throw new AggregateOrEventMissingIdException(GetType(), e.GetType());
                     }
-                    if (e.Id == Guid.Empty)
+                    if (e.Id == default)
                     {
                         e.Id = Id;
                     }
@@ -73,7 +73,7 @@ namespace CQRSlite.Domain
                     {
                         throw new EventsOutOfOrderException(e.Id);
                     }
-                    if (Id != default && e.Id != Id)
+                    if (e.Id != Id && Id != default)
                     {
                         throw new EventIdIncorrectException(e.Id, Id);
                     } 

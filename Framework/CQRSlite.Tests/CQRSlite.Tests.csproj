@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>    
-    <TargetFrameworks>net471;netcoreapp2.2;netcoreapp1.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

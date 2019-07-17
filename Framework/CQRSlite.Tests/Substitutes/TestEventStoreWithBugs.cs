@@ -15,7 +15,7 @@ namespace CQRSlite.Tests.Substitutes
 
         public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int version, CancellationToken cancellationToken = default)
         {
-            if (aggregateId == Guid.Empty)
+            if (aggregateId == default)
             {
                 return Task.FromResult((IEnumerable<IEvent>)new List<IEvent>());
             }
