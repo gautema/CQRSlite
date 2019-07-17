@@ -15,6 +15,6 @@ namespace CQRSlite.Messages
         /// <param name="message">Message being handled</param>
         /// <param name="token">Cancellation token from sender/publisher.</param>
         /// <returns>Task that represents handling of message</returns>
-        Task Handle(T message, CancellationToken token = default(CancellationToken));
+        Task Handle(T message, CancellationToken token = default);
     }
 }

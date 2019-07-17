@@ -35,12 +35,12 @@ namespace CQRSlite.Snapshotting
             _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
         }
 
-        public Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
+        public Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default) where T : AggregateRoot
         {
             return Task.WhenAll(TryMakeSnapshot(aggregate), _repository.Save(aggregate, expectedVersion, cancellationToken));
         }
 
-        public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
+        public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot
         {
             var aggregate = AggregateFactory<T>.CreateAggregate();
             var snapshotVersion = await TryRestoreAggregateFromSnapshot(aggregateId, aggregate, cancellationToken).ConfigureAwait(false);

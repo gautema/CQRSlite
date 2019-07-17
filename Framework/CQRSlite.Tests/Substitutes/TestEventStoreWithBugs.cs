@@ -8,12 +8,12 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestEventStoreWithBugs : IEventStore
     {
-        public Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default(CancellationToken))
+        public Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int version, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int version, CancellationToken cancellationToken = default)
         {
             if (aggregateId == Guid.Empty)
             {

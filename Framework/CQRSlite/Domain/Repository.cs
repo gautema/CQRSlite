@@ -38,7 +38,7 @@ namespace CQRSlite.Domain
             _publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
         }
 
-        public async Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
+        public async Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default) where T : AggregateRoot
         {
             if (expectedVersion != null && (await _eventStore.Get(aggregate.Id, expectedVersion.Value, cancellationToken).ConfigureAwait(false)).Any())
             {
@@ -57,12 +57,12 @@ namespace CQRSlite.Domain
             }
         }
 
-        public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
+        public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot
         {
             return LoadAggregate<T>(aggregateId, cancellationToken);
         }
 
-        private async Task<T> LoadAggregate<T>(Guid id, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot
+        private async Task<T> LoadAggregate<T>(Guid id, CancellationToken cancellationToken = default) where T : AggregateRoot
         {
             var events = await _eventStore.Get(id, -1, cancellationToken).ConfigureAwait(false);
             if (!events.Any())

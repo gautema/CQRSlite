@@ -15,6 +15,6 @@ namespace CQRSlite.Commands
         /// <param name="command">Command object to be sent</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>Task representing sending</returns>
-        Task Send<T>(T command, CancellationToken cancellationToken = default(CancellationToken)) where T : class, ICommand;
+        Task Send<T>(T command, CancellationToken cancellationToken = default) where T : class, ICommand;
     }
 }

@@ -6,7 +6,7 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestEventPublisher : IEventPublisher
     {
-        public Task Publish<T>(T @event, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent
+        public Task Publish<T>(T @event, CancellationToken cancellationToken = default) where T : class, IEvent
         {
             Published++;
             Token = cancellationToken;

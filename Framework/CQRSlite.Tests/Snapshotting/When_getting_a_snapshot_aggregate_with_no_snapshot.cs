@@ -27,11 +27,11 @@ namespace CQRSlite.Tests.Snapshotting
 
 	    private class NullSnapshotStore : ISnapshotStore
 	    {
-	        public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default(CancellationToken))
+	        public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default)
 	        {
 	            return Task.FromResult<Snapshot>(null);
 	        }
-            public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default(CancellationToken))
+            public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default)
             {
                 return Task.CompletedTask;
             }

@@ -12,7 +12,7 @@ namespace CQRSlite.Tests.Substitutes
         public readonly List<IEvent> Events = new List<IEvent>();
         public CancellationToken Token { get; set; }
 
-        public Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default(CancellationToken))
+        public Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
         {
             lock (Events)
             {
@@ -22,7 +22,7 @@ namespace CQRSlite.Tests.Substitutes
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
         {
             Token = cancellationToken;
             lock(Events)

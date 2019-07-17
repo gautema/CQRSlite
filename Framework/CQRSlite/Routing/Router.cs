@@ -26,7 +26,7 @@ namespace CQRSlite.Routing
             handlers.Add((message, token) => handler((T)message, token));
         }
 
-        public Task Send<T>(T command, CancellationToken cancellationToken = default(CancellationToken)) where T : class, ICommand
+        public Task Send<T>(T command, CancellationToken cancellationToken = default) where T : class, ICommand
         {
             var type = command.GetType();
             if (!_routes.TryGetValue(type, out var handlers))
@@ -36,7 +36,7 @@ namespace CQRSlite.Routing
             return handlers[0](command, cancellationToken);
         }
 
-        public Task Publish<T>(T @event, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent
+        public Task Publish<T>(T @event, CancellationToken cancellationToken = default) where T : class, IEvent
         {
             if (!_routes.TryGetValue(@event.GetType(), out var handlers))
                 return Task.FromResult(0);
@@ -49,7 +49,7 @@ namespace CQRSlite.Routing
             return Task.WhenAll(tasks);
         }
 
-        public Task<TResponse> Query<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<TResponse> Query<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default)
         {
             var type = query.GetType();
             if (!_routes.TryGetValue(type, out var handlers))

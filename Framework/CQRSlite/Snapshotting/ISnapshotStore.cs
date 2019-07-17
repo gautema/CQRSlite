@@ -15,7 +15,7 @@ namespace CQRSlite.Snapshotting
         /// <param name="id">Id of aggregate</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Task with snapshot</returns>
-        Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Save snapshot to store
@@ -23,6 +23,6 @@ namespace CQRSlite.Snapshotting
         /// <param name="snapshot">The snapshot to save</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Task of operation</returns>
-        Task Save(Snapshot snapshot, CancellationToken cancellationToken = default(CancellationToken));
+        Task Save(Snapshot snapshot, CancellationToken cancellationToken = default);
     }
 }

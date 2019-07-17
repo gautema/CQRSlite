@@ -7,12 +7,12 @@ namespace CQRSlite.Tests.Substitutes
 {
     public class TestInMemorySnapshotStore : ISnapshotStore 
     {
-        public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(_snapshot);
         }
 
-        public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default(CancellationToken))
+        public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default)
         {
             if(snapshot.Version == 0)
                 FirstSaved = true;

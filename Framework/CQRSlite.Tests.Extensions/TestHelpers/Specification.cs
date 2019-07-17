@@ -79,12 +79,12 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public Snapshot Snapshot { get; set; }
 
-        public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(Snapshot);
         }
 
-        public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default(CancellationToken))
+        public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default)
         {
             Snapshot = snapshot;
             return Task.CompletedTask;
@@ -98,7 +98,7 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
             PublishedEvents = new List<IEvent>();
         }
 
-        public Task Publish<T>(T @event, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent
+        public Task Publish<T>(T @event, CancellationToken cancellationToken = default) where T : class, IEvent
         {
             PublishedEvents.Add(@event);
             return Task.CompletedTask;
@@ -119,14 +119,14 @@ namespace CQRSlite.Tests.Extensions.TestHelpers
 
         public List<IEvent> Events { get; set; }
 
-        public Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default(CancellationToken))
+        public Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
         {
             Events.AddRange(events);
             return Task.WhenAll(events.Select(evt =>_publisher.Publish(evt, cancellationToken)));
                 
         }
 
-        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
         {
             var events = Events.Where(x => x.Id == aggregateId && x.Version > fromVersion);
             return Task.FromResult(events);

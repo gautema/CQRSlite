@@ -15,6 +15,6 @@ namespace CQRSlite.Events
         /// <param name="event">Event object to be sent</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>Task representing publishing</returns>
-        Task Publish<T>(T @event, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent;
+        Task Publish<T>(T @event, CancellationToken cancellationToken = default) where T : class, IEvent;
     }
 }

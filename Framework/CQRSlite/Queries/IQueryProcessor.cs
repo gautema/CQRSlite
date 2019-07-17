@@ -15,6 +15,6 @@ namespace CQRSlite.Queries
         /// <param name="query">Query object to be sent</param>
         /// <param name="cancellationToken">Optional cancellation token</param>
         /// <returns>Task representing sending</returns>
-        Task<TResponse> Query<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TResponse> Query<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken = default);
     }
 }

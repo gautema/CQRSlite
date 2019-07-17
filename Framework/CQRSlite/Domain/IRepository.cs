@@ -17,7 +17,7 @@ namespace CQRSlite.Domain
         /// <param name="expectedVersion">Expected version saved from earlier. -1 if new.</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <returns>Task of operation</returns>
-        Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot;
+        Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default) where T : AggregateRoot;
 
         /// <summary>
         /// Fetches aggregate
@@ -26,6 +26,6 @@ namespace CQRSlite.Domain
         /// <param name="aggregateId">Id of aggregate</param>
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <returns>Task with aggregate as result</returns>
-        Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default(CancellationToken)) where T : AggregateRoot;
+        Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot;
     }
 }

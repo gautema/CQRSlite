@@ -87,7 +87,7 @@ namespace CQRSlite.Domain
 
         /// <summary>
         /// Overrideable method for applying events on aggregate
-        /// This is called interally when rehydrating aggregates.
+        /// This is called internally when rehydrating aggregates.
         /// Can be overridden if you want custom handling.
         /// </summary>
         /// <param name="event">Event to apply</param>
