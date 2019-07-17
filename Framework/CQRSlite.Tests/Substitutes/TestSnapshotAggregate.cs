@@ -7,7 +7,12 @@ namespace CQRSlite.Tests.Substitutes
     {
         public TestSnapshotAggregate()
         {
-            Id = Guid.NewGuid();
+            Id = default;
+        }
+
+        public TestSnapshotAggregate(Guid id)
+        {
+            Id = id;
         }
 
         public bool Restored { get; private set; }

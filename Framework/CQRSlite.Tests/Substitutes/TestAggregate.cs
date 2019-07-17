@@ -1,5 +1,6 @@
 ﻿using System;
 using CQRSlite.Domain;
+using CQRSlite.Events;
 
 namespace CQRSlite.Tests.Substitutes
 {
@@ -27,6 +28,12 @@ namespace CQRSlite.Tests.Substitutes
         public void Apply(TestAggregateDidSomething e)
         {
             DidSomethingCount++;
+        }
+
+        public void ApplyChangeProxy(IEvent e)
+        {
+            ApplyChange(e);
+
         }
     }
 }

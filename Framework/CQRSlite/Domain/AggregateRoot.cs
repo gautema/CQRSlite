@@ -35,19 +35,23 @@ namespace CQRSlite.Domain
             {
                 var changes = _changes.ToArray();
                 var i = 0;
-                foreach (var @event in changes)
+                foreach (var e in changes)
                 {
-                    if (@event.Id == Guid.Empty && Id == Guid.Empty)
+                    if (e.Id == Guid.Empty && Id == Guid.Empty)
                     {
-                        throw new AggregateOrEventMissingIdException(GetType(), @event.GetType());
+                        throw new AggregateOrEventMissingIdException(GetType(), e.GetType());
                     }
-                    if (@event.Id == Guid.Empty)
+                    if (e.Id == Guid.Empty)
                     {
-                        @event.Id = Id;
+                        e.Id = Id;
+                    }
+                    if (e.Id != Id)
+                    {
+                        throw new EventIdIncorrectException(e.Id, Id);
                     }
                     i++;
-                    @event.Version = Version + i;
-                    @event.TimeStamp = DateTimeOffset.UtcNow;
+                    e.Version = Version + i;
+                    e.TimeStamp = DateTimeOffset.UtcNow;
                 }
                 Version = Version + changes.Length;
                 _changes.Clear();
@@ -69,6 +73,10 @@ namespace CQRSlite.Domain
                     {
                         throw new EventsOutOfOrderException(e.Id);
                     }
+                    if (Id != default && e.Id != Id)
+                    {
+                        throw new EventIdIncorrectException(e.Id, Id);
+                    } 
                     ApplyEvent(e);
                     Id = e.Id;
                     Version++;

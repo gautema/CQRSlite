@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CQRSlite.Domain;
 using CQRSlite.Snapshotting;
@@ -20,7 +21,8 @@ namespace CQRSlite.Tests.Snapshotting
             var snapshotStrategy = new DefaultSnapshotStrategy();
             var repository = new SnapshotRepository(_snapshotStore, snapshotStrategy, new Repository(_eventStore), _eventStore);
             var session = new Session(repository);
-            var aggregate = new TestSnapshotAggregate();
+            var aggregate = new TestSnapshotAggregate(Guid.NewGuid());
+            
             _token = new CancellationToken();
 
             for (var i = 0; i < 200; i++)
