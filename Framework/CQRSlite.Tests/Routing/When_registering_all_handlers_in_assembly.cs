@@ -62,7 +62,7 @@ namespace CQRSlite.Tests.Routing
 #endif
                 }
             }
-            Assert.Equal(13, _locator.Handlers.Count);
+            Assert.Equal(14, _locator.Handlers.Count);
         }
 
         [Fact]

@@ -22,7 +22,7 @@ namespace CQRSlite.Tests.Routing
             _locator = new TestServiceLocator(_testHandleRegistrar);
             var register = new RouteRegistrar(_locator);
             register.RegisterHandlers(
-                typeof(TestAggregateDoSomethingHandler), 
+                typeof(TestAggregateDoSomethingHandler),
                 typeof(TestAggregateDoSomethingElseHandler),
                 typeof(AbstractTestAggregateDoSomethingElseHandler),
                 typeof(TestAggregateDoSomethingHandlerExplicit),
@@ -68,7 +68,7 @@ namespace CQRSlite.Tests.Routing
 #endif
                 }
             }
-            Assert.Equal(9, _locator.Handlers.Count);
+            Assert.Equal(10, _locator.Handlers.Count);
         }
 
         [Fact]
