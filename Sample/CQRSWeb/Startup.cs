@@ -22,7 +22,7 @@ namespace CQRSWeb
     public class Startup
     {
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMemoryCache();
 
@@ -51,50 +51,23 @@ namespace CQRSWeb
                     .AsSelf()
                     .WithTransientLifetime()
             );
-            // Add framework services.
-            services.AddMvc();
-
-            //Register routes
+            services.AddControllersWithViews();
             services.AddHttpContextAccessor(); // No longer registered by default in ASP.NET Core 2.1
-            var serviceProvider = services.BuildServiceProvider();
-            var registrar = new RouteRegistrar(new Provider(serviceProvider));
-            registrar.RegisterInAssemblyOf(typeof(InventoryCommandHandlers));
-
-            return serviceProvider;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
+            app.UseRouting();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
-    }
-
-
-    //This makes scoped services work inside router.
-    public class Provider : IServiceProvider
-    {
-        private readonly ServiceProvider _serviceProvider;
-        private readonly IHttpContextAccessor _contextAccessor;
-
-        public Provider(ServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-            _contextAccessor = _serviceProvider.GetService<IHttpContextAccessor>();
-        }
-
-        public object GetService(Type serviceType)
-        {
-            return _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
-                   _serviceProvider.GetService(serviceType);
         }
     }
 }
