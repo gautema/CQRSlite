@@ -11,22 +11,24 @@ namespace CQRSlite.Snapshotting
     /// </summary>
     public class DefaultSnapshotStrategy : ISnapshotStrategy
     {
-        private int snapshotInterval = 100;
+        private readonly ushort _snapshotInterval = 100;
 
         public DefaultSnapshotStrategy() { }
-        public DefaultSnapshotStrategy(int interval)
+        public DefaultSnapshotStrategy(ushort interval)
         {
-            snapshotInterval = interval;
+            _snapshotInterval = interval;
         }
 
         public bool IsSnapshotable(Type aggregateType)
         {
-            if (aggregateType.GetTypeInfo().BaseType == null)
-                return false;
-            if (aggregateType.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType &&
-                aggregateType.GetTypeInfo().BaseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
-                return true;
-            return IsSnapshotable(aggregateType.GetTypeInfo().BaseType);
+            while (true)
+            {
+                if (aggregateType.GetTypeInfo().BaseType == null) return false;
+                if (aggregateType.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType && 
+                    aggregateType.GetTypeInfo().BaseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>)) 
+                    return true;
+                aggregateType = aggregateType.GetTypeInfo().BaseType;
+            }
         }
 
         public bool ShouldMakeSnapShot(AggregateRoot aggregate)
@@ -36,7 +38,7 @@ namespace CQRSlite.Snapshotting
 
             var i = aggregate.Version;
             for (var j = 0; j < aggregate.GetUncommittedChanges().Length; j++)
-                if (++i % snapshotInterval == 0 && i != 0)
+                if (++i % _snapshotInterval == 0 && i != 0)
                     return true;
             return false;
         }
