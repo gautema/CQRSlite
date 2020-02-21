@@ -2,14 +2,14 @@
 <package>
   <metadata>
     <id>CqrsLite</id>
-    <version>1.30.0</version>
+    <version>1.30.1</version>
     <authors>Gaute Magnussen</authors>
     <license type="file">license.md</license>
     <projectUrl>https://github.com/gautema/cqrslite</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/gautema/gautema_logo/master/gautema_logo64.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</description>
-    <copyright>Copyright 2019</copyright>
+    <copyright>Copyright 2020</copyright>
     <dependencies>
       <group targetFramework=".NETFramework4.5.2">
       </group>
@@ -20,7 +20,7 @@
       </group>
       <group targetFramework=".NETStandard2.0">
         <dependency id="Microsoft.CSharp" version="4.5.0" />
-        <dependency id="Microsoft.Extensions.Caching.Memory" version="2.2.0" />
+        <dependency id="Microsoft.Extensions.Caching.Memory" version="3.1.2" />
       </group>
     </dependencies>
   </metadata>

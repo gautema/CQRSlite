@@ -29,7 +29,7 @@ Great introductions to CQRS and CQRSlite have been written by others. Here are t
 To install CQRSlite, it you could either download the files and copy whats needed into your project, you can clone this project and reference it, or you can download releases from nuget. You will have to implement your own eventstore or use an exsiting eventstore with an adapter to fit the IEventStore interface.
 
 ## License
-Copyright 2019 Gaute Magnussen
+Copyright 2020 Gaute Magnussen
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
