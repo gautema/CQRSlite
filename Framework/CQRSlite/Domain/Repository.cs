@@ -44,6 +44,11 @@ namespace CQRSlite.Domain
             {
                 throw new ConcurrencyException(aggregate.Id);
             }
+            else if(expectedVersion == null)
+            {
+                var savedChanges = await _eventStore.Get(aggregate.Id, aggregate.Version, cancellationToken).ConfigureAwait(false);
+                aggregate.LoadFromHistory(savedChanges);
+            }
 
             var changes = aggregate.FlushUncommittedChanges();
             await _eventStore.Save(changes, cancellationToken).ConfigureAwait(false);
