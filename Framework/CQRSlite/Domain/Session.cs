@@ -68,14 +68,10 @@ namespace CQRSlite.Domain
         {
             try
             {
-                var tasks = new Task[_trackedAggregates.Count];
-                var i = 0;
                 foreach (var descriptor in _trackedAggregates.Values)
                 {
-                    tasks[i] = _repository.Save(descriptor.Aggregate, descriptor.Version, cancellationToken);
-                    i++;
+                    await _repository.Save(descriptor.Aggregate, descriptor.Version, cancellationToken).ConfigureAwait(false);
                 }
-                await Task.WhenAll(tasks).ConfigureAwait(false);
             }
             finally
             {
