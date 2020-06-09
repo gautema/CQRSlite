@@ -8,7 +8,7 @@ namespace CQRSlite.Infrastructure
         internal static string GetImplementationNameOfInterfaceMethod(this Type implementation, Type @interface,
             string methodName, params Type[] argtypes)
         {
-#if NET452 || NETSTANDARD2_0
+#if NET452 || NETSTANDARD2_0 || NETSTANDARD2_1
             var map = implementation.GetInterfaceMap(@interface);
             var method = map.InterfaceMethods.Single(x =>
                 x.Name == methodName && x.GetParameters().Select(p => p.ParameterType).SequenceEqual(argtypes));
