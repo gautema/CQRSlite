@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1;net452</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1;</TargetFrameworks>
     <Description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</Description>
     <Copyright>Copyright Gaute Magnussen</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -18,10 +18,14 @@
     <BaselineAllAPICompatError>true</BaselineAllAPICompatError>
     <AdditionalApiCompatOptions>--exclude-non-browsable --exclude-compiler-generated</AdditionalApiCompatOptions>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageIcon>logo.png</PackageIcon>
+    <authors>Gaute Magnussen</authors>
+    <owners>Gaute Magnussen</owners>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="../../LICENSE.md" Pack="true" PackagePath="LICENSE.md"/>
+    <None Include="../../assets/logo.png" Pack="true" PackagePath="logo.png"/>
   </ItemGroup>
 
   <ItemGroup>
