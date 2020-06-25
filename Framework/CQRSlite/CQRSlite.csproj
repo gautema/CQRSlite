@@ -3,7 +3,6 @@
     <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1;net452</TargetFrameworks>
     <Description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</Description>
     <Copyright>Copyright Gaute Magnussen</Copyright>
-    <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
