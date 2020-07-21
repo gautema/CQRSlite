@@ -54,7 +54,10 @@ namespace CQRSlite.Caching
 #if NET452
             _cache.Add(id.ToString(), aggregate, _policyFactory.Invoke());
 #else
-            _cache.Set(id, aggregate, _cacheOptions);
+            lock (_cacheOptions)
+            {
+                _cache.Set(id, aggregate, _cacheOptions);
+            }
 #endif
             return Task.FromResult(0);
         }
@@ -64,7 +67,7 @@ namespace CQRSlite.Caching
 #if NET452
             return Task.FromResult((AggregateRoot)_cache.Get(id.ToString()));
 #else
-            return Task.FromResult((AggregateRoot) _cache.Get(id));
+            return Task.FromResult((AggregateRoot)_cache.Get(id));
 #endif
         }
 
@@ -90,10 +93,13 @@ namespace CQRSlite.Caching
                 }
             };
 #else
-            _cacheOptions.RegisterPostEvictionCallback((key, value, reason, state) =>
+            lock (_cacheOptions)
             {
-                action.Invoke((Guid) key);
-            });
+                _cacheOptions.RegisterPostEvictionCallback((key, value, reason, state) =>
+                {
+                    action.Invoke((Guid)key);
+                });
+            }
 #endif
         }
     }
