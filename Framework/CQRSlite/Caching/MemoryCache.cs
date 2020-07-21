@@ -5,6 +5,7 @@ using CQRSlite.Domain;
 using System.Runtime.Caching;
 #else
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 #endif
 
 namespace CQRSlite.Caching
@@ -18,7 +19,7 @@ namespace CQRSlite.Caching
         private readonly System.Runtime.Caching.MemoryCache _cache;
         private Func<CacheItemPolicy> _policyFactory;
 #else
-        private readonly MemoryCacheEntryOptions _cacheOptions;
+        private Func<MemoryCacheEntryOptions> _optionsFactory;
         private readonly IMemoryCache _cache;
 #endif
 
@@ -31,7 +32,7 @@ namespace CQRSlite.Caching
                 SlidingExpiration = TimeSpan.FromMinutes(15)
             };
 #else
-            _cacheOptions = new MemoryCacheEntryOptions
+            _optionsFactory = () => new MemoryCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromMinutes(15)
             };
@@ -54,10 +55,7 @@ namespace CQRSlite.Caching
 #if NET452
             _cache.Add(id.ToString(), aggregate, _policyFactory.Invoke());
 #else
-            lock (_cacheOptions)
-            {
-                _cache.Set(id, aggregate, _cacheOptions);
-            }
+            _cache.Set(id, aggregate, _optionsFactory.Invoke());
 #endif
             return Task.FromResult(0);
         }
@@ -93,13 +91,18 @@ namespace CQRSlite.Caching
                 }
             };
 #else
-            lock (_cacheOptions)
+            _optionsFactory = _optionsFactory = () =>
             {
-                _cacheOptions.RegisterPostEvictionCallback((key, value, reason, state) =>
+                var options = new MemoryCacheEntryOptions
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(15)
+                };
+                options.RegisterPostEvictionCallback((key, value, reason, state) =>
                 {
                     action.Invoke((Guid)key);
                 });
-            }
+                return options;
+            };
 #endif
         }
     }
