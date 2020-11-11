@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1;net452</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;net5.0</TargetFrameworks>
     <Description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</Description>
     <Copyright>Copyright Gaute Magnussen</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -8,7 +8,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageId>CqrsLite</PackageId>
     <PackageTags>CQRS;Eventsourcing;queries;commands;</PackageTags>
-    <Version>1.32.2</Version>
+    <Version>1.33.0</Version>
     <PackageProjectUrl>https://github.com/gautema/cqrslite</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/gautema/cqrslite</RepositoryUrl>
@@ -21,11 +21,12 @@
     <PackageIcon>logo.png</PackageIcon>
     <authors>Gaute Magnussen</authors>
     <owners>Gaute Magnussen</owners>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../../LICENSE.md" Pack="true" PackagePath="LICENSE.md"/>
-    <None Include="../../assets/logo.png" Pack="true" PackagePath="logo.png"/>
+    <None Include="../../LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
+    <None Include="../../assets/logo.png" Pack="true" PackagePath="logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,9 +40,9 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1' ">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' ">
@@ -53,11 +54,5 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.0.2" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452' ">
-    <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 </Project>
