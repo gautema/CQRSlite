@@ -1,6 +1,7 @@
 ﻿using CQRSlite.Domain.Exception;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,16 +67,12 @@ namespace CQRSlite.Domain
 
         public async Task Commit(CancellationToken cancellationToken = default)
         {
-            try
+            var aggregates = _trackedAggregates.Values.ToArray();
+            _trackedAggregates.Clear();
+
+            foreach (var descriptor in aggregates)
             {
-                foreach (var descriptor in _trackedAggregates.Values)
-                {
-                    await _repository.Save(descriptor.Aggregate, descriptor.Version, cancellationToken).ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                _trackedAggregates.Clear();
+                await _repository.Save(descriptor.Aggregate, descriptor.Version, cancellationToken).ConfigureAwait(false);
             }
         }
 

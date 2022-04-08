@@ -8,7 +8,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageId>CqrsLite</PackageId>
     <PackageTags>CQRS;Eventsourcing;queries;commands;</PackageTags>
-    <Version>1.34.0</Version>
+    <Version>1.35.0</Version>
     <PackageProjectUrl>https://github.com/gautema/cqrslite</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/gautema/cqrslite</RepositoryUrl>
