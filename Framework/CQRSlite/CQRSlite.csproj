@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.3;netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <Description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</Description>
     <Copyright>Copyright Gaute Magnussen</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -8,7 +8,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageId>CqrsLite</PackageId>
     <PackageTags>CQRS;Eventsourcing;queries;commands;</PackageTags>
-    <Version>1.33.0</Version>
+    <Version>1.34.0</Version>
     <PackageProjectUrl>https://github.com/gautema/cqrslite</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/gautema/cqrslite</RepositoryUrl>
@@ -21,7 +21,7 @@
     <PackageIcon>logo.png</PackageIcon>
     <authors>Gaute Magnussen</authors>
     <owners>Gaute Magnussen</owners>
-    <LangVersion>9</LangVersion>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,26 +33,17 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard1.3'">
-    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0' ">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' ">
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.2" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3' ">
-    <PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.0.2" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
   </ItemGroup>
 </Project>
