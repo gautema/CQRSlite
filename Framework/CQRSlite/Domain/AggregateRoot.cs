@@ -47,7 +47,7 @@ namespace CQRSlite.Domain
                     }
                     if (e.Id != Id)
                     {
-                        throw new EventIdIncorrectException(e.Id, Id);
+                        throw new EventIdIncorrectException(e.Id, Id, e.GetType());
                     }
                     i++;
                     e.Version = Version + i;
@@ -75,7 +75,7 @@ namespace CQRSlite.Domain
                     }
                     if (e.Id != Id && Id != default)
                     {
-                        throw new EventIdIncorrectException(e.Id, Id);
+                        throw new EventIdIncorrectException(e.Id, Id, e.GetType());
                     } 
                     ApplyEvent(e);
                     Id = e.Id;
