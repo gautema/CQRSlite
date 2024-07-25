@@ -14,10 +14,7 @@ namespace CQRSlite.Snapshotting
         private readonly ushort _snapshotInterval = 100;
 
         public DefaultSnapshotStrategy() { }
-        public DefaultSnapshotStrategy(ushort interval)
-        {
-            _snapshotInterval = interval;
-        }
+        public DefaultSnapshotStrategy(ushort interval) => _snapshotInterval = interval;
 
         public bool IsSnapshotable(Type aggregateType)
         {

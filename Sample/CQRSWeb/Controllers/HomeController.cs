@@ -33,10 +33,7 @@ namespace CQRSWeb.Controllers
             return View();
         }
 
-        public ActionResult Add()
-        {
-            return View();
-        }
+        public ActionResult Add() => View();
 
         [HttpPost]
         public async Task<ActionResult> Add(string name, CancellationToken cancellationToken)

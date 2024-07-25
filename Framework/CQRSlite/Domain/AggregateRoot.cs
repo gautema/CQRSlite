@@ -99,9 +99,6 @@ namespace CQRSlite.Domain
         /// Can be overridden if you want custom handling.
         /// </summary>
         /// <param name="event">Event to apply</param>
-        protected virtual void ApplyEvent(IEvent @event)
-        {
-            this.Invoke("Apply", @event);
-        }
+        protected virtual void ApplyEvent(IEvent @event) => this.Invoke("Apply", @event);
     }
 }

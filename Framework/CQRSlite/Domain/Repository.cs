@@ -20,10 +20,7 @@ namespace CQRSlite.Domain
         /// Initialize Repository
         /// </summary>
         /// <param name="eventStore">EventStore to get events from</param>
-        public Repository(IEventStore eventStore)
-        {
-            _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
-        }
+        public Repository(IEventStore eventStore) => _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
 
         /// <summary>
         /// Initialize Repository with publisher that sends all saved events to handlers.
@@ -62,10 +59,8 @@ namespace CQRSlite.Domain
             }
         }
 
-        public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot
-        {
-            return LoadAggregate<T>(aggregateId, cancellationToken);
-        }
+        public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot => 
+            LoadAggregate<T>(aggregateId, cancellationToken);
 
         private async Task<T> LoadAggregate<T>(Guid id, CancellationToken cancellationToken = default) where T : AggregateRoot
         {

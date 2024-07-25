@@ -8,15 +8,9 @@ namespace CQRSCode.WriteModel.Domain
     {
         private bool _activated;
 
-        private void Apply(InventoryItemCreated e)
-        {
-            _activated = true;
-        }
+        private void Apply(InventoryItemCreated e) => _activated = true;
 
-        private void Apply(InventoryItemDeactivated e)
-        {
-            _activated = false;
-        }
+        private void Apply(InventoryItemDeactivated e) => _activated = false;
 
         public void ChangeName(string newName)
         {

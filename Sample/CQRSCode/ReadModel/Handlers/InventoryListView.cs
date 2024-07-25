@@ -34,9 +34,7 @@ namespace CQRSCode.ReadModel.Handlers
             return Task.CompletedTask;
         }
 
-        public Task<List<InventoryItemListDto>> Handle(GetInventoryItems message, CancellationToken token = default)
-        {
-            return Task.FromResult(InMemoryDatabase.List);
-        }
+        public Task<List<InventoryItemListDto>> Handle(GetInventoryItems message, CancellationToken token = default) =>
+            Task.FromResult(InMemoryDatabase.List);
     }
 }
