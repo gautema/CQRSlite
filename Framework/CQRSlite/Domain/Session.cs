@@ -60,10 +60,7 @@ namespace CQRSlite.Domain
             return aggregate;
         }
 
-        private bool IsTracked(Guid id)
-        {
-            return _trackedAggregates.ContainsKey(id);
-        }
+        private bool IsTracked(Guid id) => _trackedAggregates.ContainsKey(id);
 
         public async Task Commit(CancellationToken cancellationToken = default)
         {

@@ -23,10 +23,7 @@ namespace CQRSlite.Caching
             _cache = new Microsoft.Extensions.Caching.Memory.MemoryCache(new MemoryCacheOptions());
         }
 
-        public Task<bool> IsTracked(Guid id)
-        {
-            return Task.FromResult(_cache.TryGetValue(id, out var o) && o != null);
-        }
+        public Task<bool> IsTracked(Guid id) => Task.FromResult(_cache.TryGetValue(id, out var o) && o != null);
 
         public Task Set(Guid id, AggregateRoot aggregate)
         {
@@ -34,10 +31,7 @@ namespace CQRSlite.Caching
             return Task.FromResult(0);
         }
 
-        public Task<AggregateRoot> Get(Guid id)
-        {
-            return Task.FromResult((AggregateRoot)_cache.Get(id));
-        }
+        public Task<AggregateRoot> Get(Guid id) => Task.FromResult((AggregateRoot)_cache.Get(id));
 
         public Task Remove(Guid id)
         {
@@ -45,8 +39,7 @@ namespace CQRSlite.Caching
             return Task.FromResult(0);
         }
 
-        public void RegisterEvictionCallback(Action<Guid> action)
-        {
+        public void RegisterEvictionCallback(Action<Guid> action) =>
             _optionsFactory = _optionsFactory = () =>
             {
                 var options = new MemoryCacheEntryOptions
@@ -59,6 +52,6 @@ namespace CQRSlite.Caching
                 });
                 return options;
             };
-        }
+
     }
 }

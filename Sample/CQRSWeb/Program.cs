@@ -27,10 +27,7 @@ namespace CQRSWeb
 
         public class RouteRegistrarProviderFactory : IServiceProviderFactory<IServiceCollection>
         {
-            public IServiceCollection CreateBuilder(IServiceCollection services)
-            {
-                return services;
-            }
+            public IServiceCollection CreateBuilder(IServiceCollection services) => services;
 
             public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
             {
@@ -52,11 +49,9 @@ namespace CQRSWeb
                 _contextAccessor = _serviceProvider.GetService<IHttpContextAccessor>();
             }
 
-            public object GetService(Type serviceType)
-            {
-                return _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
+            public object GetService(Type serviceType) =>
+                _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
                        _serviceProvider.GetService(serviceType);
-            }
         }
 
     }
