@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>    
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">netcoreapp3.0;netcoreapp2.1;net471</TargetFrameworks>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>10</LangVersion>
   </PropertyGroup>
 

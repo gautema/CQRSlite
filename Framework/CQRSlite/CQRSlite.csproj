@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net9.0</TargetFrameworks>
     <Description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</Description>
     <Copyright>Copyright Gaute Magnussen</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -8,7 +8,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <PackageId>CqrsLite</PackageId>
     <PackageTags>CQRS;Eventsourcing;queries;commands;</PackageTags>
-    <Version>1.35.0</Version>
+    <Version>1.35.1</Version>
     <PackageProjectUrl>https://github.com/gautema/cqrslite</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/gautema/cqrslite</RepositoryUrl>
@@ -37,7 +37,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0' ">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.3" />
   </ItemGroup>
