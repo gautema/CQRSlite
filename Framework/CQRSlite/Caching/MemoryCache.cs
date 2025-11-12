@@ -6,22 +6,15 @@ using Microsoft.Extensions.Caching.Memory;
 namespace CQRSlite.Caching
 {
     /// <summary>
-    /// A cache implementation that has cache in memory and 15 minutes sliding expiration.
+    /// A cache implementation that has cache in memory and 15-minute sliding expiration.
     /// </summary>
     public class MemoryCache : ICache
     {
-        private Func<MemoryCacheEntryOptions> _optionsFactory;
-        private readonly IMemoryCache _cache;
-
-        public MemoryCache()
+        private Func<MemoryCacheEntryOptions> _optionsFactory = () => new MemoryCacheEntryOptions
         {
-
-            _optionsFactory = () => new MemoryCacheEntryOptions
-            {
-                SlidingExpiration = TimeSpan.FromMinutes(15)
-            };
-            _cache = new Microsoft.Extensions.Caching.Memory.MemoryCache(new MemoryCacheOptions());
-        }
+            SlidingExpiration = TimeSpan.FromMinutes(15)
+        };
+        private readonly IMemoryCache _cache = new Microsoft.Extensions.Caching.Memory.MemoryCache(new MemoryCacheOptions());
 
         public Task<bool> IsTracked(Guid id)
         {
