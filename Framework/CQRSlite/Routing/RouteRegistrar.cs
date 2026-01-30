@@ -24,10 +24,8 @@ namespace CQRSlite.Routing
         /// Initialize a new instance of <cref>RouteRegister</cref> class.
         /// </summary>
         /// <param name="serviceLocator">Service locator that can resolve all handlers</param>
-        public RouteRegistrar(IServiceProvider serviceLocator)
-        {
+        public RouteRegistrar(IServiceProvider serviceLocator) =>
             _serviceLocator = serviceLocator ?? throw new ArgumentNullException(nameof(serviceLocator));
-        }
 
         /// <summary>
         /// Register all command and event handlers in assembly

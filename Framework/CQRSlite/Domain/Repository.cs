@@ -59,10 +59,8 @@ namespace CQRSlite.Domain
             }
         }
 
-        public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot
-        {
-            return LoadAggregate<T>(aggregateId, cancellationToken);
-        }
+        public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot => 
+            LoadAggregate<T>(aggregateId, cancellationToken);
 
         private async Task<T> LoadAggregate<T>(Guid id, CancellationToken cancellationToken = default) where T : AggregateRoot
         {

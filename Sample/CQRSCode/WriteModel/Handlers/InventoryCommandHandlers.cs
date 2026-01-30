@@ -15,10 +15,7 @@ namespace CQRSCode.WriteModel.Handlers
     {
         private readonly ISession _session;
 
-        public InventoryCommandHandlers(ISession session)
-        {
-            _session = session;
-        }
+        public InventoryCommandHandlers(ISession session) => _session = session;
 
         public async Task Handle(CreateInventoryItem message)
         {

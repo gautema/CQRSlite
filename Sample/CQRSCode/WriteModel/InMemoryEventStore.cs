@@ -12,10 +12,7 @@ namespace CQRSCode.WriteModel
         private readonly IEventPublisher _publisher;
         private readonly Dictionary<Guid, List<IEvent>> _inMemoryDb = new Dictionary<Guid, List<IEvent>>();
 
-        public InMemoryEventStore(IEventPublisher publisher)
-        {
-            _publisher = publisher;
-        }
+        public InMemoryEventStore(IEventPublisher publisher) => _publisher = publisher;
 
         public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
         {
