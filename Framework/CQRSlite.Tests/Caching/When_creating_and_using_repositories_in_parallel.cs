@@ -11,7 +11,7 @@ public class When_creating_and_using_repositories_in_parallel
 
     private readonly ICache _cache;
 
-    private Exception _exception;
+    private Exception? _exception;
 
     public When_creating_and_using_repositories_in_parallel()
     {
