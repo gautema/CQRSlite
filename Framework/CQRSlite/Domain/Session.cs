@@ -24,7 +24,10 @@ public class Session : ISession
     {
         if (!IsTracked(aggregate.Id))
         {
-            _trackedAggregates.Add(aggregate.Id, new AggregateDescriptor(aggregate, aggregate.Version));
+            var expectedVersion = aggregate.Version;
+            // Capture the save here, where T is known, so the repository gets Save<T> rather than Save<AggregateRoot>
+            _trackedAggregates.Add(aggregate.Id, new AggregateDescriptor(aggregate,
+                token => _repository.Save(aggregate, expectedVersion, token)));
         }
         else if (_trackedAggregates[aggregate.Id].Aggregate != aggregate)
         {
@@ -67,13 +70,13 @@ public class Session : ISession
 
         foreach (var descriptor in aggregates)
         {
-            await _repository.Save(descriptor.Aggregate, descriptor.Version, cancellationToken).ConfigureAwait(false);
+            await descriptor.Save(cancellationToken).ConfigureAwait(false);
         }
     }
 
-    private sealed class AggregateDescriptor(AggregateRoot aggregate, int version)
+    private sealed class AggregateDescriptor(AggregateRoot aggregate, Func<CancellationToken, Task> save)
     {
         public AggregateRoot Aggregate { get; } = aggregate;
-        public int Version { get; } = version;
+        public Func<CancellationToken, Task> Save { get; } = save;
     }
 }
