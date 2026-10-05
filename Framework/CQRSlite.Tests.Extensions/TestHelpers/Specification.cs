@@ -1,6 +1,5 @@
 ﻿using CQRSlite.Commands;
 using CQRSlite.Domain;
-using CQRSlite.Domain.Exception;
 using CQRSlite.Events;
 using CQRSlite.Snapshotting;
 
@@ -25,13 +24,14 @@ public abstract class Specification<TAggregate, THandler, TCommand>
     public Specification()
     {
         var eventpublisher = new SpecEventPublisher();
-        var eventstorage = new SpecEventStorage(eventpublisher, Given().ToList());
+        var given = Given().ToList();
+        var eventstorage = new SpecEventStorage(eventpublisher, given);
         var snapshotstorage = new SpecSnapShotStorage(Snapshot);
 
         var snapshotStrategy = new DefaultSnapshotStrategy();
         var repository = new SnapshotRepository(snapshotstorage, snapshotStrategy, new Repository(eventstorage), eventstorage);
         Session = new Session(repository);
-        Aggregate = GetAggregate().Result;
+        Aggregate = GetAggregate(given).GetAwaiter().GetResult();
 
         var handler = BuildHandler();
         var handling = handler switch
@@ -47,16 +47,14 @@ public abstract class Specification<TAggregate, THandler, TCommand>
         EventDescriptors = eventstorage.Events;
     }
 
-    private async Task<TAggregate?> GetAggregate()
+    // Loaded through the session, so after the command it is the same instance the handler changed
+    private async Task<TAggregate?> GetAggregate(List<IEvent> given)
     {
-        try
-        {
-            return await Session.Get<TAggregate>(default);
-        }
-        catch (AggregateNotFoundException)
+        if (given.Count == 0)
         {
             return null;
         }
+        return await Session.Get<TAggregate>(given[0].Id);
     }
 }
 
