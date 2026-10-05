@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
-    <Version>1.36.0</Version>
+    <Version>1.36.1</Version>
     <PackageId>CqrsLite</PackageId>
     <Description>A lightweight framework to help write CQRS and Eventsourcing applications in C#</Description>
     <Authors>Gaute Magnussen</Authors>
