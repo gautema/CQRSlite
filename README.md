@@ -3,221 +3,106 @@
 [![Build](https://github.com/gautema/cqrslite/actions/workflows/ci.yml/badge.svg)](https://github.com/gautema/cqrslite/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/vpre/cqrslite.svg)](https://www.nuget.org/packages/cqrslite)
 
-A lightweight CQRS and Event Sourcing framework for .NET
+CQRSlite is a small framework for building applications with CQRS and event sourcing in C#. It gives you the building blocks (aggregates, a unit of work, repositories, a message router, snapshots and caching) and stays out of the way of everything else. Every part is behind an interface, so any of it can be replaced.
 
-## Overview
-
-CQRSlite is a small, focused CQRS (Command Query Responsibility Segregation) and Event Sourcing framework for .NET. It provides the essential building blocks for implementing CQRS/ES patterns while maintaining flexibility and pluggability.
-
-**Key Characteristics:**
-- Minimal dependencies (only Microsoft.Extensions.Caching.Memory)
-- Targets netstandard2.0 and net10.0
-- Convention-based event application with performance optimization
-- Pluggable architecture - replace any component with custom implementations
-- Thread-safe caching and repository decorators
-
-CQRSlite originated as a CQRS sample project by Greg Young and Gaute Magnussen in 2010. Original code: http://github.com/gregoryyoung/m-r
+CQRSlite started as a CQRS sample project Greg Young and Gaute Magnussen made in 2010, which lives on at [gregoryyoung/m-r](https://github.com/gregoryyoung/m-r).
 
 ## Features
 
-- **Command Sending** - Dispatch commands to handlers with 1:1 routing
-- **Event Publishing** - Publish events to multiple handlers (1:N routing)
-- **Query Processing** - Process queries with typed results
-- **Unit of Work** - Session-based aggregate tracking for consistency
-- **Repository Pattern** - Get and save aggregates with event sourcing
-- **Optimistic Concurrency** - Built-in concurrency checking and conflict detection
-- **Message Router** - Automatic handler registration via reflection
-- **Snapshotting** - Performance optimization for aggregates with many events
-- **Caching** - Thread-safe caching layer with automatic invalidation
+- Command sending, event publishing and queries, with handlers registered automatically
+- A session that tracks aggregates as a unit of work
+- A repository that loads aggregates from their events and saves new ones
+- Optimistic concurrency checking
+- Snapshots for aggregates with long histories
+- Caching of aggregates between commands
 
-## Quick Start
+## Installing
 
-### Installation
-
-```bash
-dotnet add package CQRSlite
+```
+dotnet add package CqrsLite
 ```
 
-### Basic Usage
+CQRSlite targets .NET 10 and .NET Standard 2.0, so it also runs on .NET Framework 4.6.2 and later. Its only dependency is `Microsoft.Extensions.Caching.Memory`. You provide the event store for your database; see the [event store guide](docs/guides/event-store.md).
 
-1. **Define your messages:**
+## A quick look
 
+Business rules live in aggregates, which record events instead of changing state directly:
+
+<!-- snippet: Sample/CQRSCode/WriteModel/Domain/InventoryItem.cs -->
 ```csharp
-// Command
-public class CreateProduct : ICommand
+public class InventoryItem : AggregateRoot
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public decimal Price { get; set; }
-}
+    // ...
 
-// Event
-public class ProductCreated : IEvent
-{
-    public Guid Id { get; set; }
-    public int Version { get; set; }
-    public DateTimeOffset TimeStamp { get; set; }
-    public string Name { get; set; }
-    public decimal Price { get; set; }
-}
-```
-
-2. **Create your aggregate:**
-
-```csharp
-public class Product : AggregateRoot
-{
-    private string _name;
-    private decimal _price;
-
-    public Product(Guid id, string name, decimal price)
+    private void Apply(ItemsCheckedInToInventory e)
     {
-        Id = id;
-        ApplyChange(new ProductCreated { Id = id, Name = name, Price = price });
+        _count += e.Count;
     }
 
-    private Product() { } // Required for rehydration
-
-    private void Apply(ProductCreated e)
+    private void Apply(ItemsRemovedFromInventory e)
     {
-        _name = e.Name;
-        _price = e.Price;
+        _count -= e.Count;
     }
+
+    // ...
+
+    public void Remove(int count)
+    {
+        if (count <= 0) throw new InvalidOperationException("cant remove negative count from inventory");
+        if (count > _count) throw new InvalidOperationException($"cant remove {count} items, only {_count} in stock");
+        ApplyChange(new ItemsRemovedFromInventory(Id, count));
+    }
+
+    // ...
 }
 ```
 
-3. **Implement handlers:**
+Command handlers load an aggregate through the session, call it, and commit:
 
+<!-- snippet: Sample/CQRSCode/WriteModel/Handlers/InventoryCommandHandlers.cs -->
 ```csharp
-public class ProductCommandHandler : ICommandHandler<CreateProduct>
+public async Task Handle(RemoveItemsFromInventory message, CancellationToken token)
 {
-    private readonly ISession _session;
-
-    public ProductCommandHandler(ISession session)
-    {
-        _session = session;
-    }
-
-    public async Task Handle(CreateProduct message)
-    {
-        var product = new Product(message.Id, message.Name, message.Price);
-        await _session.Add(product);
-        await _session.Commit();
-    }
+    var item = await _session.Get<InventoryItem>(message.Id, message.ExpectedVersion, token);
+    item.Remove(message.Count);
+    await _session.Commit(token);
 }
 ```
 
-4. **Configure services:**
+The rest of the application sends commands and queries through the router:
 
+<!-- snippet: Sample/CQRSWeb/Controllers/HomeController.cs -->
 ```csharp
-using CQRSlite.Commands;
-using CQRSlite.Domain;
-using CQRSlite.Events;
-using CQRSlite.Queries;
-using CQRSlite.Routing;
-using ISession = CQRSlite.Domain.ISession; // Avoid clash with Microsoft.AspNetCore.Http.ISession
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Register Router
-var router = new Router();
-builder.Services.AddSingleton(router);
-builder.Services.AddSingleton<ICommandSender>(router);
-builder.Services.AddSingleton<IEventPublisher>(router);
-builder.Services.AddSingleton<IQueryProcessor>(router);
-builder.Services.AddSingleton<IHandlerRegistrar>(router);
-
-// Register core services
-builder.Services.AddSingleton<IEventStore, YourEventStore>(); // You must implement this
-builder.Services.AddScoped<IRepository>(sp => new Repository(sp.GetRequiredService<IEventStore>()));
-builder.Services.AddScoped<ISession, Session>();
-
-// Every handler class must be resolvable from DI (the sample scans for them with Scrutor)
-builder.Services.AddTransient<ProductCommandHandler>();
-builder.Services.AddHttpContextAccessor();
-
-var app = builder.Build();
-
-// Route messages to handlers, resolving them from the current request scope
-new RouteRegistrar(new RequestServiceProvider(app.Services))
-    .RegisterInAssemblyOf(typeof(ProductCommandHandler));
-
-app.Run();
-
-/// <summary>
-/// Resolves services from the current request scope when there is one, so scoped
-/// services like ISession are shared between a request and the handlers it triggers.
-/// </summary>
-internal class RequestServiceProvider(IServiceProvider services) : IServiceProvider
-{
-    private readonly IHttpContextAccessor? _contextAccessor = services.GetService<IHttpContextAccessor>();
-
-    public object? GetService(Type serviceType) =>
-        _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
-        services.GetService(serviceType);
-}
+await _commandSender.Send(new RemoveItemsFromInventory(id, number, version), cancellationToken);
 ```
-
-Handlers are resolved when a message is routed, so don't build `RouteRegistrar` on `app.Services` directly: that resolves scoped services such as `ISession` from the root provider.
 
 ## Documentation
 
-- **[Developer Documentation](https://github.com/gautema/cqrslite/blob/master/DEVELOPER.md)** - Comprehensive guide covering architecture, implementation patterns, best practices, and testing
-- **[API Reference](https://github.com/gautema/cqrslite/blob/master/API_REFERENCE.md)** - Complete API documentation for all interfaces and classes
-- **[Sample Project](https://github.com/gautema/cqrslite/tree/master/Sample)** - Working example demonstrating common usage patterns
+- [Concepts](docs/concepts.md): CQRS and event sourcing, and how CQRSlite's pieces fit together
+- [Tutorial](docs/tutorial/1-overview.md): a walk through the [sample application](Sample), from commands to read models
+- [Guides](docs/README.md#guides): aggregates, routing, event stores, snapshots and caching in depth
+- [API reference](docs/reference/api.md)
 
-## External Resources
+## Further reading
 
-Great introductions to CQRS and CQRSlite:
-- [CQRS: A Cross-Examination of How It Works](https://www.codeproject.com/articles/991648/cqrs-a-cross-examination-of-how-it-works)
-- [Real-World CQRS ES with ASP.NET and Redis](https://exceptionnotfound.net/real-world-cqrs-es-with-asp-net-and-redis-part-1-overview/)
+These articles by others were written for older versions of CQRSlite, so details have changed, but the ideas still hold:
 
-## Requirements
+- [Real-World CQRS/ES with ASP.NET and Redis](https://web.archive.org/web/2019/https://www.exceptionnotfound.net/real-world-cqrs-es-with-asp-net-and-redis-part-1-overview/) by Matthew Jones, a five-part series (archived copy)
+- [CQRS: A Cross Examination Of How It Works](https://www.codeproject.com/articles/991648/cqrs-a-cross-examination-of-how-it-works) on CodeProject
 
-You **must** implement your own `IEventStore` for persistence. CQRSlite provides the framework but intentionally does not include a default event store implementation, as storage requirements vary greatly between applications.
+## Building
 
-Example event stores:
-- SQL Server / PostgreSQL / MySQL
-- NoSQL databases (MongoDB, CosmosDB)
-- Event Store DB
-- Azure Table Storage
-- In-memory (for testing, included in sample)
-
-See [DEVELOPER.md](https://github.com/gautema/cqrslite/blob/master/DEVELOPER.md#5-implement-event-store) for implementation guidance.
-
-## Architecture
-
-CQRSlite follows clean CQRS/ES principles:
+You need the .NET 10 SDK.
 
 ```
-Application Layer
-    ↓
-Commands → CommandHandlers → Aggregates → Events → EventStore
-    ↓                                          ↓
-Queries → QueryHandlers → ReadModels ← EventHandlers
+dotnet build
+dotnet test
 ```
 
-**Write Side (Commands):**
-- Commands express intent to change state
-- Aggregates enforce business rules
-- Events record what happened
-- Event store persists events
-
-**Read Side (Queries):**
-- Events update denormalized read models
-- Queries read from optimized projections
-- Eventually consistent with write side
-
-## Contributing
-
-Contributions are welcome! Please see [DEVELOPER.md](https://github.com/gautema/cqrslite/blob/master/DEVELOPER.md#contributing) for guidelines.
-
-## Version Compatibility
-
-- **netstandard2.0** - Compatible with .NET Framework 4.6.2+ and .NET Core 2.0+ / .NET 5+
-- **net10.0** - Latest .NET features and performance improvements
+The docs are checked against the code: `python3 .github/scripts/check_docs.py` verifies that code snippets in the docs still match the files they come from, and that links between pages work. CI runs it on every push.
 
 ## License
+
 Copyright 2020 Gaute Magnussen
 
 Licensed under the Apache License, Version 2.0 (the "License");

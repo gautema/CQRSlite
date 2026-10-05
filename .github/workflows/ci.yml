@@ -19,6 +19,9 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Check docs against the code
+        run: python3 .github/scripts/check_docs.py
+
       - run: dotnet restore
       - run: dotnet build --no-restore -c Release
       - run: dotnet test --no-build -c Release

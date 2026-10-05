@@ -40,5 +40,6 @@ public interface ICache
     /// Register a callback action to be called when a cached object is evicted from cache.
     /// </summary>
     /// <param name="action">Action to be called</param>
+    [Obsolete("CacheRepository no longer uses eviction callbacks. Implementations can leave this empty.")]
     void RegisterEvictionCallback(Action<Guid> action);
 }

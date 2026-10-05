@@ -1,5 +1,7 @@
 # CQRSlite API Reference
 
+Every public type and member in CQRSlite. For how to use them, start with the [tutorial](../tutorial/1-overview.md), and see the [guides](../README.md#guides) for each topic in depth.
+
 ## Table of Contents
 - [Core Interfaces](#core-interfaces)
 - [Handler Interfaces](#handler-interfaces)
@@ -384,39 +386,7 @@ public interface IEventPublisher
 }
 ```
 
-**Usage:**
-```csharp
-public class InMemoryEventStore : IEventStore
-{
-    private readonly IEventPublisher _publisher;
-    private readonly List<IEvent> _storage = new();
-
-    public InMemoryEventStore(IEventPublisher publisher)
-    {
-        _publisher = publisher;
-    }
-
-    public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
-    {
-        foreach (var @event in events)
-        {
-            // Save to storage (a real store must also reject an existing Id + Version, see IEventStore)
-            _storage.Add(@event);
-
-            // Publish after save
-            await _publisher.Publish(@event, cancellationToken);
-        }
-    }
-
-    public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
-    {
-        return Task.FromResult<IEnumerable<IEvent>>(_storage
-            .Where(e => e.Id == aggregateId && e.Version > fromVersion)
-            .OrderBy(e => e.Version)
-            .ToList());
-    }
-}
-```
+Usually called by your event store, once it has stored the events. See [Publishing events](../guides/event-store.md#publishing-events).
 
 **Behavior:**
 - Routes event to all handlers registered for its runtime type; does nothing if there are none
@@ -489,6 +459,8 @@ new RouteRegistrar(new RequestServiceProvider(app.Services))
     .RegisterInAssemblyOf(typeof(ProductCommandHandler));
 ```
 
+See [Handlers and routing](../guides/handlers-and-routing.md).
+
 ---
 
 ## Base Classes
@@ -497,7 +469,7 @@ new RouteRegistrar(new RequestServiceProvider(app.Services))
 
 **Namespace:** `CQRSlite.Domain`
 
-Base class for all aggregates using event sourcing.
+Base class for all aggregates using event sourcing. See the [aggregates guide](../guides/aggregates.md) for the rules aggregates must follow.
 
 ```csharp
 public abstract class AggregateRoot
@@ -791,8 +763,8 @@ public class Repository : IRepository
 
 **Usage:**
 ```csharp
-services.AddScoped<IRepository>(sp =>
-    new Repository(sp.GetService<IEventStore>()));
+builder.Services.AddScoped<IRepository>(sp =>
+    new Repository(sp.GetRequiredService<IEventStore>()));
 ```
 
 ---
@@ -881,7 +853,7 @@ public class Session : ISession
 
 **Usage:**
 ```csharp
-services.AddScoped<ISession, Session>();
+builder.Services.AddScoped<ISession, Session>();
 ```
 
 **Behavior:**
@@ -916,44 +888,7 @@ Persists events and publishes them.
 
 **Concurrency:** `Repository`'s `ConcurrencyException` check (reading events after `expectedVersion` before saving) is check-then-act, not atomic. Your event store's `Save` must itself reject an event whose (aggregate Id, Version) already exists, e.g. with a unique index or primary key on `(AggregateId, Version)`. Otherwise two concurrent writers can both succeed.
 
-**Best Practice Implementation:**
-```csharp
-public class SqlEventStore : IEventStore
-{
-    private readonly IEventPublisher _publisher;
-    private readonly IDbConnection _connection;
-
-    public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken)
-    {
-        var saved = events.ToList();
-        using (var transaction = _connection.BeginTransaction())
-        {
-            try
-            {
-                foreach (var @event in saved)
-                {
-                    // Save event to database. A unique key on (AggregateId, Version)
-                    // makes a concurrent duplicate fail here and roll back
-                    await SaveEventToDatabase(@event, transaction);
-                }
-
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
-            }
-        }
-
-        // Publish only after the events are committed
-        foreach (var @event in saved)
-        {
-            await _publisher.Publish(@event, cancellationToken);
-        }
-    }
-}
-```
+Store the events (which already have `Id`, `Version` and `TimeStamp` set) all or none, then publish them. [Implementing an event store](../guides/event-store.md) has a complete SQL example.
 
 #### Get(Guid aggregateId, int fromVersion, CancellationToken)
 
@@ -967,17 +902,7 @@ Retrieves events for an aggregate starting from a specific version.
 **Returns:**
 Events in order by version
 
-**Example Implementation:**
-```csharp
-public async Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken)
-{
-    var eventRecords = await _connection.QueryAsync<EventRecord>(
-        "SELECT * FROM Events WHERE AggregateId = @Id AND Version > @Version ORDER BY Version",
-        new { Id = aggregateId, Version = fromVersion });
-
-    return eventRecords.Select(DeserializeEvent);
-}
-```
+Return an empty list, not `null`, when there are none.
 
 ---
 
@@ -1010,37 +935,7 @@ Retrieves the latest snapshot for an aggregate.
 
 Saves a snapshot.
 
-**Example Implementation:**
-```csharp
-public class SqlSnapshotStore : ISnapshotStore
-{
-    public async Task Save(Snapshot snapshot, CancellationToken cancellationToken)
-    {
-        var json = JsonSerializer.Serialize(snapshot, snapshot.GetType());
-        await _connection.ExecuteAsync(
-            "INSERT INTO Snapshots (Id, Version, Type, Data) VALUES (@Id, @Version, @Type, @Data) " +
-            "ON CONFLICT (Id) DO UPDATE SET Version = @Version, Data = @Data",
-            new
-            {
-                snapshot.Id,
-                snapshot.Version,
-                Type = snapshot.GetType().AssemblyQualifiedName,
-                Data = json
-            });
-    }
-
-    public async Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken)
-    {
-        var record = await _connection.QueryFirstOrDefaultAsync<SnapshotRecord>(
-            "SELECT * FROM Snapshots WHERE Id = @Id", new { Id = id });
-
-        if (record == null) return null;
-
-        var type = Type.GetType(record.Type);
-        return (Snapshot)JsonSerializer.Deserialize(record.Data, type);
-    }
-}
-```
+Keep only the latest snapshot per aggregate. See [Snapshots](../guides/snapshots.md#storing-snapshots).
 
 ---
 
@@ -1091,32 +986,7 @@ public class DefaultSnapshotStrategy : ISnapshotStrategy
 - `IsSnapshotable`: true if the type derives from `SnapshotAggregateRoot<>`
 - `ShouldMakeSnapShot`: true if the version plus the uncommitted changes crosses a multiple of the interval. It is called before saving, while the new events are still uncommitted
 
-**Custom Strategy Example:**
-```csharp
-public class CustomSnapshotStrategy : ISnapshotStrategy
-{
-    public bool IsSnapshotable(Type aggregateType)
-    {
-        // SnapshotRepository calls GetSnapshot/Restore, so the type must derive from SnapshotAggregateRoot<>
-        for (var type = aggregateType.BaseType; type != null; type = type.BaseType)
-        {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
-                return true;
-        }
-        return false;
-    }
-
-    public bool ShouldMakeSnapShot(AggregateRoot aggregate)
-    {
-        if (!IsSnapshotable(aggregate.GetType())) return false;
-
-        // Snapshot at version 50, then every 100
-        var from = aggregate.Version;
-        var to = from + aggregate.GetUncommittedChanges().Length;
-        return (from < 50 && to >= 50) || to / 100 > from / 100;
-    }
-}
-```
+For a custom strategy, see [Snapshots](../guides/snapshots.md#when-snapshots-are-taken).
 
 ---
 
@@ -1139,12 +1009,15 @@ public class SnapshotRepository : IRepository
 
 **Usage:**
 ```csharp
-services.AddScoped<IRepository>(sp =>
-    new SnapshotRepository(
-        sp.GetService<ISnapshotStore>(),
-        sp.GetService<ISnapshotStrategy>(),
-        new Repository(sp.GetService<IEventStore>()),
-        sp.GetService<IEventStore>()));
+builder.Services.AddScoped<IRepository>(sp =>
+{
+    var eventStore = sp.GetRequiredService<IEventStore>();
+    return new SnapshotRepository(
+        sp.GetRequiredService<ISnapshotStore>(),
+        sp.GetRequiredService<ISnapshotStrategy>(),
+        new Repository(eventStore),
+        eventStore);
+});
 ```
 
 **Behavior:**
@@ -1168,7 +1041,7 @@ public interface ICache
     Task Set(Guid id, AggregateRoot aggregate);
     Task<AggregateRoot?> Get(Guid id);
     Task Remove(Guid id);
-    void RegisterEvictionCallback(Action<Guid> action);
+    [Obsolete] void RegisterEvictionCallback(Action<Guid> action);
 }
 ```
 
@@ -1189,7 +1062,7 @@ public class MemoryCache : ICache
 
 **Usage:**
 ```csharp
-services.AddSingleton<ICache, MemoryCache>();
+builder.Services.AddSingleton<ICache, MemoryCache>();
 ```
 
 ---
@@ -1198,7 +1071,7 @@ services.AddSingleton<ICache, MemoryCache>();
 
 **Namespace:** `CQRSlite.Caching`
 
-Thread-safe repository decorator that adds caching.
+Thread-safe repository decorator that keeps aggregates in memory between saves. See [Caching](../guides/caching.md).
 
 ```csharp
 public class CacheRepository : IRepository
@@ -1209,18 +1082,20 @@ public class CacheRepository : IRepository
 
 **Usage:**
 ```csharp
-services.AddSingleton<ICache, MemoryCache>();
-services.AddScoped<IRepository>(sp =>
-    new CacheRepository(
-        new Repository(sp.GetService<IEventStore>()),
-        sp.GetService<IEventStore>(),
-        sp.GetService<ICache>()));
+builder.Services.AddSingleton<ICache, MemoryCache>();
+builder.Services.AddScoped<IRepository>(sp =>
+{
+    var eventStore = sp.GetRequiredService<IEventStore>();
+    return new CacheRepository(new Repository(eventStore), eventStore, sp.GetRequiredService<ICache>());
+});
 ```
 
 **Behavior:**
-- **Get**: Returns the cached instance, updated with any newer events from the event store. If the cached instance still has uncommitted changes (e.g. an earlier command changed it and never committed), or events were skipped, it is discarded and the aggregate is reloaded from the repository
-- **Save**: Puts the aggregate in the cache, and removes it if saving throws
-- Thread-safe per-aggregate using semaphores
+- Lends a cached aggregate to one caller at a time, so callers never share an instance
+- **Get**: Takes the aggregate out of the cache and applies any newer events from the event store. If the versions don't line up, or it isn't cached, loads it through the inner repository
+- **Save**: Saves through the inner repository, then puts the aggregate back in the cache. If saving throws, removes it from the cache
+- An aggregate that is never saved is not put back; the next `Get` loads it again
+- `Get` and `Save` for the same aggregate id run one at a time within the process
 
 ---
 
@@ -1239,11 +1114,11 @@ public class Router : IHandlerRegistrar, ICommandSender, IEventPublisher, IQuery
 **Usage:**
 ```csharp
 var router = new Router();
-services.AddSingleton(router);
-services.AddSingleton<ICommandSender>(router);
-services.AddSingleton<IEventPublisher>(router);
-services.AddSingleton<IQueryProcessor>(router);
-services.AddSingleton<IHandlerRegistrar>(router);
+builder.Services.AddSingleton(router);
+builder.Services.AddSingleton<ICommandSender>(router);
+builder.Services.AddSingleton<IEventPublisher>(router);
+builder.Services.AddSingleton<IQueryProcessor>(router);
+builder.Services.AddSingleton<IHandlerRegistrar>(router);
 ```
 
 ---
@@ -1395,4 +1270,4 @@ Thrown by handlers registered with `RouteRegistrar` when the service provider re
 
 ---
 
-This API reference covers all public interfaces and classes in CQRSlite. For implementation examples and best practices, see [DEVELOPER.md](./DEVELOPER.md).
+This API reference covers all public interfaces and classes in CQRSlite. For how to put them together, see the [tutorial](../tutorial/1-overview.md) and the [guides](../README.md#guides).
