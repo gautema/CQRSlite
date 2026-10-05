@@ -26,15 +26,24 @@ public class When_getting_aggregate
     }
 
     [Fact]
-    public async Task Should_get_same_aggregate_on_second_try()
+    public async Task Should_get_same_aggregate_after_saving()
+    {
+        await _rep.Save(_aggregate);
+        var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
+        Assert.Same(_aggregate, aggregate);
+    }
+
+    [Fact]
+    public async Task Should_get_new_aggregate_if_not_saved()
     {
         var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
-        Assert.Equal(_aggregate, aggregate);
+        Assert.NotSame(_aggregate, aggregate);
     }
 
     [Fact]
     public async Task Should_update_if_version_changed_in_event_store()
     {
+        await _rep.Save(_aggregate);
         var aggregate = await _rep.Get<TestAggregate>(_aggregate.Id);
         Assert.Equal(3, aggregate.Version);
     }

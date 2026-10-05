@@ -4,7 +4,9 @@ using CQRSlite.Events;
 namespace CQRSlite.Caching;
 
 /// <summary>
-/// Thread safe repository decorator that can cache aggregates.
+/// Thread safe repository decorator that caches aggregates between saves.
+/// A cached aggregate is lent to one caller at a time: Get takes it out of the cache,
+/// and a successful Save puts it back. Callers never share an aggregate instance.
 /// </summary>
 public class CacheRepository : IRepository
 {
@@ -34,11 +36,11 @@ public class CacheRepository : IRepository
         var @lock = await AggregateLock.Acquire(aggregate.Id, cancellationToken).ConfigureAwait(false);
         try
         {
-            if (aggregate.Id != default && !await _cache.IsTracked(aggregate.Id).ConfigureAwait(false))
+            await _repository.Save(aggregate, expectedVersion, cancellationToken).ConfigureAwait(false);
+            if (aggregate.Id != default)
             {
                 await _cache.Set(aggregate.Id, aggregate).ConfigureAwait(false);
             }
-            await _repository.Save(aggregate, expectedVersion, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception)
         {
@@ -57,32 +59,28 @@ public class CacheRepository : IRepository
         var @lock = await AggregateLock.Acquire(aggregateId, cancellationToken).ConfigureAwait(false);
         try
         {
+            T? cached = null;
             if (await _cache.IsTracked(aggregateId).ConfigureAwait(false))
             {
-                // The entry can be evicted between IsTracked and Get, so fall back to the repository on null.
-                var cached = (T?) await _cache.Get(aggregateId).ConfigureAwait(false);
-                // Uncommitted changes mean an earlier user changed it and never saved, so don't hand those changes on
-                if (cached != null && cached.GetUncommittedChanges().Length == 0)
-                {
-                    var events = (await _eventStore.Get(aggregateId, cached.Version, cancellationToken).ConfigureAwait(false)).ToArray();
-                    var firstEvent = events.FirstOrDefault();
-                    if (firstEvent == null || firstEvent.Version == cached.Version + 1)
-                    {
-                        cached.LoadFromHistory(events);
-                        return cached;
-                    }
-                }
+                // Take it out of the cache so no one else gets this instance until it is saved again.
+                // An aggregate that is never saved (e.g. its command failed) is never put back.
+                cached = (T?) await _cache.Get(aggregateId).ConfigureAwait(false);
                 await _cache.Remove(aggregateId).ConfigureAwait(false);
             }
 
-            var aggregate = await _repository.Get<T>(aggregateId, cancellationToken).ConfigureAwait(false);
-            await _cache.Set(aggregateId, aggregate).ConfigureAwait(false);
-            return aggregate;
-        }
-        catch (Exception)
-        {
-            await _cache.Remove(aggregateId).ConfigureAwait(false);
-            throw;
+            // The entry can be evicted between IsTracked and Get, so fall back to the repository on null.
+            if (cached != null)
+            {
+                var events = (await _eventStore.Get(aggregateId, cached.Version, cancellationToken).ConfigureAwait(false)).ToArray();
+                var firstEvent = events.FirstOrDefault();
+                if (firstEvent == null || firstEvent.Version == cached.Version + 1)
+                {
+                    cached.LoadFromHistory(events);
+                    return cached;
+                }
+            }
+
+            return await _repository.Get<T>(aggregateId, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
