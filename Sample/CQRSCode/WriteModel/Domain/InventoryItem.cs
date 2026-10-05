@@ -1,11 +1,13 @@
-﻿using CQRSCode.ReadModel.Events;
+﻿using CQRSCode.Events;
 using CQRSlite.Domain;
 
 namespace CQRSCode.WriteModel.Domain;
 
 public class InventoryItem : AggregateRoot
 {
+    // Only the state needed to enforce the rules below. Names etc. live in the read model.
     private bool _activated;
+    private int _count;
 
     private void Apply(InventoryItemCreated e)
     {
@@ -17,6 +19,16 @@ public class InventoryItem : AggregateRoot
         _activated = false;
     }
 
+    private void Apply(ItemsCheckedInToInventory e)
+    {
+        _count += e.Count;
+    }
+
+    private void Apply(ItemsRemovedFromInventory e)
+    {
+        _count -= e.Count;
+    }
+
     public void ChangeName(string newName)
     {
         if (string.IsNullOrEmpty(newName)) throw new ArgumentException("newName");
@@ -26,6 +38,7 @@ public class InventoryItem : AggregateRoot
     public void Remove(int count)
     {
         if (count <= 0) throw new InvalidOperationException("cant remove negative count from inventory");
+        if (count > _count) throw new InvalidOperationException($"cant remove {count} items, only {_count} in stock");
         ApplyChange(new ItemsRemovedFromInventory(Id, count));
     }
 

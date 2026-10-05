@@ -1,12 +1,12 @@
 ﻿using CQRSlite.Events;
 
-namespace CQRSCode.ReadModel.Events;
+namespace CQRSCode.Events;
 
-public class ItemsRemovedFromInventory : IEvent
+public class ItemsCheckedInToInventory : IEvent
 {
     public readonly int Count;
 
-    public ItemsRemovedFromInventory(Guid id, int count) 
+    public ItemsCheckedInToInventory(Guid id, int count) 
     {
         Id = id;
         Count = count;

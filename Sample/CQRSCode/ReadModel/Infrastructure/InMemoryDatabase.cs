@@ -1,9 +1,11 @@
-﻿using CQRSCode.ReadModel.Dtos;
+﻿using System.Collections.Concurrent;
+using CQRSCode.ReadModel.Dtos;
 
 namespace CQRSCode.ReadModel.Infrastructure;
 
-public static class InMemoryDatabase 
+// Stands in for a real read database. Concurrent collections because requests run in parallel.
+public static class InMemoryDatabase
 {
-    public static readonly Dictionary<Guid, InventoryItemDetailsDto> Details = new Dictionary<Guid,InventoryItemDetailsDto>();
-    public static readonly List<InventoryItemListDto> List = new List<InventoryItemListDto>();
+    public static readonly ConcurrentDictionary<Guid, InventoryItemDetailsDto> Details = new();
+    public static readonly ConcurrentDictionary<Guid, InventoryItemListDto> List = new();
 }

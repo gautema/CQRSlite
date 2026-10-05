@@ -1,7 +1,10 @@
-﻿using CQRSlite.Events;
+﻿using CQRSlite.Domain.Exception;
+using CQRSlite.Events;
 
 namespace CQRSCode.WriteModel;
 
+// Stands in for a real event store. Like a real one, it must refuse an event whose version is
+// already stored: that is what makes two concurrent writes to the same aggregate safe.
 public class InMemoryEventStore : IEventStore
 {
     private readonly IEventPublisher _publisher;
@@ -14,22 +17,44 @@ public class InMemoryEventStore : IEventStore
 
     public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
     {
-        foreach (var @event in events)
+        var newEvents = events.ToArray();
+        lock (_inMemoryDb)
         {
-            _inMemoryDb.TryGetValue(@event.Id, out var list);
-            if (list == null)
+            // Check everything before storing anything, so a refused save stores nothing
+            foreach (var aggregateEvents in newEvents.GroupBy(e => e.Id))
             {
-                list = new List<IEvent>();
-                _inMemoryDb.Add(@event.Id, list);
+                var storedCount = _inMemoryDb.TryGetValue(aggregateEvents.Key, out var stored) ? stored.Count : 0;
+                if (aggregateEvents.First().Version != storedCount + 1)
+                {
+                    throw new ConcurrencyException(aggregateEvents.Key);
+                }
             }
-            list.Add(@event);
+
+            foreach (var @event in newEvents)
+            {
+                if (!_inMemoryDb.TryGetValue(@event.Id, out var list))
+                {
+                    list = new List<IEvent>();
+                    _inMemoryDb.Add(@event.Id, list);
+                }
+                list.Add(@event);
+            }
+        }
+
+        // Publish only once the events are stored
+        foreach (var @event in newEvents)
+        {
             await _publisher.Publish(@event, cancellationToken);
         }
     }
 
     public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
     {
-        _inMemoryDb.TryGetValue(aggregateId, out var events);
-        return Task.FromResult(events?.Where(x => x.Version > fromVersion) ?? new List<IEvent>());
+        lock (_inMemoryDb)
+        {
+            _inMemoryDb.TryGetValue(aggregateId, out var events);
+            IEnumerable<IEvent> result = events?.Where(x => x.Version > fromVersion).ToList() ?? new List<IEvent>();
+            return Task.FromResult(result);
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CQRSlite.Events;
 
-namespace CQRSCode.ReadModel.Events;
+namespace CQRSCode.Events;
 
 public class InventoryItemDeactivated : IEvent 
 	{

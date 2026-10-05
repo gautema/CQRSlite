@@ -1,5 +1,5 @@
 ﻿using CQRSCode.ReadModel.Dtos;
-using CQRSCode.ReadModel.Events;
+using CQRSCode.Events;
 using CQRSCode.ReadModel.Infrastructure;
 using CQRSCode.ReadModel.Queries;
 using CQRSlite.Events;
@@ -16,7 +16,7 @@ public class InventoryItemDetailView : ICancellableEventHandler<InventoryItemCre
 {
     public Task Handle(InventoryItemCreated message, CancellationToken token)
     {
-        InMemoryDatabase.Details.Add(message.Id,
+        InMemoryDatabase.Details.TryAdd(message.Id,
             new InventoryItemDetailsDto(message.Id, message.Name, 0, message.Version));
         return Task.CompletedTask;
     }
@@ -56,12 +56,12 @@ public class InventoryItemDetailView : ICancellableEventHandler<InventoryItemCre
 
     public Task Handle(InventoryItemDeactivated message, CancellationToken token)
     {
-        InMemoryDatabase.Details.Remove(message.Id);
+        InMemoryDatabase.Details.TryRemove(message.Id, out _);
         return Task.CompletedTask;
     }
 
     public Task<InventoryItemDetailsDto> Handle(GetInventoryItemDetails message, CancellationToken token = default)
     {
-        return Task.FromResult(InMemoryDatabase.Details.SingleOrDefault(x => x.Key == message.Id).Value);
+        return Task.FromResult(GetDetailsItem(message.Id));
     }
 }

@@ -1,5 +1,5 @@
 ﻿using CQRSCode.ReadModel.Dtos;
-using CQRSCode.ReadModel.Events;
+using CQRSCode.Events;
 using CQRSCode.ReadModel.Infrastructure;
 using CQRSCode.ReadModel.Queries;
 using CQRSlite.Events;
@@ -14,26 +14,25 @@ namespace CQRSCode.ReadModel.Handlers;
 {
     public Task Handle(InventoryItemCreated message, CancellationToken token)
     {
-        InMemoryDatabase.List.Add(new InventoryItemListDto(message.Id, message.Name));
+        InMemoryDatabase.List[message.Id] = new InventoryItemListDto(message.Id, message.Name);
         return Task.CompletedTask;
     }
 
     public Task Handle(InventoryItemRenamed message, CancellationToken token)
     {
-        var item = InMemoryDatabase.List.Find(x => x.Id == message.Id);
-        if (item != null)
+        if (InMemoryDatabase.List.TryGetValue(message.Id, out var item))
             item.Name = message.NewName;
         return Task.CompletedTask;
     }
 
     public Task Handle(InventoryItemDeactivated message, CancellationToken token)
     {
-        InMemoryDatabase.List.RemoveAll(x => x.Id == message.Id);
+        InMemoryDatabase.List.TryRemove(message.Id, out _);
         return Task.CompletedTask;
     }
 
     public Task<List<InventoryItemListDto>> Handle(GetInventoryItems message, CancellationToken token = default)
     {
-        return Task.FromResult(InMemoryDatabase.List);
+        return Task.FromResult(InMemoryDatabase.List.Values.ToList());
     }
 }

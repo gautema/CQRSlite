@@ -1,4 +1,4 @@
-﻿using CQRSCode.ReadModel.Events;
+﻿using CQRSCode.Events;
 using CQRSCode.WriteModel.Commands;
 using CQRSCode.WriteModel.Domain;
 using CQRSCode.WriteModel.Handlers;
