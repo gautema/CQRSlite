@@ -34,6 +34,10 @@
     <None Include="../../assets/logo.png" Pack="true" PackagePath="/" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="CQRSlite.Tests" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>

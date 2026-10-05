@@ -1,47 +1,24 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Reflection;
 
 namespace CQRSlite.Infrastructure;
 
 internal static class DynamicInvoker
 {
     private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-    private static volatile Dictionary<int, CompiledMethodInfo?> _cachedMembers = new();
-    private static readonly object _lockObj = new();
+    private static readonly ConcurrentDictionary<MethodKey, CompiledMethodInfo?> _cachedMembers = new();
 
     internal static object? Invoke(this object obj, string methodName, params object[] args)
     {
-        var type = obj.GetType();
-        var hash = Hash(type, methodName, args);
-        var exists = _cachedMembers.TryGetValue(hash, out var method);
-        if (exists) return method?.Invoke(obj, args);
-        lock (_lockObj)
-        {
-            //Recheck if exist inside lock in case another thread has added it.
-            exists = _cachedMembers.TryGetValue(hash, out method);
-            if (exists) return method?.Invoke(obj, args);
-
-            var argTypes = GetArgTypes(args);
-            var m = GetMember(type, methodName, argTypes);
-            method = m == null ? null : new CompiledMethodInfo(m, type);
-
-            var dict = new Dictionary<int, CompiledMethodInfo?>(_cachedMembers) {{hash, method}};
-
-            _cachedMembers = dict;
-            return method?.Invoke(obj, args);
-        }
+        var key = new MethodKey(obj.GetType(), methodName, GetArgTypes(args));
+        var method = _cachedMembers.GetOrAdd(key, CreateMethod);
+        return method?.Invoke(obj, args);
     }
 
-    private static int Hash(Type type, string methodname, object[] args)
+    private static CompiledMethodInfo? CreateMethod(MethodKey key)
     {
-        var hash = 23;
-        hash = hash * 31 + type.GetHashCode();
-        hash = hash * 31 + methodname.GetHashCode();
-        for (var index = 0; index < args.Length; index++)
-        {
-            var argType = args[index].GetType();
-            hash = hash * 31 + argType.GetHashCode();
-        }
-        return hash;
+        var m = GetMember(key.Type, key.Name, key.ArgTypes);
+        return m == null ? null : new CompiledMethodInfo(m, key.Type);
     }
 
     private static Type[] GetArgTypes(object[] args)
@@ -85,5 +62,33 @@ internal static class DynamicInvoker
                 return false;
         }
         return true;
+    }
+
+    /// <summary>
+    /// Cache key for a method lookup. Compares the full identity, so methods whose
+    /// hash codes collide still get separate cache entries.
+    /// </summary>
+    private readonly struct MethodKey(Type type, string name, Type[] argTypes) : IEquatable<MethodKey>
+    {
+        public Type Type { get; } = type;
+        public string Name { get; } = name;
+        public Type[] ArgTypes { get; } = argTypes;
+
+        public bool Equals(MethodKey other) =>
+            Type == other.Type && Name == other.Name && ArgTypes.SequenceEqual(other.ArgTypes);
+
+        public override bool Equals(object? obj) => obj is MethodKey other && Equals(other);
+
+        public override int GetHashCode()
+        {
+            var hash = 23;
+            hash = hash * 31 + Type.GetHashCode();
+            hash = hash * 31 + Name.GetHashCode();
+            foreach (var argType in ArgTypes)
+            {
+                hash = hash * 31 + argType.GetHashCode();
+            }
+            return hash;
+        }
     }
 }
