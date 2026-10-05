@@ -1,56 +1,69 @@
-﻿using CQRSCode.WriteModel.Handlers;
+using CQRSCode.WriteModel;
+using CQRSCode.WriteModel.Handlers;
+using CQRSlite.Caching;
+using CQRSlite.Commands;
+using CQRSlite.Domain;
+using CQRSlite.Events;
+using CQRSlite.Messages;
+using CQRSlite.Queries;
 using CQRSlite.Routing;
+using ISession = CQRSlite.Domain.ISession;
 
-namespace CQRSWeb;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Add CQRSlite services
+var router = new Router();
+builder.Services.AddSingleton(router);
+builder.Services.AddSingleton<ICommandSender>(router);
+builder.Services.AddSingleton<IEventPublisher>(router);
+builder.Services.AddSingleton<IHandlerRegistrar>(router);
+builder.Services.AddSingleton<IQueryProcessor>(router);
+builder.Services.AddSingleton<IEventStore, InMemoryEventStore>();
+builder.Services.AddSingleton<ICache, MemoryCache>();
+builder.Services.AddScoped<IRepository>(sp =>
 {
-    public static void Main(string[] args)
-    {
-        CreateHostBuilder(args).Build().Run();
-    }
+    var eventStore = sp.GetRequiredService<IEventStore>();
+    return new CacheRepository(new Repository(eventStore), eventStore, sp.GetRequiredService<ICache>());
+});
+builder.Services.AddScoped<ISession, Session>();
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
-                webBuilder.UseStartup<Startup>();
-            })
-            .UseServiceProviderFactory(new RouteRegistrarProviderFactory());
+// Scan for command, event and query handlers
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<InventoryCommandHandlers>()
+    .AddClasses(classes => classes.AssignableToAny(
+        typeof(IHandler<>),
+        typeof(ICancellableHandler<>),
+        typeof(IQueryHandler<,>),
+        typeof(ICancellableQueryHandler<,>)))
+    .AsSelf()
+    .WithTransientLifetime());
 
-    public class RouteRegistrarProviderFactory : IServiceProviderFactory<IServiceCollection>
-    {
-        public IServiceCollection CreateBuilder(IServiceCollection services)
-        {
-            return services;
-        }
+builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 
-        public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
-        {
-            var serviceProvider = containerBuilder.BuildServiceProvider();
-            var registrar = new RouteRegistrar(new Provider(serviceProvider));
-            registrar.RegisterInAssemblyOf(typeof(InventoryCommandHandlers));
-            return serviceProvider;
-        }
-    }
+var app = builder.Build();
 
-    public class Provider : IServiceProvider
-    {
-        private readonly ServiceProvider _serviceProvider;
-        private readonly IHttpContextAccessor _contextAccessor;
+// Route messages to the handlers, resolving them from the current request scope
+new RouteRegistrar(new RequestServiceProvider(app.Services))
+    .RegisterInAssemblyOf(typeof(InventoryCommandHandlers));
 
-        public Provider(ServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-            _contextAccessor = _serviceProvider.GetService<IHttpContextAccessor>();
-        }
+app.MapStaticAssets();
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
-        public object GetService(Type serviceType)
-        {
-            return _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
-                   _serviceProvider.GetService(serviceType);
-        }
-    }
+app.Run();
 
+/// <summary>
+/// Resolves services from the current request scope when there is one, so scoped
+/// services like ISession are shared between a request and the handlers it triggers.
+/// </summary>
+internal class RequestServiceProvider(IServiceProvider services) : IServiceProvider
+{
+    private readonly IHttpContextAccessor? _contextAccessor = services.GetService<IHttpContextAccessor>();
+
+    public object? GetService(Type serviceType) =>
+        _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
+        services.GetService(serviceType);
 }
