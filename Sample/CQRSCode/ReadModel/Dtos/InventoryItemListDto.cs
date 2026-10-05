@@ -1,16 +1,13 @@
-﻿using System;
+﻿namespace CQRSCode.ReadModel.Dtos;
 
-namespace CQRSCode.ReadModel.Dtos
+public class InventoryItemListDto
 {
-    public class InventoryItemListDto
-    {
-        public Guid Id;
-        public string Name;
+    public Guid Id;
+    public string Name;
 
-        public InventoryItemListDto(Guid id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
+    public InventoryItemListDto(Guid id, string name)
+    {
+        Id = id;
+        Name = name;
     }
 }

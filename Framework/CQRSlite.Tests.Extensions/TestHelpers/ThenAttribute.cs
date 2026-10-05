@@ -1,8 +1,7 @@
 ﻿using Xunit;
 
-namespace CQRSlite.Tests.Extensions.TestHelpers
+namespace CQRSlite.Tests.Extensions.TestHelpers;
+
+public class ThenAttribute : FactAttribute
 {
-    public class ThenAttribute : FactAttribute
-    {
-    }
 }

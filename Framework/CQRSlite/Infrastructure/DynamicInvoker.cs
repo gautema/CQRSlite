@@ -1,93 +1,89 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace CQRSlite.Infrastructure
+namespace CQRSlite.Infrastructure;
+
+internal static class DynamicInvoker
 {
-    internal static class DynamicInvoker
+    private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private static volatile Dictionary<int, CompiledMethodInfo> _cachedMembers = new();
+    private static readonly object _lockObj = new();
+
+    internal static object Invoke<T>(this T obj, string methodName, params object[] args)
     {
-        private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-        private static volatile Dictionary<int, CompiledMethodInfo> _cachedMembers = new();
-        private static readonly object _lockObj = new();
-
-        internal static object Invoke<T>(this T obj, string methodName, params object[] args)
+        var type = obj.GetType();
+        var hash = Hash(type, methodName, args);
+        var exists = _cachedMembers.TryGetValue(hash, out var method);
+        if (exists) return method?.Invoke(obj, args);
+        lock (_lockObj)
         {
-            var type = obj.GetType();
-            var hash = Hash(type, methodName, args);
-            var exists = _cachedMembers.TryGetValue(hash, out var method);
+            //Recheck if exist inside lock in case another thread has added it.
+            exists = _cachedMembers.TryGetValue(hash, out method);
             if (exists) return method?.Invoke(obj, args);
-            lock (_lockObj)
-            {
-                //Recheck if exist inside lock in case another thread has added it.
-                exists = _cachedMembers.TryGetValue(hash, out method);
-                if (exists) return method?.Invoke(obj, args);
 
-                var argTypes = GetArgTypes(args);
-                var m = GetMember(type, methodName, argTypes);
-                method = m == null ? null : new CompiledMethodInfo(m, type);
+            var argTypes = GetArgTypes(args);
+            var m = GetMember(type, methodName, argTypes);
+            method = m == null ? null : new CompiledMethodInfo(m, type);
 
-                var dict = new Dictionary<int, CompiledMethodInfo>(_cachedMembers) {{hash, method}};
+            var dict = new Dictionary<int, CompiledMethodInfo>(_cachedMembers) {{hash, method}};
 
-                _cachedMembers = dict;
-                return method?.Invoke(obj, args);
-            }
+            _cachedMembers = dict;
+            return method?.Invoke(obj, args);
         }
+    }
 
-        private static int Hash(Type type, string methodname, object[] args)
+    private static int Hash(Type type, string methodname, object[] args)
+    {
+        var hash = 23;
+        hash = hash * 31 + type.GetHashCode();
+        hash = hash * 31 + methodname.GetHashCode();
+        for (var index = 0; index < args.Length; index++)
         {
-            var hash = 23;
-            hash = hash * 31 + type.GetHashCode();
-            hash = hash * 31 + methodname.GetHashCode();
-            for (var index = 0; index < args.Length; index++)
-            {
-                var argType = args[index].GetType();
-                hash = hash * 31 + argType.GetHashCode();
-            }
-            return hash;
+            var argType = args[index].GetType();
+            hash = hash * 31 + argType.GetHashCode();
         }
+        return hash;
+    }
 
-        private static Type[] GetArgTypes(object[] args)
+    private static Type[] GetArgTypes(object[] args)
+    {
+        var argTypes = new Type[args.Length];
+        for (var i = 0; i < args.Length; i++)
         {
-            var argTypes = new Type[args.Length];
-            for (var i = 0; i < args.Length; i++)
-            {
-                var argType = args[i].GetType();
-                argTypes[i] = argType;
-            }
-            return argTypes;
+            var argType = args[i].GetType();
+            argTypes[i] = argType;
         }
+        return argTypes;
+    }
 
-        private static MethodInfo GetMember(Type type, string name, Type[] argtypes)
+    private static MethodInfo GetMember(Type type, string name, Type[] argtypes)
+    {
+        while (true)
         {
-            while (true)
+            var methods = type.GetMethods(bindingFlags).Where(m => m.Name == name).ToArray();
+            var member = methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).SequenceEqual(argtypes)) ??
+                         methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).ToArray().Matches(argtypes));
+
+            if (member != null)
             {
-                var methods = type.GetMethods(bindingFlags).Where(m => m.Name == name).ToArray();
-                var member = methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).SequenceEqual(argtypes)) ??
-                             methods.FirstOrDefault(m => m.GetParameters().Select(p => p.ParameterType).ToArray().Matches(argtypes));
-
-                if (member != null)
-                {
-                    return member;
-                }
-                var t = type.GetTypeInfo().BaseType;
-                if (t == null)
-                {
-                    return null;
-                }
-                type = t;
+                return member;
             }
+            var t = type.GetTypeInfo().BaseType;
+            if (t == null)
+            {
+                return null;
+            }
+            type = t;
         }
+    }
 
-        private static bool Matches(this Type[] arr, Type[] args)
+    private static bool Matches(this Type[] arr, Type[] args)
+    {
+        if (arr.Length != args.Length) return false;
+        for (var i = 0; i < args.Length; i++)
         {
-            if (arr.Length != args.Length) return false;
-            for (var i = 0; i < args.Length; i++)
-            {
-                if (!arr[i].IsAssignableFrom(args[i]))
-                    return false;
-            }
-            return true;
+            if (!arr[i].IsAssignableFrom(args[i]))
+                return false;
         }
+        return true;
     }
 }

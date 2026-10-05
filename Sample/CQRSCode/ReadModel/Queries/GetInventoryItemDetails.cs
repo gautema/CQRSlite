@@ -1,16 +1,14 @@
-﻿using System;
-using CQRSCode.ReadModel.Dtos;
+﻿using CQRSCode.ReadModel.Dtos;
 using CQRSlite.Queries;
 
-namespace CQRSCode.ReadModel.Queries
-{
-    public class GetInventoryItemDetails : IQuery<InventoryItemDetailsDto>
-    {
-        public GetInventoryItemDetails(Guid id)
-        {
-            Id = id;
-        }
+namespace CQRSCode.ReadModel.Queries;
 
-        public Guid Id { get; set; }
+public class GetInventoryItemDetails : IQuery<InventoryItemDetailsDto>
+{
+    public GetInventoryItemDetails(Guid id)
+    {
+        Id = id;
     }
+
+    public Guid Id { get; set; }
 }

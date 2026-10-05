@@ -1,19 +1,17 @@
-﻿using System;
-using CQRSlite.Events;
+﻿using CQRSlite.Events;
 
-namespace CQRSCode.ReadModel.Events
-{
-    public class InventoryItemCreated : IEvent 
+namespace CQRSCode.ReadModel.Events;
+
+public class InventoryItemCreated : IEvent 
 	{
-        public readonly string Name;
-        public InventoryItemCreated(Guid id, string name) 
-        {
-            Id = id;
-            Name = name;
-        }
+    public readonly string Name;
+    public InventoryItemCreated(Guid id, string name) 
+    {
+        Id = id;
+        Name = name;
+    }
 
-        public Guid Id { get; set; }
-        public int Version { get; set; }
-        public DateTimeOffset TimeStamp { get; set; }
+    public Guid Id { get; set; }
+    public int Version { get; set; }
+    public DateTimeOffset TimeStamp { get; set; }
 	}
-}

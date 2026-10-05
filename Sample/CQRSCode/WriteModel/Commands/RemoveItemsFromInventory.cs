@@ -1,9 +1,8 @@
-using System;
 using CQRSlite.Commands;
 
-namespace CQRSCode.WriteModel.Commands
-{
-    public class RemoveItemsFromInventory : ICommand 
+namespace CQRSCode.WriteModel.Commands;
+
+public class RemoveItemsFromInventory : ICommand 
 	{
 		public readonly int Count;
 
@@ -11,10 +10,9 @@ namespace CQRSCode.WriteModel.Commands
 	    {
 	        Id = id;
 			Count = count;
-            ExpectedVersion = originalVersion;
-        }
+        ExpectedVersion = originalVersion;
+    }
 
-        public Guid Id { get; set; }
-        public int ExpectedVersion { get; set; }
+    public Guid Id { get; set; }
+    public int ExpectedVersion { get; set; }
 	}
-}

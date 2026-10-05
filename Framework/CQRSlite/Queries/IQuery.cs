@@ -1,11 +1,10 @@
 ﻿using CQRSlite.Messages;
 
-namespace CQRSlite.Queries
+namespace CQRSlite.Queries;
+
+/// <summary>
+/// Defines a query.
+/// </summary>
+public interface IQuery<TReturn> : IMessage
 {
-    /// <summary>
-    /// Defines a query.
-    /// </summary>
-    public interface IQuery<TReturn> : IMessage
-    {
-    }
 }

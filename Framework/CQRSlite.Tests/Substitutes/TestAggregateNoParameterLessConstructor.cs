@@ -1,18 +1,16 @@
-﻿using System;
-using CQRSlite.Domain;
+﻿using CQRSlite.Domain;
 
-namespace CQRSlite.Tests.Substitutes
+namespace CQRSlite.Tests.Substitutes;
+
+public class TestAggregateNoParameterLessConstructor : AggregateRoot
 {
-    public class TestAggregateNoParameterLessConstructor : AggregateRoot
+    public TestAggregateNoParameterLessConstructor(int i, Guid? id = null)
     {
-        public TestAggregateNoParameterLessConstructor(int i, Guid? id = null)
-        {
-            Id = id ?? Guid.NewGuid();
-        }
+        Id = id ?? Guid.NewGuid();
+    }
 
-        public void DoSomething()
-        {
-            ApplyChange(new TestAggregateDidSomething());
-        }
+    public void DoSomething()
+    {
+        ApplyChange(new TestAggregateDidSomething());
     }
 }

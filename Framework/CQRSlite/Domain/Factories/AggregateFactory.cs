@@ -1,32 +1,30 @@
 ﻿using CQRSlite.Domain.Exception;
-using System;
 using System.Linq.Expressions;
 
-namespace CQRSlite.Domain.Factories
+namespace CQRSlite.Domain.Factories;
+
+internal static class AggregateFactory<T>
 {
-    internal static class AggregateFactory<T>
+    private static readonly Func<T> _constructor = CreateTypeConstructor();
+
+    private static Func<T> CreateTypeConstructor()
     {
-        private static readonly Func<T> _constructor = CreateTypeConstructor();
-
-        private static Func<T> CreateTypeConstructor()
+        try
         {
-            try
-            {
-                var newExpr = Expression.New(typeof(T));
-                var func = Expression.Lambda<Func<T>>(newExpr);
-                return func.Compile();
-            }
-            catch (ArgumentException)
-            {
-                return null;
-            }
+            var newExpr = Expression.New(typeof(T));
+            var func = Expression.Lambda<Func<T>>(newExpr);
+            return func.Compile();
         }
-
-        public static T CreateAggregate()
+        catch (ArgumentException)
         {
-            if (_constructor == null)
-                throw new MissingParameterLessConstructorException(typeof(T));
-            return _constructor();
+            return null;
         }
+    }
+
+    public static T CreateAggregate()
+    {
+        if (_constructor == null)
+            throw new MissingParameterLessConstructorException(typeof(T));
+        return _constructor();
     }
 }

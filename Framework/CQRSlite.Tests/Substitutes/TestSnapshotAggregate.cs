@@ -1,49 +1,47 @@
-﻿using System;
-using CQRSlite.Snapshotting;
+﻿using CQRSlite.Snapshotting;
 
-namespace CQRSlite.Tests.Substitutes
+namespace CQRSlite.Tests.Substitutes;
+
+public class TestSnapshotAggregate : SnapshotAggregateRoot<TestSnapshotAggregateSnapshot>
 {
-    public class TestSnapshotAggregate : SnapshotAggregateRoot<TestSnapshotAggregateSnapshot>
+    public TestSnapshotAggregate()
     {
-        public TestSnapshotAggregate()
-        {
-            Id = default;
-        }
-
-        public TestSnapshotAggregate(Guid id)
-        {
-            Id = id;
-        }
-
-        public bool Restored { get; private set; }
-        public bool Loaded { get; private set; }
-        public int Number { get; private set; }
-
-        protected override TestSnapshotAggregateSnapshot CreateSnapshot()
-        {
-            return new TestSnapshotAggregateSnapshot {Number = Number};
-        }
-
-        protected override void RestoreFromSnapshot(TestSnapshotAggregateSnapshot snapshot)
-        {
-            Number = snapshot.Number;
-            Restored = true;
-        }
-
-        private void Apply(TestAggregateDidSomething e)
-        {
-            Loaded = true;
-            Number++;
-        }
-
-        public void DoSomething()
-        {
-            ApplyChange(new TestAggregateDidSomething());
-        }
+        Id = default;
     }
 
-    public class TestSnapshotAggregateSnapshot : Snapshot
+    public TestSnapshotAggregate(Guid id)
     {
-        public int Number { get; set; }
+        Id = id;
     }
+
+    public bool Restored { get; private set; }
+    public bool Loaded { get; private set; }
+    public int Number { get; private set; }
+
+    protected override TestSnapshotAggregateSnapshot CreateSnapshot()
+    {
+        return new TestSnapshotAggregateSnapshot {Number = Number};
+    }
+
+    protected override void RestoreFromSnapshot(TestSnapshotAggregateSnapshot snapshot)
+    {
+        Number = snapshot.Number;
+        Restored = true;
+    }
+
+    private void Apply(TestAggregateDidSomething e)
+    {
+        Loaded = true;
+        Number++;
+    }
+
+    public void DoSomething()
+    {
+        ApplyChange(new TestAggregateDidSomething());
+    }
+}
+
+public class TestSnapshotAggregateSnapshot : Snapshot
+{
+    public int Number { get; set; }
 }

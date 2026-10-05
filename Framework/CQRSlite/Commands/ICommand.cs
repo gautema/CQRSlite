@@ -1,11 +1,10 @@
 ﻿using CQRSlite.Messages;
 
-namespace CQRSlite.Commands
+namespace CQRSlite.Commands;
+
+/// <summary>
+/// Defines a command.
+/// </summary>
+public interface ICommand : IMessage
 {
-    /// <summary>
-    /// Defines a command.
-    /// </summary>
-    public interface ICommand : IMessage
-    {
-    }
 }

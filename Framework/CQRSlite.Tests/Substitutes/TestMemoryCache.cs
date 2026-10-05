@@ -1,43 +1,39 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CQRSlite.Caching;
 using CQRSlite.Domain;
 
-namespace CQRSlite.Tests.Substitutes
+namespace CQRSlite.Tests.Substitutes;
+
+public class TestMemoryCache : ICache
 {
-    public class TestMemoryCache : ICache
+    private readonly Dictionary<Guid, AggregateRoot> _cache = new Dictionary<Guid, AggregateRoot>();
+
+    private Action<Guid> _evictionCallback;
+
+    public Task<AggregateRoot> Get(Guid id)
     {
-        private readonly Dictionary<Guid, AggregateRoot> _cache = new Dictionary<Guid, AggregateRoot>();
+        return Task.FromResult(_cache[id]);
+    }
 
-        private Action<Guid> _evictionCallback;
+    public Task<bool> IsTracked(Guid id)
+    {
+        return Task.FromResult(_cache.ContainsKey(id));
+    }
 
-        public Task<AggregateRoot> Get(Guid id)
-        {
-            return Task.FromResult(_cache[id]);
-        }
+    public void RegisterEvictionCallback(Action<Guid> action)
+    {
+        _evictionCallback = action;
+    }
 
-        public Task<bool> IsTracked(Guid id)
-        {
-            return Task.FromResult(_cache.ContainsKey(id));
-        }
+    public Task Remove(Guid id)
+    {
+        _cache.Remove(id);
+        _evictionCallback(id);
+        return Task.CompletedTask;
+    }
 
-        public void RegisterEvictionCallback(Action<Guid> action)
-        {
-            _evictionCallback = action;
-        }
-
-        public Task Remove(Guid id)
-        {
-            _cache.Remove(id);
-            _evictionCallback(id);
-            return Task.CompletedTask;
-        }
-
-        public Task Set(Guid id, AggregateRoot aggregate)
-        {
-            _cache[id] = aggregate;
-            return Task.CompletedTask;
-        }
+    public Task Set(Guid id, AggregateRoot aggregate)
+    {
+        _cache[id] = aggregate;
+        return Task.CompletedTask;
     }
 }

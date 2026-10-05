@@ -1,20 +1,16 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿namespace CQRSlite.Commands;
 
-namespace CQRSlite.Commands
+/// <summary>
+/// Defines a command sender.
+/// </summary>
+public interface ICommandSender
 {
     /// <summary>
-    /// Defines a command sender.
+    /// Send a command to a single command handler function.
     /// </summary>
-    public interface ICommandSender
-    {
-        /// <summary>
-        /// Send a command to a single command handler function.
-        /// </summary>
-        /// <typeparam name="T">Command type</typeparam>
-        /// <param name="command">Command object to be sent</param>
-        /// <param name="cancellationToken">Optional cancellation token</param>
-        /// <returns>Task representing sending</returns>
-        Task Send<T>(T command, CancellationToken cancellationToken = default) where T : class, ICommand;
-    }
+    /// <typeparam name="T">Command type</typeparam>
+    /// <param name="command">Command object to be sent</param>
+    /// <param name="cancellationToken">Optional cancellation token</param>
+    /// <returns>Task representing sending</returns>
+    Task Send<T>(T command, CancellationToken cancellationToken = default) where T : class, ICommand;
 }

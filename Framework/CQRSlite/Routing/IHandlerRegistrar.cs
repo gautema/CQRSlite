@@ -1,20 +1,16 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CQRSlite.Messages;
+﻿using CQRSlite.Messages;
 
-namespace CQRSlite.Routing
+namespace CQRSlite.Routing;
+
+/// <summary>
+/// Interface for handle registration.
+/// </summary>
+public interface IHandlerRegistrar
 {
     /// <summary>
-    /// Interface for handle registration.
+    /// Register the a handler for a given message.
     /// </summary>
-    public interface IHandlerRegistrar
-    {
-        /// <summary>
-        /// Register the a handler for a given message.
-        /// </summary>
-        /// <typeparam name="T">Message type to register a handler for</typeparam>
-        /// <param name="handler">Function to handle message type</param>
-        void RegisterHandler<T>(Func<T, CancellationToken,Task> handler) where T : class, IMessage;
-    }
+    /// <typeparam name="T">Message type to register a handler for</typeparam>
+    /// <param name="handler">Function to handle message type</param>
+    void RegisterHandler<T>(Func<T, CancellationToken,Task> handler) where T : class, IMessage;
 }
