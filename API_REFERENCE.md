@@ -937,7 +937,7 @@ Interface for snapshot persistence.
 ```csharp
 public interface ISnapshotStore
 {
-    Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default);
+    Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default);
     Task Save(Snapshot snapshot, CancellationToken cancellationToken = default);
 }
 ```
@@ -974,7 +974,7 @@ public class SqlSnapshotStore : ISnapshotStore
             });
     }
 
-    public async Task<Snapshot> Get(Guid id, CancellationToken cancellationToken)
+    public async Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken)
     {
         var record = await _connection.QueryFirstOrDefaultAsync<SnapshotRecord>(
             "SELECT * FROM Snapshots WHERE Id = @Id", new { Id = id });

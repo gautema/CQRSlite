@@ -17,7 +17,7 @@ CQRSlite is a lightweight CQRS (Command Query Responsibility Segregation) and Ev
 
 ### Design Principles
 
-1. **Minimal Dependencies**: Only depends on `Microsoft.Extensions.Caching.Memory` and `Microsoft.CSharp`
+1. **Minimal Dependencies**: Only depends on `Microsoft.Extensions.Caching.Memory`
 2. **Pluggability**: Every component can be replaced with custom implementations
 3. **Convention over Configuration**: Uses convention-based routing where appropriate
 4. **Separation of Concerns**: Clear boundaries between commands, queries, and events
@@ -413,33 +413,33 @@ public class SqlEventStore : IEventStore
 ### 6. Configure Dependency Injection
 
 ```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    // Router (central message router)
-    services.AddSingleton<Router>(new Router());
-    services.AddSingleton<ICommandSender>(sp => sp.GetService<Router>());
-    services.AddSingleton<IEventPublisher>(sp => sp.GetService<Router>());
-    services.AddSingleton<IQueryProcessor>(sp => sp.GetService<Router>());
-    services.AddSingleton<IHandlerRegistrar>(sp => sp.GetService<Router>());
+var builder = WebApplication.CreateBuilder(args);
 
-    // Event store (singleton)
-    services.AddSingleton<IEventStore, SqlEventStore>();
+// Router (central message router)
+builder.Services.AddSingleton<Router>(new Router());
+builder.Services.AddSingleton<ICommandSender>(sp => sp.GetRequiredService<Router>());
+builder.Services.AddSingleton<IEventPublisher>(sp => sp.GetRequiredService<Router>());
+builder.Services.AddSingleton<IQueryProcessor>(sp => sp.GetRequiredService<Router>());
+builder.Services.AddSingleton<IHandlerRegistrar>(sp => sp.GetRequiredService<Router>());
 
-    // Repository (scoped per request)
-    services.AddScoped<IRepository>(sp =>
-        new Repository(sp.GetService<IEventStore>()));
+// Event store (singleton)
+builder.Services.AddSingleton<IEventStore, SqlEventStore>();
 
-    // Session (scoped per request)
-    services.AddScoped<ISession, Session>();
+// Repository (scoped per request)
+builder.Services.AddScoped<IRepository>(sp =>
+    new Repository(sp.GetRequiredService<IEventStore>()));
 
-    // Register all handlers
-    var serviceProvider = services.BuildServiceProvider();
-    var registrar = serviceProvider.GetService<IHandlerRegistrar>();
-    var routeRegistrar = new RouteRegistrar(serviceProvider);
+// Session (scoped per request)
+builder.Services.AddScoped<ISession, Session>();
 
-    // Register handlers from assembly
-    routeRegistrar.Register(typeof(ProductCommandHandlers).Assembly);
-}
+// Register your command, event and query handler classes in DI too, e.g.
+// builder.Services.AddTransient<ProductCommandHandlers>();
+
+var app = builder.Build();
+
+// Route messages to handlers. See Sample/CQRSWeb/Program.cs for resolving
+// handlers from the current request scope.
+new RouteRegistrar(app.Services).RegisterInAssemblyOf(typeof(ProductCommandHandlers));
 ```
 
 ### 7. Use in Controllers/Application Layer
@@ -551,7 +551,7 @@ public class Product : SnapshotAggregateRoot<ProductSnapshot>
 // 3. Implement ISnapshotStore
 public class SqlSnapshotStore : ISnapshotStore
 {
-    public async Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default)
     {
         // Retrieve and deserialize snapshot from database
     }
@@ -908,11 +908,11 @@ public class ProductCommandHandlerTests
 Test the full flow with a real or in-memory event store:
 
 ```csharp
-public class ProductIntegrationTests : IClassFixture<WebApplicationFactory<Startup>>
+public class ProductIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
-    private readonly WebApplicationFactory<Startup> _factory;
+    private readonly WebApplicationFactory<Program> _factory;
 
-    public ProductIntegrationTests(WebApplicationFactory<Startup> factory)
+    public ProductIntegrationTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory;
     }

@@ -265,109 +265,118 @@ public class ProductQueryHandlers :
 
 ### Minimal Setup
 ```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    // Router (central hub)
-    var router = new Router();
-    services.AddSingleton(router);
-    services.AddSingleton<ICommandSender>(router);
-    services.AddSingleton<IEventPublisher>(router);
-    services.AddSingleton<IQueryProcessor>(router);
-    services.AddSingleton<IHandlerRegistrar>(router);
+var builder = WebApplication.CreateBuilder(args);
 
-    // Event store (you must implement)
-    services.AddSingleton<IEventStore, YourEventStore>();
+// Router (central hub)
+var router = new Router();
+builder.Services.AddSingleton(router);
+builder.Services.AddSingleton<ICommandSender>(router);
+builder.Services.AddSingleton<IEventPublisher>(router);
+builder.Services.AddSingleton<IQueryProcessor>(router);
+builder.Services.AddSingleton<IHandlerRegistrar>(router);
 
-    // Repository
-    services.AddScoped<IRepository>(sp =>
-        new Repository(sp.GetService<IEventStore>()));
+// Event store (you must implement)
+builder.Services.AddSingleton<IEventStore, YourEventStore>();
 
-    // Session
-    services.AddScoped<ISession, Session>();
+// Repository
+builder.Services.AddScoped<IRepository>(sp =>
+    new Repository(sp.GetRequiredService<IEventStore>()));
 
-    // Register handlers
-    var serviceProvider = services.BuildServiceProvider();
-    var registrar = new RouteRegistrar(serviceProvider);
-    registrar.Register(typeof(ProductCommandHandlers).Assembly);
-}
+// Session
+builder.Services.AddScoped<ISession, Session>();
+
+// Register your command, event and query handler classes in DI too, e.g.
+// builder.Services.AddTransient<ProductCommandHandlers>();
+
+var app = builder.Build();
+
+// Route messages to handlers. See Sample/CQRSWeb/Program.cs for resolving
+// handlers from the current request scope.
+new RouteRegistrar(app.Services).RegisterInAssemblyOf(typeof(ProductCommandHandlers));
 ```
 
 ### Setup with Caching
 ```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    // Router
-    var router = new Router();
-    services.AddSingleton(router);
-    services.AddSingleton<ICommandSender>(router);
-    services.AddSingleton<IEventPublisher>(router);
-    services.AddSingleton<IQueryProcessor>(router);
-    services.AddSingleton<IHandlerRegistrar>(router);
+var builder = WebApplication.CreateBuilder(args);
 
-    // Event store
-    services.AddSingleton<IEventStore, YourEventStore>();
+// Router
+var router = new Router();
+builder.Services.AddSingleton(router);
+builder.Services.AddSingleton<ICommandSender>(router);
+builder.Services.AddSingleton<IEventPublisher>(router);
+builder.Services.AddSingleton<IQueryProcessor>(router);
+builder.Services.AddSingleton<IHandlerRegistrar>(router);
 
-    // Cache
-    services.AddSingleton<ICache, MemoryCache>();
+// Event store
+builder.Services.AddSingleton<IEventStore, YourEventStore>();
 
-    // Repository with caching
-    services.AddScoped<IRepository>(sp =>
-        new CacheRepository(
-            new Repository(sp.GetService<IEventStore>()),
-            sp.GetService<IEventStore>(),
-            sp.GetService<ICache>()));
+// Cache
+builder.Services.AddSingleton<ICache, MemoryCache>();
 
-    // Session
-    services.AddScoped<ISession, Session>();
+// Repository with caching
+builder.Services.AddScoped<IRepository>(sp =>
+    new CacheRepository(
+        new Repository(sp.GetRequiredService<IEventStore>()),
+        sp.GetRequiredService<IEventStore>(),
+        sp.GetRequiredService<ICache>()));
 
-    // Register handlers
-    var serviceProvider = services.BuildServiceProvider();
-    var registrar = new RouteRegistrar(serviceProvider);
-    registrar.Register(typeof(ProductCommandHandlers).Assembly);
-}
+// Session
+builder.Services.AddScoped<ISession, Session>();
+
+// Register your command, event and query handler classes in DI too, e.g.
+// builder.Services.AddTransient<ProductCommandHandlers>();
+
+var app = builder.Build();
+
+// Route messages to handlers. See Sample/CQRSWeb/Program.cs for resolving
+// handlers from the current request scope.
+new RouteRegistrar(app.Services).RegisterInAssemblyOf(typeof(ProductCommandHandlers));
 ```
 
 ### Setup with Snapshotting and Caching
 ```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    // Router
-    var router = new Router();
-    services.AddSingleton(router);
-    services.AddSingleton<ICommandSender>(router);
-    services.AddSingleton<IEventPublisher>(router);
-    services.AddSingleton<IQueryProcessor>(router);
-    services.AddSingleton<IHandlerRegistrar>(router);
+var builder = WebApplication.CreateBuilder(args);
 
-    // Event store
-    services.AddSingleton<IEventStore, YourEventStore>();
+// Router
+var router = new Router();
+builder.Services.AddSingleton(router);
+builder.Services.AddSingleton<ICommandSender>(router);
+builder.Services.AddSingleton<IEventPublisher>(router);
+builder.Services.AddSingleton<IQueryProcessor>(router);
+builder.Services.AddSingleton<IHandlerRegistrar>(router);
 
-    // Snapshot support
-    services.AddSingleton<ISnapshotStore, YourSnapshotStore>();
-    services.AddSingleton<ISnapshotStrategy, DefaultSnapshotStrategy>();
+// Event store
+builder.Services.AddSingleton<IEventStore, YourEventStore>();
 
-    // Cache
-    services.AddSingleton<ICache, MemoryCache>();
+// Snapshot support
+builder.Services.AddSingleton<ISnapshotStore, YourSnapshotStore>();
+builder.Services.AddSingleton<ISnapshotStrategy, DefaultSnapshotStrategy>();
 
-    // Repository with all decorators
-    services.AddScoped<IRepository>(sp =>
-        new CacheRepository(
-            new SnapshotRepository(
-                sp.GetService<ISnapshotStore>(),
-                sp.GetService<ISnapshotStrategy>(),
-                new Repository(sp.GetService<IEventStore>()),
-                sp.GetService<IEventStore>()),
-            sp.GetService<IEventStore>(),
-            sp.GetService<ICache>()));
+// Cache
+builder.Services.AddSingleton<ICache, MemoryCache>();
 
-    // Session
-    services.AddScoped<ISession, Session>();
+// Repository with all decorators
+builder.Services.AddScoped<IRepository>(sp =>
+    new CacheRepository(
+        new SnapshotRepository(
+            sp.GetRequiredService<ISnapshotStore>(),
+            sp.GetRequiredService<ISnapshotStrategy>(),
+            new Repository(sp.GetRequiredService<IEventStore>()),
+            sp.GetRequiredService<IEventStore>()),
+        sp.GetRequiredService<IEventStore>(),
+        sp.GetRequiredService<ICache>()));
 
-    // Register handlers
-    var serviceProvider = services.BuildServiceProvider();
-    var registrar = new RouteRegistrar(serviceProvider);
-    registrar.Register(typeof(ProductCommandHandlers).Assembly);
-}
+// Session
+builder.Services.AddScoped<ISession, Session>();
+
+// Register your command, event and query handler classes in DI too, e.g.
+// builder.Services.AddTransient<ProductCommandHandlers>();
+
+var app = builder.Build();
+
+// Route messages to handlers. See Sample/CQRSWeb/Program.cs for resolving
+// handlers from the current request scope.
+new RouteRegistrar(app.Services).RegisterInAssemblyOf(typeof(ProductCommandHandlers));
 ```
 
 ## Common Scenarios
