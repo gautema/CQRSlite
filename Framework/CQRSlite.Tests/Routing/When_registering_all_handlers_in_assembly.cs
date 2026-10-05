@@ -26,6 +26,14 @@ public class When_registering_all_handlers_in_assembly
     }
 
     [Fact]
+    public void Should_register_handlers_once_when_given_several_types_from_same_assembly()
+    {
+        var registrar = new TestHandleRegistrar();
+        new RouteRegistrar(new TestServiceLocator(registrar)).RegisterInAssemblyOf(GetType(), typeof(TestAggregate));
+        Assert.Equal(10, registrar.HandlerList.Count);
+    }
+
+    [Fact]
     public async Task Should_be_able_to_run_all_handlers()
     {
         foreach (var item in _testHandleRegistrar.HandlerList)

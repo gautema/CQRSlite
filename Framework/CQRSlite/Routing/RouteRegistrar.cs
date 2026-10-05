@@ -27,12 +27,12 @@ public class RouteRegistrar
     /// <summary>
     /// Register all command and event handlers in assembly
     /// </summary>
-    /// <param name="typesFromAssemblyContainingMessages">List of assemblies to scan for handlers.</param>
+    /// <param name="typesFromAssemblyContainingMessages">Types whose assemblies are scanned for handlers. Each assembly is scanned once.</param>
     public void RegisterInAssemblyOf(params Type[] typesFromAssemblyContainingMessages)
     {
-        foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
+        foreach (var assembly in typesFromAssemblyContainingMessages.Select(t => t.Assembly).Distinct())
         {
-            RegisterHandlers(typesFromAssemblyContainingMessage.Assembly.GetTypes());
+            RegisterHandlers(assembly.GetTypes());
         }
     }
 

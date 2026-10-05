@@ -14,6 +14,8 @@ public class DefaultSnapshotStrategy : ISnapshotStrategy
     public DefaultSnapshotStrategy() { }
     public DefaultSnapshotStrategy(ushort interval)
     {
+        if (interval == 0)
+            throw new ArgumentOutOfRangeException(nameof(interval), "Snapshot interval must be greater than 0");
         _snapshotInterval = interval;
     }
 

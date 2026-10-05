@@ -12,6 +12,9 @@ public class TestRepository : IRepository
         {
             throw new Exception();
         }
+        // Like a real repository, saving commits the changes. Some tests save aggregates without an id on purpose.
+        if (aggregate.Id != default)
+            aggregate.FlushUncommittedChanges();
         return Task.CompletedTask;
     }
 

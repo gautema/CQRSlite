@@ -62,8 +62,8 @@ public class Repository : IRepository
 
     private async Task<T> LoadAggregate<T>(Guid id, CancellationToken cancellationToken = default) where T : AggregateRoot
     {
-        var events = await _eventStore.Get(id, -1, cancellationToken).ConfigureAwait(false);
-        if (!events.Any())
+        var events = (await _eventStore.Get(id, -1, cancellationToken).ConfigureAwait(false)).ToArray();
+        if (events.Length == 0)
         {
             throw new AggregateNotFoundException(typeof(T), id);
         }

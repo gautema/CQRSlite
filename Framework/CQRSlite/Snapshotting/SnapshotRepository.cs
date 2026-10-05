@@ -31,9 +31,20 @@ public class SnapshotRepository : IRepository
         _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
     }
 
-    public Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default) where T : AggregateRoot
+    public async Task Save<T>(T aggregate, int? expectedVersion = null, CancellationToken cancellationToken = default) where T : AggregateRoot
     {
-        return Task.WhenAll(TryMakeSnapshot(aggregate), _repository.Save(aggregate, expectedVersion, cancellationToken));
+        // Decide before saving, since the strategy looks at the uncommitted changes
+        var makeSnapshot = _snapshotStrategy.ShouldMakeSnapShot(aggregate);
+        await _repository.Save(aggregate, expectedVersion, cancellationToken).ConfigureAwait(false);
+
+        // Snapshot only once the events are stored, and from the state after saving, which can include
+        // events from other writers that the save loaded first
+        if (makeSnapshot)
+        {
+            var snapshot = (Snapshot)aggregate.Invoke("GetSnapshot")!;
+            snapshot.Version = aggregate.Version;
+            await _snapshotStore.Save(snapshot, cancellationToken).ConfigureAwait(false);
+        }
     }
 
     public async Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot
@@ -59,15 +70,5 @@ public class SnapshotRepository : IRepository
             return -1;
         aggregate.Invoke("Restore", snapshot);
         return snapshot.Version;
-    }
-
-    private Task TryMakeSnapshot(AggregateRoot aggregate)
-    {
-        if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
-            return Task.CompletedTask;
-
-        var snapshot = (Snapshot)aggregate.Invoke("GetSnapshot")!;
-        snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
-        return _snapshotStore.Save(snapshot);
     }
 }

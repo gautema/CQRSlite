@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections;
 using System.Reflection;
 using CQRSlite.Caching;
 using CQRSlite.Tests.Substitutes;
@@ -11,7 +11,7 @@ public class When_evicting_cache_entry
     private readonly CacheRepository _rep;
     private readonly TestAggregate _aggregate;
     private readonly ICache _cache;
-    private readonly ConcurrentDictionary<Guid, SemaphoreSlim> _locks;
+    private readonly IDictionary _locks;
 
     public When_evicting_cache_entry()
     {
@@ -19,20 +19,20 @@ public class When_evicting_cache_entry
         _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _cache);
         _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
         var field = _rep.GetType().GetField("_locks", BindingFlags.Static | BindingFlags.NonPublic);
-        _locks = (ConcurrentDictionary<Guid, SemaphoreSlim>)field!.GetValue(_rep)!;
+        _locks = (IDictionary)field!.GetValue(_rep)!;
         _cache.Remove(_aggregate.Id);
     }
 
     [Fact]
     public void Should_remove_lock()
     {
-        Assert.False(_locks.TryGetValue(_aggregate.Id, out var _));
+        Assert.False(_locks.Contains(_aggregate.Id));
     }
 
     [Fact]
     public void Should_not_throw_if_no_lock()
     {
-        _locks.Clear();
+        _cache.Remove(_aggregate.Id);
         _cache.Remove(_aggregate.Id);
     }
 
