@@ -21,7 +21,8 @@ namespace CQRSCode.ReadModel.Handlers;
     public Task Handle(InventoryItemRenamed message, CancellationToken token)
     {
         var item = InMemoryDatabase.List.Find(x => x.Id == message.Id);
-        item.Name = message.NewName;
+        if (item != null)
+            item.Name = message.NewName;
         return Task.CompletedTask;
     }
 

@@ -64,9 +64,9 @@ public class SnapshotRepository : IRepository
     private Task TryMakeSnapshot(AggregateRoot aggregate)
     {
         if (!_snapshotStrategy.ShouldMakeSnapShot(aggregate))
-            return Task.FromResult(0);
+            return Task.CompletedTask;
 
-        dynamic snapshot = aggregate.Invoke("GetSnapshot");
+        var snapshot = (Snapshot)aggregate.Invoke("GetSnapshot")!;
         snapshot.Version = aggregate.Version + aggregate.GetUncommittedChanges().Length;
         return _snapshotStore.Save(snapshot);
     }

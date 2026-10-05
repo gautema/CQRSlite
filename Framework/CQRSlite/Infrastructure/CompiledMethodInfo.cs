@@ -5,7 +5,7 @@ namespace CQRSlite.Infrastructure;
 
 internal class CompiledMethodInfo
 {
-    private readonly Func<object, object[], object> _func;
+    private readonly Func<object, object[], object?> _func;
 
     public CompiledMethodInfo(MethodInfo methodInfo, Type type)
     {
@@ -31,11 +31,11 @@ internal class CompiledMethodInfo
         }
         else
         {
-            _func = Expression.Lambda<Func<object, object[], object>>(Expression.Convert(callExpression, typeof(object)), instanceExpression, argumentsExpression).Compile();
+            _func = Expression.Lambda<Func<object, object[], object?>>(Expression.Convert(callExpression, typeof(object)), instanceExpression, argumentsExpression).Compile();
         }
     }
 
-    public object Invoke(object instance, params object[] arguments)
+    public object? Invoke(object instance, params object[] arguments)
     {
         return _func(instance, arguments);
     }

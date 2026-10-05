@@ -4,7 +4,7 @@ namespace CQRSlite.Tests.Substitutes;
 
 public class TestInMemorySnapshotStore : ISnapshotStore 
 {
-    public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default)
+    public Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(_snapshot);
     }
@@ -18,7 +18,7 @@ public class TestInMemorySnapshotStore : ISnapshotStore
         return Task.CompletedTask;
     }
 
-    private Snapshot _snapshot;
+    private Snapshot? _snapshot;
     public int SavedVersion { get; private set; }
     public bool FirstSaved { get; private set; }
 }

@@ -19,7 +19,7 @@ public class When_evicting_cache_entry
         _rep = new CacheRepository(new TestRepository(), new TestEventStore(), _cache);
         _aggregate = _rep.Get<TestAggregate>(Guid.NewGuid()).Result;
         var field = _rep.GetType().GetField("_locks", BindingFlags.Static | BindingFlags.NonPublic);
-        _locks = (ConcurrentDictionary<Guid, SemaphoreSlim>)field?.GetValue(_rep);
+        _locks = (ConcurrentDictionary<Guid, SemaphoreSlim>)field!.GetValue(_rep)!;
         _cache.Remove(_aggregate.Id);
     }
 

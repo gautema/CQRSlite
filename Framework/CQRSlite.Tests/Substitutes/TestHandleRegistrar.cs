@@ -15,6 +15,6 @@ public class TestHandleRegistrar : IHandlerRegistrar
 
 public class TestHandlerListItem
 {
-    public Type Type;
-    public dynamic Handler;
+    public required Type Type;
+    public required dynamic Handler;
 }

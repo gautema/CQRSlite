@@ -32,7 +32,7 @@ public class RouteRegistrar
     {
         foreach (var typesFromAssemblyContainingMessage in typesFromAssemblyContainingMessages)
         {
-            RegisterHandlers(typesFromAssemblyContainingMessage.GetTypeInfo().Assembly.GetTypes());
+            RegisterHandlers(typesFromAssemblyContainingMessage.Assembly.GetTypes());
         }
     }
 
@@ -42,11 +42,12 @@ public class RouteRegistrar
     /// <param name="handlers">List of handlers to register.</param>
     public void RegisterHandlers(params Type[] handlers)
     {
-        var registrar = (IHandlerRegistrar)_serviceLocator.GetService(typeof(IHandlerRegistrar));
+        var registrar = (IHandlerRegistrar?)_serviceLocator.GetService(typeof(IHandlerRegistrar)) ??
+            throw new HandlerNotResolvedException(nameof(IHandlerRegistrar));
 
         var executorTypes = handlers
             .Select(t => new { Type = t, Interfaces = ResolveMessageHandlerInterface(t) })
-            .Where(e => e.Interfaces != null && e.Interfaces.Any() && !e.Type.GetTypeInfo().IsAbstract);
+            .Where(e => e.Interfaces != null && e.Interfaces.Any() && !e.Type.IsAbstract);
 
         foreach (var executorType in executorTypes)
         {
@@ -123,7 +124,7 @@ public class RouteRegistrar
 
         return type
             .GetInterfaces()
-            .Where(i => i.GetTypeInfo().IsGenericType &&
+            .Where(i => i.IsGenericType &&
                         types.Contains(i.GetGenericTypeDefinition()));
     }
 }

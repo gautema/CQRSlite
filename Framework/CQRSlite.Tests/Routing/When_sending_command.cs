@@ -55,7 +55,7 @@ public class When_sending_command
     public async Task Should_handle_dynamically_generated_commands()
     {
         var handler = new TestAggregateDoSomethingHandler();
-        var command = (ICommand)Activator.CreateInstance(typeof(TestAggregateDoSomething));
+        var command = (ICommand)Activator.CreateInstance(typeof(TestAggregateDoSomething))!;
 
         _router.RegisterHandler<TestAggregateDoSomething>(handler.Handle);
         await _router.Send(command);

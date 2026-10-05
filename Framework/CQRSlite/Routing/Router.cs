@@ -35,7 +35,7 @@ public class Router : ICommandSender, IEventPublisher, IQueryProcessor, IHandler
     public Task Publish<T>(T @event, CancellationToken cancellationToken = default) where T : class, IEvent
     {
         if (!_routes.TryGetValue(@event.GetType(), out var handlers))
-            return Task.FromResult(0);
+            return Task.CompletedTask;
 
         var tasks = new Task[handlers.Count];
         for (var index = 0; index < handlers.Count; index++)

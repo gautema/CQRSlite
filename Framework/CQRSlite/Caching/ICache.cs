@@ -27,7 +27,7 @@ public interface ICache
     /// </summary>
     /// <param name="id">Id of aggregate</param>
     /// <returns>Task representing operation. Task result is aggregate</returns>
-    Task<AggregateRoot> Get(Guid id);
+    Task<AggregateRoot?> Get(Guid id);
 
     /// <summary>
     /// Remove aggregate from cache

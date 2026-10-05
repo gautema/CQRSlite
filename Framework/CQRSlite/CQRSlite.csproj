@@ -39,7 +39,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" VersionOverride="8.0.1" />
   </ItemGroup>
 </Project>

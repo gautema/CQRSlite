@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using CQRSlite.Domain;
+﻿using CQRSlite.Domain;
 
 namespace CQRSlite.Snapshotting;
 
@@ -20,14 +19,12 @@ public class DefaultSnapshotStrategy : ISnapshotStrategy
 
     public bool IsSnapshotable(Type aggregateType)
     {
-        while (true)
+        for (var baseType = aggregateType.BaseType; baseType != null; baseType = baseType.BaseType)
         {
-            if (aggregateType.GetTypeInfo().BaseType == null) return false;
-            if (aggregateType.GetTypeInfo().BaseType.GetTypeInfo().IsGenericType && 
-                aggregateType.GetTypeInfo().BaseType?.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>)) 
+            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
                 return true;
-            aggregateType = aggregateType.GetTypeInfo().BaseType;
         }
+        return false;
     }
 
     public bool ShouldMakeSnapShot(AggregateRoot aggregate)

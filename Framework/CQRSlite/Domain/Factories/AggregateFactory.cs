@@ -5,9 +5,9 @@ namespace CQRSlite.Domain.Factories;
 
 internal static class AggregateFactory<T>
 {
-    private static readonly Func<T> _constructor = CreateTypeConstructor();
+    private static readonly Func<T>? _constructor = CreateTypeConstructor();
 
-    private static Func<T> CreateTypeConstructor()
+    private static Func<T>? CreateTypeConstructor()
     {
         try
         {

@@ -15,7 +15,7 @@ public class TestRepository : IRepository
         return Task.CompletedTask;
     }
 
-    public AggregateRoot Saved { get; private set; }
+    public AggregateRoot? Saved { get; private set; }
 
     public Task<T> Get<T>(Guid aggregateId, CancellationToken cancellationToken = default) where T : AggregateRoot
     {
@@ -23,7 +23,7 @@ public class TestRepository : IRepository
         {
             throw new Exception();
         }
-        var obj = (T) Activator.CreateInstance(typeof (T), true);
+        var obj = (T) Activator.CreateInstance(typeof (T), true)!;
         obj.LoadFromHistory(new[] {new TestAggregateDidSomething {Id = aggregateId, Version = 1}});
         return Task.FromResult(obj);
     }

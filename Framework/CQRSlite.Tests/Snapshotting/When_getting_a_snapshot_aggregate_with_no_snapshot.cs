@@ -24,9 +24,9 @@ public class When_getting_a_snapshot_aggregate_with_no_snapshot
 
 	    private class NullSnapshotStore : ISnapshotStore
 	    {
-	        public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default)
+	        public Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default)
 	        {
-	            return Task.FromResult<Snapshot>(null);
+	            return Task.FromResult<Snapshot?>(null);
 	        }
         public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default)
         {

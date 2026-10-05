@@ -24,13 +24,13 @@ public class Session : ISession
     {
         if (!IsTracked(aggregate.Id))
         {
-            _trackedAggregates.Add(aggregate.Id, new AggregateDescriptor { Aggregate = aggregate, Version = aggregate.Version });
+            _trackedAggregates.Add(aggregate.Id, new AggregateDescriptor(aggregate, aggregate.Version));
         }
         else if (_trackedAggregates[aggregate.Id].Aggregate != aggregate)
         {
             throw new ConcurrencyException(aggregate.Id);
         }
-        return Task.FromResult(0);
+        return Task.CompletedTask;
     }
 
     public async Task<T> Get<T>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = default) where T : AggregateRoot
@@ -71,9 +71,9 @@ public class Session : ISession
         }
     }
 
-    private class AggregateDescriptor
+    private sealed class AggregateDescriptor(AggregateRoot aggregate, int version)
     {
-        public AggregateRoot Aggregate { get; set; }
-        public int Version { get; set; }
+        public AggregateRoot Aggregate { get; } = aggregate;
+        public int Version { get; } = version;
     }
 }

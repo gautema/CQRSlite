@@ -11,7 +11,7 @@ public interface ISnapshotStore
     /// <param name="id">Id of aggregate</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task with snapshot</returns>
-    Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default);
+    Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Save snapshot to store

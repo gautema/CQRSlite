@@ -10,7 +10,7 @@ namespace CQRSlite.Domain;
 public class Repository : IRepository
 {
     private readonly IEventStore _eventStore;
-    private readonly IEventPublisher _publisher;
+    private readonly IEventPublisher? _publisher;
 
     /// <summary>
     /// Initialize Repository

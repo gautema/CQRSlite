@@ -12,13 +12,13 @@ public abstract class Specification<TAggregate, THandler, TCommand>
     where TCommand : ICommand
 {
 
-    protected TAggregate Aggregate { get; set; }
+    protected TAggregate? Aggregate { get; set; }
     protected ISession Session { get; set; }
     protected abstract IEnumerable<IEvent> Given();
     protected abstract TCommand When();
     protected abstract THandler BuildHandler();
 
-    protected Snapshot Snapshot { get; set; }
+    protected Snapshot? Snapshot { get; set; }
     protected IList<IEvent> EventDescriptors { get; set; }
     protected IList<IEvent> PublishedEvents { get; set; }
 
@@ -33,26 +33,21 @@ public abstract class Specification<TAggregate, THandler, TCommand>
         Session = new Session(repository);
         Aggregate = GetAggregate().Result;
 
-        dynamic handler = BuildHandler();
-        if (handler is ICancellableCommandHandler<TCommand>)
+        var handler = BuildHandler();
+        var handling = handler switch
         {
-            handler.Handle(When(), new CancellationToken());
-        }
-        else if(handler is ICommandHandler<TCommand>)
-        {
-            handler.Handle(When());
-        }
-        else
-        {
-            throw new InvalidCastException($"{nameof(handler)} is not a command handler of type {typeof(TCommand)}");
-        }
+            ICancellableCommandHandler<TCommand> cancellableHandler => cancellableHandler.Handle(When(), CancellationToken.None),
+            ICommandHandler<TCommand> commandHandler => commandHandler.Handle(When()),
+            _ => throw new InvalidCastException($"{typeof(THandler).Name} is not a command handler of type {typeof(TCommand)}")
+        };
+        handling.GetAwaiter().GetResult();
 
         Snapshot = snapshotstorage.Snapshot;
         PublishedEvents = eventpublisher.PublishedEvents;
         EventDescriptors = eventstorage.Events;
     }
 
-    private async Task<TAggregate> GetAggregate()
+    private async Task<TAggregate?> GetAggregate()
     {
         try
         {
@@ -67,14 +62,14 @@ public abstract class Specification<TAggregate, THandler, TCommand>
 
 internal class SpecSnapShotStorage : ISnapshotStore
 {
-    public SpecSnapShotStorage(Snapshot snapshot)
+    public SpecSnapShotStorage(Snapshot? snapshot)
     {
         Snapshot = snapshot;
     }
 
-    public Snapshot Snapshot { get; set; }
+    public Snapshot? Snapshot { get; set; }
 
-    public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default)
+    public Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Snapshot);
     }

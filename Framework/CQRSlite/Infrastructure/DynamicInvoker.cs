@@ -5,10 +5,10 @@ namespace CQRSlite.Infrastructure;
 internal static class DynamicInvoker
 {
     private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-    private static volatile Dictionary<int, CompiledMethodInfo> _cachedMembers = new();
+    private static volatile Dictionary<int, CompiledMethodInfo?> _cachedMembers = new();
     private static readonly object _lockObj = new();
 
-    internal static object Invoke<T>(this T obj, string methodName, params object[] args)
+    internal static object? Invoke(this object obj, string methodName, params object[] args)
     {
         var type = obj.GetType();
         var hash = Hash(type, methodName, args);
@@ -24,7 +24,7 @@ internal static class DynamicInvoker
             var m = GetMember(type, methodName, argTypes);
             method = m == null ? null : new CompiledMethodInfo(m, type);
 
-            var dict = new Dictionary<int, CompiledMethodInfo>(_cachedMembers) {{hash, method}};
+            var dict = new Dictionary<int, CompiledMethodInfo?>(_cachedMembers) {{hash, method}};
 
             _cachedMembers = dict;
             return method?.Invoke(obj, args);
@@ -55,7 +55,7 @@ internal static class DynamicInvoker
         return argTypes;
     }
 
-    private static MethodInfo GetMember(Type type, string name, Type[] argtypes)
+    private static MethodInfo? GetMember(Type type, string name, Type[] argtypes)
     {
         while (true)
         {
@@ -67,7 +67,7 @@ internal static class DynamicInvoker
             {
                 return member;
             }
-            var t = type.GetTypeInfo().BaseType;
+            var t = type.BaseType;
             if (t == null)
             {
                 return null;

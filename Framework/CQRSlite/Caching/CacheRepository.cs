@@ -63,24 +63,24 @@ public class CacheRepository : IRepository
         await @lock.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            T aggregate;
             if (await _cache.IsTracked(aggregateId).ConfigureAwait(false))
             {
-                aggregate = (T) await _cache.Get(aggregateId).ConfigureAwait(false);
-                var events = await _eventStore.Get(aggregateId, aggregate.Version, cancellationToken).ConfigureAwait(false);
-                var firstEvent = events.FirstOrDefault();
-                if (firstEvent != null && firstEvent.Version != aggregate.Version + 1)
+                // The entry can be evicted between IsTracked and Get, so fall back to the repository on null.
+                var cached = (T?) await _cache.Get(aggregateId).ConfigureAwait(false);
+                if (cached != null)
                 {
-                    await _cache.Remove(aggregateId).ConfigureAwait(false);
+                    var events = await _eventStore.Get(aggregateId, cached.Version, cancellationToken).ConfigureAwait(false);
+                    var firstEvent = events.FirstOrDefault();
+                    if (firstEvent == null || firstEvent.Version == cached.Version + 1)
+                    {
+                        cached.LoadFromHistory(events);
+                        return cached;
+                    }
                 }
-                else
-                {
-                    aggregate.LoadFromHistory(events);
-                    return aggregate;
-                }
+                await _cache.Remove(aggregateId).ConfigureAwait(false);
             }
 
-            aggregate = await _repository.Get<T>(aggregateId, cancellationToken).ConfigureAwait(false);
+            var aggregate = await _repository.Get<T>(aggregateId, cancellationToken).ConfigureAwait(false);
             await _cache.Set(aggregateId, aggregate).ConfigureAwait(false);
             return aggregate;
         }

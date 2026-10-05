@@ -8,10 +8,10 @@ public class TestSnapshotStore : ISnapshotStore
     public bool VerifySave { get; private set; }
     public int SavedVersion { get; private set; }
 
-    public Task<Snapshot> Get(Guid id, CancellationToken cancellationToken = default)
+    public Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default)
     {
         VerifyGet = true;
-        return Task.FromResult((Snapshot)new TestSnapshotAggregateSnapshot());
+        return Task.FromResult<Snapshot?>(new TestSnapshotAggregateSnapshot());
     }
 
     public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default)

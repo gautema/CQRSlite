@@ -7,11 +7,11 @@ public class TestMemoryCache : ICache
 {
     private readonly Dictionary<Guid, AggregateRoot> _cache = new Dictionary<Guid, AggregateRoot>();
 
-    private Action<Guid> _evictionCallback;
+    private Action<Guid>? _evictionCallback;
 
-    public Task<AggregateRoot> Get(Guid id)
+    public Task<AggregateRoot?> Get(Guid id)
     {
-        return Task.FromResult(_cache[id]);
+        return Task.FromResult<AggregateRoot?>(_cache[id]);
     }
 
     public Task<bool> IsTracked(Guid id)
@@ -27,7 +27,7 @@ public class TestMemoryCache : ICache
     public Task Remove(Guid id)
     {
         _cache.Remove(id);
-        _evictionCallback(id);
+        _evictionCallback?.Invoke(id);
         return Task.CompletedTask;
     }
 

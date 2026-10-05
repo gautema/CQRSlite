@@ -22,23 +22,23 @@ public class MemoryCache : ICache
     public Task Set(Guid id, AggregateRoot aggregate)
     {
         _cache.Set(id, aggregate, _optionsFactory.Invoke());
-        return Task.FromResult(0);
+        return Task.CompletedTask;
     }
 
-    public Task<AggregateRoot> Get(Guid id)
+    public Task<AggregateRoot?> Get(Guid id)
     {
-        return Task.FromResult((AggregateRoot)_cache.Get(id));
+        return Task.FromResult((AggregateRoot?)_cache.Get(id));
     }
 
     public Task Remove(Guid id)
     {
         _cache.Remove(id);
-        return Task.FromResult(0);
+        return Task.CompletedTask;
     }
 
     public void RegisterEvictionCallback(Action<Guid> action)
     {
-        _optionsFactory = _optionsFactory = () =>
+        _optionsFactory = () =>
         {
             var options = new MemoryCacheEntryOptions
             {
@@ -46,7 +46,7 @@ public class MemoryCache : ICache
             };
             options.RegisterPostEvictionCallback((key, value, reason, state) =>
             {
-                action.Invoke((Guid)key);
+                action.Invoke((Guid)key!);
             });
             return options;
         };
