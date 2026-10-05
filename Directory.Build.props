@@ -1,5 +1,7 @@
 <Project>
- <PropertyGroup>
-   <LangVersion>7.1</LangVersion>
- </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
 </Project>

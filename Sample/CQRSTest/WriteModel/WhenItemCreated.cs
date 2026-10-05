@@ -33,7 +33,7 @@ namespace CQRSTest.WriteModel
         [Then]
         public void Should_create_one_event()
         {
-            Assert.Equal(1, PublishedEvents.Count);
+            Assert.Single(PublishedEvents);
         }
 
         [Then]

@@ -21,7 +21,7 @@ CQRSlite is a lightweight CQRS (Command Query Responsibility Segregation) and Ev
 2. **Pluggability**: Every component can be replaced with custom implementations
 3. **Convention over Configuration**: Uses convention-based routing where appropriate
 4. **Separation of Concerns**: Clear boundaries between commands, queries, and events
-5. **Target Frameworks**: netstandard2.0 and net9.0
+5. **Target Frameworks**: netstandard2.0 and net10.0
 
 ### High-Level Architecture
 

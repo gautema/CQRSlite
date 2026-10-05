@@ -252,3 +252,7 @@ ModelManifest.xml
 !.vscode/extensions.json
 .idea
 .DS_Store
+
+# macOS / JetBrains
+.DS_Store
+.idea/

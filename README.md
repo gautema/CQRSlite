@@ -1,6 +1,6 @@
 # CQRSlite
 
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/gautema/CQRSLite?branch=master&svg=true)](https://ci.appveyor.com/project/gautema/CQRSLite)
+[![Build](https://github.com/gautema/cqrslite/actions/workflows/ci.yml/badge.svg)](https://github.com/gautema/cqrslite/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/vpre/cqrslite.svg)](https://www.nuget.org/packages/cqrslite)
 
 A lightweight CQRS and Event Sourcing framework for .NET
@@ -11,7 +11,7 @@ CQRSlite is a small, focused CQRS (Command Query Responsibility Segregation) and
 
 **Key Characteristics:**
 - Minimal dependencies (only Microsoft.Extensions.Caching.Memory)
-- Targets netstandard2.0 and net9.0
+- Targets netstandard2.0 and net10.0
 - Convention-based event application with performance optimization
 - Pluggable architecture - replace any component with custom implementations
 - Thread-safe caching and repository decorators
@@ -124,9 +124,9 @@ registrar.Register(typeof(ProductCommandHandler).Assembly);
 
 ## Documentation
 
-- **[Developer Documentation](./DEVELOPER.md)** - Comprehensive guide covering architecture, implementation patterns, best practices, and testing
-- **[API Reference](./API_REFERENCE.md)** - Complete API documentation for all interfaces and classes
-- **[Sample Project](./Sample/)** - Working example demonstrating common usage patterns
+- **[Developer Documentation](https://github.com/gautema/cqrslite/blob/master/DEVELOPER.md)** - Comprehensive guide covering architecture, implementation patterns, best practices, and testing
+- **[API Reference](https://github.com/gautema/cqrslite/blob/master/API_REFERENCE.md)** - Complete API documentation for all interfaces and classes
+- **[Sample Project](https://github.com/gautema/cqrslite/tree/master/Sample)** - Working example demonstrating common usage patterns
 
 ## External Resources
 
@@ -145,7 +145,7 @@ Example event stores:
 - Azure Table Storage
 - In-memory (for testing, included in sample)
 
-See [DEVELOPER.md](./DEVELOPER.md#implementing-event-store) for implementation guidance.
+See [DEVELOPER.md](https://github.com/gautema/cqrslite/blob/master/DEVELOPER.md#implementing-event-store) for implementation guidance.
 
 ## Architecture
 
@@ -172,12 +172,12 @@ Queries → QueryHandlers → ReadModels ← EventHandlers
 
 ## Contributing
 
-Contributions are welcome! Please see [DEVELOPER.md](./DEVELOPER.md#contributing) for guidelines.
+Contributions are welcome! Please see [DEVELOPER.md](https://github.com/gautema/cqrslite/blob/master/DEVELOPER.md#contributing) for guidelines.
 
 ## Version Compatibility
 
 - **netstandard2.0** - Compatible with .NET Framework 4.6.1+ and .NET Core 2.0+
-- **net9.0** - Latest .NET features and performance improvements
+- **net10.0** - Latest .NET features and performance improvements
 
 ## License
 Copyright 2020 Gaute Magnussen
