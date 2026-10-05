@@ -134,7 +134,7 @@ public class InventoryItemDetailView : ICancellableEventHandler<InventoryItemCre
 **Key Points:**
 - Events are published via `IEventPublisher`
 - Multiple handlers can subscribe to the same event
-- All handlers run in parallel via `Task.WhenAll`
+- Handlers are started one after another and awaited together with `Task.WhenAll`, so async handlers run concurrently. A handler that throws synchronously stops later handlers from starting, and `WhenAll` rethrows handler exceptions
 - Events should be immutable and contain all necessary data
 
 ### Queries
@@ -177,7 +177,7 @@ public class InventoryItem : AggregateRoot
     public InventoryItem(Guid id, string name)
     {
         Id = id;
-        ApplyChange(new InventoryItemCreated(id, name));
+        ApplyChange(new InventoryItemCreated { Id = id, Name = name });
     }
 
     // Required parameterless constructor for rehydration
@@ -189,7 +189,8 @@ public class InventoryItem : AggregateRoot
         if (!_activated)
             throw new InvalidOperationException("Item is deactivated");
 
-        ApplyChange(new InventoryItemRenamed(Id, newName));
+        // InventoryItemRenamed and InventoryItemDeactivated are defined like InventoryItemCreated
+        ApplyChange(new InventoryItemRenamed { Id = Id, NewName = newName });
     }
 
     public void Deactivate()
@@ -197,7 +198,7 @@ public class InventoryItem : AggregateRoot
         if (!_activated)
             throw new InvalidOperationException("Already deactivated");
 
-        ApplyChange(new InventoryItemDeactivated(Id));
+        ApplyChange(new InventoryItemDeactivated { Id = Id });
     }
 
     // Convention-based event application (private methods)
@@ -267,6 +268,21 @@ public class ProductCreated : IEvent
     public decimal Price { get; set; }
 }
 
+public class ProductPriceChanged : IEvent
+{
+    public Guid Id { get; set; }
+    public int Version { get; set; }
+    public DateTimeOffset TimeStamp { get; set; }
+    public decimal NewPrice { get; set; }
+}
+
+public class ProductDiscontinued : IEvent
+{
+    public Guid Id { get; set; }
+    public int Version { get; set; }
+    public DateTimeOffset TimeStamp { get; set; }
+}
+
 // Queries
 public class GetProduct : IQuery<ProductDto>
 {
@@ -286,7 +302,7 @@ public class Product : AggregateRoot
     public Product(Guid id, string name, decimal price)
     {
         Id = id;
-        ApplyChange(new ProductCreated(id, name, price));
+        ApplyChange(new ProductCreated { Id = id, Name = name, Price = price });
     }
 
     private Product() { } // For rehydration
@@ -296,7 +312,12 @@ public class Product : AggregateRoot
         if (_discontinued)
             throw new InvalidOperationException("Cannot change price of discontinued product");
 
-        ApplyChange(new ProductPriceChanged(Id, newPrice));
+        ApplyChange(new ProductPriceChanged { Id = Id, NewPrice = newPrice });
+    }
+
+    public void Discontinue()
+    {
+        ApplyChange(new ProductDiscontinued { Id = Id });
     }
 
     private void Apply(ProductCreated e)
@@ -308,6 +329,11 @@ public class Product : AggregateRoot
     private void Apply(ProductPriceChanged e)
     {
         _price = e.NewPrice;
+    }
+
+    private void Apply(ProductDiscontinued e)
+    {
+        _discontinued = true;
     }
 }
 ```
@@ -365,6 +391,8 @@ public class ProductQueryHandlers : IQueryHandler<GetProduct, ProductDto>
 
 You **must** implement `IEventStore`. Here's a minimal example:
 
+**Concurrency:** `Repository`'s `ConcurrencyException` check (reading events after `expectedVersion` before saving) is check-then-act, not atomic. Your event store's `Save` must itself reject an event whose (aggregate Id, Version) already exists, e.g. with a unique index or primary key on `(AggregateId, Version)`. Otherwise two concurrent writers can both succeed.
+
 ```csharp
 public class SqlEventStore : IEventStore
 {
@@ -383,6 +411,7 @@ public class SqlEventStore : IEventStore
         {
             // Serialize and save event
             await _connection.ExecuteAsync(
+                // Events needs a unique key on (AggregateId, Version) so a concurrent duplicate fails here
                 "INSERT INTO Events (AggregateId, Version, Type, Data, Timestamp) VALUES (@Id, @Version, @Type, @Data, @TimeStamp)",
                 new
                 {
@@ -398,6 +427,7 @@ public class SqlEventStore : IEventStore
         }
     }
 
+    // Returns events after fromVersion; -1 means from the start
     public async Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
     {
         var eventData = await _connection.QueryAsync<EventRecord>(
@@ -413,6 +443,13 @@ public class SqlEventStore : IEventStore
 ### 6. Configure Dependency Injection
 
 ```csharp
+using CQRSlite.Commands;
+using CQRSlite.Domain;
+using CQRSlite.Events;
+using CQRSlite.Queries;
+using CQRSlite.Routing;
+using ISession = CQRSlite.Domain.ISession; // Avoid clash with Microsoft.AspNetCore.Http.ISession
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Router (central message router)
@@ -432,15 +469,38 @@ builder.Services.AddScoped<IRepository>(sp =>
 // Session (scoped per request)
 builder.Services.AddScoped<ISession, Session>();
 
-// Register your command, event and query handler classes in DI too, e.g.
-// builder.Services.AddTransient<ProductCommandHandlers>();
+// Every handler class must be resolvable from DI (the sample scans for them with Scrutor)
+builder.Services.AddTransient<ProductCommandHandlers>();
+builder.Services.AddTransient<ProductEventHandlers>();
+builder.Services.AddTransient<ProductQueryHandlers>();
+
+builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Route messages to handlers. See Sample/CQRSWeb/Program.cs for resolving
-// handlers from the current request scope.
-new RouteRegistrar(app.Services).RegisterInAssemblyOf(typeof(ProductCommandHandlers));
+// Route messages to handlers, resolving them from the current request scope
+new RouteRegistrar(new RequestServiceProvider(app.Services))
+    .RegisterInAssemblyOf(typeof(ProductCommandHandlers));
+
+app.MapControllers();
+app.Run();
+
+/// <summary>
+/// Resolves services from the current request scope when there is one, so scoped
+/// services like ISession are shared between a request and the handlers it triggers.
+/// </summary>
+internal class RequestServiceProvider(IServiceProvider services) : IServiceProvider
+{
+    private readonly IHttpContextAccessor? _contextAccessor = services.GetService<IHttpContextAccessor>();
+
+    public object? GetService(Type serviceType) =>
+        _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
+        services.GetService(serviceType);
+}
 ```
+
+`RouteRegistrar` resolves a handler each time a message is routed. Giving it `app.Services` directly would resolve scoped services such as `ISession` from the root provider, which throws in Development and shares one session between all requests otherwise.
 
 ### 7. Use in Controllers/Application Layer
 
@@ -502,6 +562,8 @@ public class ProductCommandHandler : ICommandHandler<ChangeProductPrice>
 }
 ```
 
+The check runs before the events are saved, so it is not atomic. The event store must also reject an event whose (aggregate Id, Version) already exists, e.g. with a unique index on `(AggregateId, Version)` (see [5. Implement Event Store](#5-implement-event-store)).
+
 **In the UI:**
 Include version in the form as a hidden field:
 ```html
@@ -530,10 +592,9 @@ public class Product : SnapshotAggregateRoot<ProductSnapshot>
 
     protected override ProductSnapshot CreateSnapshot()
     {
+        // Id and Version are set by the framework
         return new ProductSnapshot
         {
-            Id = Id,
-            Version = Version,
             Name = _name,
             Price = _price,
             Discontinued = _discontinued
@@ -551,14 +612,16 @@ public class Product : SnapshotAggregateRoot<ProductSnapshot>
 // 3. Implement ISnapshotStore
 public class SqlSnapshotStore : ISnapshotStore
 {
-    public async Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default)
+    public Task<Snapshot?> Get(Guid id, CancellationToken cancellationToken = default)
     {
         // Retrieve and deserialize snapshot from database
+        throw new NotImplementedException();
     }
 
-    public async Task Save(Snapshot snapshot, CancellationToken cancellationToken = default)
+    public Task Save(Snapshot snapshot, CancellationToken cancellationToken = default)
     {
         // Serialize and save snapshot to database
+        throw new NotImplementedException();
     }
 }
 
@@ -572,6 +635,8 @@ services.AddScoped<IRepository>(sp =>
         new Repository(sp.GetService<IEventStore>()),
         sp.GetService<IEventStore>()));
 ```
+
+`SnapshotRepository.Get` restores the latest snapshot and replays only the events after it. `Save` decides before saving whether a snapshot is due (the version plus the uncommitted changes crosses a multiple of the interval), saves the events, and only after that succeeds saves a snapshot of the aggregate's state after the save.
 
 ### Implementing Caching
 
@@ -599,8 +664,10 @@ services.AddScoped<IRepository>(sp =>
 
 **CacheRepository Features:**
 - Thread-safe per-aggregate locking
-- Applies new events to cached aggregates
-- Invalidates cache if events were skipped
+- Save puts the aggregate in the cache, and removes it if saving throws
+- Get returns the cached instance, updated with any newer events from the event store
+- Reloads from the repository if the cached instance has uncommitted changes (e.g. an earlier command changed it and never committed) or if events were skipped
+- `MemoryCache` entries expire after 15 minutes without access (sliding expiration)
 - Reduces load on event store
 
 ### Manual Handler Registration
@@ -608,21 +675,16 @@ services.AddScoped<IRepository>(sp =>
 Instead of automatic registration, you can register handlers manually:
 
 ```csharp
-var registrar = serviceProvider.GetService<IHandlerRegistrar>();
+var registrar = app.Services.GetRequiredService<IHandlerRegistrar>();
+var services = new RequestServiceProvider(app.Services); // See "Configure Dependency Injection"
 
 // Register command handler
-registrar.RegisterHandler<CreateProduct>(async (message, token) =>
-{
-    var handler = serviceProvider.GetService<ProductCommandHandlers>();
-    await handler.Handle((CreateProduct)message);
-});
+registrar.RegisterHandler<CreateProduct>((message, token) =>
+    services.GetRequiredService<ProductCommandHandlers>().Handle(message));
 
 // Register event handler
-registrar.RegisterHandler<ProductCreated>(async (message, token) =>
-{
-    var handler = serviceProvider.GetService<ProductEventHandlers>();
-    await handler.Handle((ProductCreated)message, token);
-});
+registrar.RegisterHandler<ProductCreated>((message, token) =>
+    services.GetRequiredService<ProductEventHandlers>().Handle(message, token));
 ```
 
 ## Extension Points
@@ -642,7 +704,7 @@ public interface IEventStore
 **Considerations:**
 - Use transactions for atomicity
 - Publish events after successful save
-- Handle concurrency conflicts
+- Reject events whose (aggregate Id, Version) already exists, e.g. with a unique index; the repository's concurrency check alone is not atomic
 - Consider event versioning for schema evolution
 
 ### Custom Snapshot Strategy
@@ -654,16 +716,26 @@ public class CustomSnapshotStrategy : ISnapshotStrategy
 {
     public bool IsSnapshotable(Type aggregateType)
     {
-        // Only snapshot specific aggregate types
-        return aggregateType.GetInterfaces()
-            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISnapshotAggregate<>));
+        // SnapshotRepository calls GetSnapshot/Restore, so only types deriving
+        // from SnapshotAggregateRoot<> can be snapshotted
+        for (var type = aggregateType.BaseType; type != null; type = type.BaseType)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
+                return true;
+        }
+        return false;
     }
 
     public bool ShouldMakeSnapShot(AggregateRoot aggregate)
     {
-        // Snapshot based on custom logic
-        // Example: Snapshot every 50 events, or after specific event types
-        return aggregate.Version % 50 == 0;
+        if (!IsSnapshotable(aggregate.GetType()))
+            return false;
+
+        // Called before saving: Version is the saved version, the new events are still uncommitted.
+        // Example: snapshot every 50 events
+        var from = aggregate.Version;
+        var to = from + aggregate.GetUncommittedChanges().Length;
+        return to / 50 > from / 50;
     }
 }
 ```
@@ -677,11 +749,13 @@ public class RedisCache : ICache
 {
     private readonly IConnectionMultiplexer _redis;
 
-    public bool IsTracked(Guid id) { /* ... */ }
-    public void Set(Guid id, AggregateRoot aggregate) { /* ... */ }
-    public AggregateRoot Get(Guid id) { /* ... */ }
-    public void Remove(Guid id) { /* ... */ }
-    public void RegisterEvictionCallback(Action<Guid> action) { /* ... */ }
+    public RedisCache(IConnectionMultiplexer redis) => _redis = redis;
+
+    public Task<bool> IsTracked(Guid id) => throw new NotImplementedException();
+    public Task Set(Guid id, AggregateRoot aggregate) => throw new NotImplementedException();
+    public Task<AggregateRoot?> Get(Guid id) => throw new NotImplementedException();
+    public Task Remove(Guid id) => throw new NotImplementedException();
+    public void RegisterEvictionCallback(Action<Guid> action) { /* Call action when an entry is evicted */ }
 }
 ```
 
@@ -716,7 +790,7 @@ public class CustomAggregate : AggregateRoot
 ### Aggregate Design
 
 1. **Keep aggregates small**: Large aggregates with many events cause performance issues
-2. **One aggregate per transaction**: Don't modify multiple aggregates in one command handler
+2. **One aggregate per command**: Don't modify multiple aggregates in one command handler. `ISession` is a unit of work, not a transaction: `Commit` stops tracking all aggregates, then saves each in turn, so it is not atomic across aggregates
 3. **Protect invariants**: All business rules should be enforced in the aggregate
 4. **Use meaningful events**: Events should capture business intent, not just state changes
 
@@ -743,7 +817,9 @@ public class OrderStateChanged : IEvent
 // Good: Self-contained event
 public class OrderPlaced : IEvent
 {
-    public Guid OrderId { get; set; }
+    public Guid Id { get; set; } // The order (aggregate) id
+    public int Version { get; set; }
+    public DateTimeOffset TimeStamp { get; set; }
     public Guid CustomerId { get; set; }
     public string CustomerName { get; set; }
     public List<OrderLine> Lines { get; set; }
@@ -754,7 +830,9 @@ public class OrderPlaced : IEvent
 // Bad: Missing data
 public class OrderPlaced : IEvent
 {
-    public Guid OrderId { get; set; }
+    public Guid Id { get; set; }
+    public int Version { get; set; }
+    public DateTimeOffset TimeStamp { get; set; }
     public Guid CustomerId { get; set; } // Missing customer details
 }
 ```
@@ -773,7 +851,7 @@ public async Task Handle(PlaceOrder command)
     if (!await _permissions.CanPlaceOrder(command.CustomerId))
         throw new UnauthorizedAccessException();
 
-    // Load aggregate
+    // Load aggregate (only read here; the new order is the only aggregate changed)
     var customer = await _session.Get<Customer>(command.CustomerId);
 
     // Business logic (validation happens in aggregate)
@@ -799,7 +877,7 @@ public async Task Handle(PlaceOrder command)
 3. **Event handler failures**: Consider compensation or dead letter queue
 4. **Idempotency**: Make event handlers idempotent where possible
 
-### Testing
+### Testing Practices
 
 1. **Test aggregates in isolation**: No dependencies needed
 2. **Test event application**: Verify state changes correctly
@@ -897,8 +975,8 @@ public class ProductCommandHandlerTests
 
         await handler.Handle(command);
 
-        mockSession.Verify(s => s.Add(It.IsAny<Product>()), Times.Once);
-        mockSession.Verify(s => s.Commit(), Times.Once);
+        mockSession.Verify(s => s.Add(It.IsAny<Product>(), It.IsAny<CancellationToken>()), Times.Once);
+        mockSession.Verify(s => s.Commit(It.IsAny<CancellationToken>()), Times.Once);
     }
 }
 ```

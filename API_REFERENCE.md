@@ -2,11 +2,14 @@
 
 ## Table of Contents
 - [Core Interfaces](#core-interfaces)
+- [Handler Interfaces](#handler-interfaces)
+- [Message Routing Interfaces](#message-routing-interfaces)
 - [Base Classes](#base-classes)
-- [Routing and Handling](#routing-and-handling)
 - [Domain and Repository](#domain-and-repository)
+- [Event Store](#event-store)
 - [Snapshotting](#snapshotting)
 - [Caching](#caching)
+- [Routing](#routing)
 - [Exceptions](#exceptions)
 
 ## Core Interfaces
@@ -68,9 +71,9 @@ public interface IEvent : IMessage
 ```
 
 **Properties:**
-- `Id`: The aggregate identifier
-- `Version`: The version of the aggregate when this event occurred
-- `TimeStamp`: When the event occurred (UTC)
+- `Id`: The aggregate identifier (set to the aggregate's Id on save if left empty)
+- `Version`: The version of the aggregate after this event (set by the framework on save)
+- `TimeStamp`: When the event was saved (UTC, set by the framework)
 
 **Example:**
 ```csharp
@@ -131,6 +134,26 @@ public class InventoryItemDetailsDto
 
 ## Handler Interfaces
 
+### IHandler<T> / ICancellableHandler<T>
+
+**Namespace:** `CQRSlite.Messages`
+
+Base interfaces for command and event handlers. `RouteRegistrar` discovers handlers through these (and the query handler interfaces).
+
+```csharp
+public interface IHandler<in T> where T : IMessage
+{
+    Task Handle(T message);
+}
+
+public interface ICancellableHandler<in T> where T : IMessage
+{
+    Task Handle(T message, CancellationToken token = default);
+}
+```
+
+---
+
 ### ICommandHandler<T>
 
 **Namespace:** `CQRSlite.Commands`
@@ -140,7 +163,7 @@ Interface for handling commands.
 ```csharp
 public interface ICommandHandler<in T> : IHandler<T> where T : ICommand
 {
-    Task Handle(T message);
+    // Inherits Task Handle(T message)
 }
 ```
 
@@ -166,7 +189,7 @@ public class InventoryCommandHandlers : ICommandHandler<CreateInventoryItem>
 
 **Rules:**
 - Exactly one handler per command type
-- Throws `InvalidOperationException` if multiple handlers registered
+- Sending throws `InvalidOperationException` if no handler or more than one handler is registered
 
 ---
 
@@ -179,7 +202,7 @@ Interface for handling commands with cancellation support.
 ```csharp
 public interface ICancellableCommandHandler<in T> : ICancellableHandler<T> where T : ICommand
 {
-    Task Handle(T message, CancellationToken token);
+    // Inherits Task Handle(T message, CancellationToken token = default)
 }
 ```
 
@@ -187,6 +210,13 @@ public interface ICancellableCommandHandler<in T> : ICancellableHandler<T> where
 ```csharp
 public class InventoryCommandHandlers : ICancellableCommandHandler<CreateInventoryItem>
 {
+    private readonly ISession _session;
+
+    public InventoryCommandHandlers(ISession session)
+    {
+        _session = session;
+    }
+
     public async Task Handle(CreateInventoryItem message, CancellationToken token)
     {
         var item = new InventoryItem(message.Id, message.Name);
@@ -207,7 +237,7 @@ Interface for handling events.
 ```csharp
 public interface IEventHandler<in T> : IHandler<T> where T : IEvent
 {
-    Task Handle(T message);
+    // Inherits Task Handle(T message)
 }
 ```
 
@@ -231,9 +261,9 @@ public class InventoryItemDetailView : IEventHandler<InventoryItemCreated>
 ```
 
 **Rules:**
-- Zero or more handlers per event type
-- All handlers execute in parallel via `Task.WhenAll`
-- Handler failures don't prevent other handlers from executing
+- Zero or more handlers per event type; publishing with no handlers does nothing
+- Handlers are started one after another and awaited together via `Task.WhenAll`, so async handlers run concurrently
+- A handler that throws synchronously stops later handlers from starting; `WhenAll` rethrows handler exceptions
 
 ---
 
@@ -246,7 +276,7 @@ Interface for handling events with cancellation support.
 ```csharp
 public interface ICancellableEventHandler<in T> : ICancellableHandler<T> where T : IEvent
 {
-    Task Handle(T message, CancellationToken token);
+    // Inherits Task Handle(T message, CancellationToken token = default)
 }
 ```
 
@@ -261,7 +291,7 @@ Interface for handling queries.
 ```csharp
 public interface IQueryHandler<in T, TResponse> where T : IQuery<TResponse>
 {
-    Task<TResponse> Handle(T message);
+    Task<TResponse> Handle(T query);
 }
 ```
 
@@ -298,7 +328,7 @@ Interface for handling queries with cancellation support.
 ```csharp
 public interface ICancellableQueryHandler<in T, TResponse> where T : IQuery<TResponse>
 {
-    Task<TResponse> Handle(T message, CancellationToken token);
+    Task<TResponse> Handle(T message, CancellationToken token = default);
 }
 ```
 
@@ -315,7 +345,7 @@ Interface for sending commands to handlers.
 ```csharp
 public interface ICommandSender
 {
-    Task Send<T>(T command, CancellationToken cancellationToken = default) where T : ICommand;
+    Task Send<T>(T command, CancellationToken cancellationToken = default) where T : class, ICommand;
 }
 ```
 
@@ -335,8 +365,8 @@ public class ProductController
 ```
 
 **Behavior:**
-- Routes command to registered handler
-- Throws if no handler or multiple handlers registered
+- Routes command to the handler registered for its exact runtime type
+- Throws `InvalidOperationException` if no handler or multiple handlers registered
 - Executes handler asynchronously
 
 ---
@@ -350,7 +380,7 @@ Interface for publishing events to handlers.
 ```csharp
 public interface IEventPublisher
 {
-    Task Publish<T>(T @event, CancellationToken cancellationToken = default) where T : IEvent;
+    Task Publish<T>(T @event, CancellationToken cancellationToken = default) where T : class, IEvent;
 }
 ```
 
@@ -359,25 +389,39 @@ public interface IEventPublisher
 public class InMemoryEventStore : IEventStore
 {
     private readonly IEventPublisher _publisher;
+    private readonly List<IEvent> _storage = new();
 
-    public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken)
+    public InMemoryEventStore(IEventPublisher publisher)
+    {
+        _publisher = publisher;
+    }
+
+    public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
     {
         foreach (var @event in events)
         {
-            // Save to storage
+            // Save to storage (a real store must also reject an existing Id + Version, see IEventStore)
             _storage.Add(@event);
 
             // Publish after save
             await _publisher.Publish(@event, cancellationToken);
         }
     }
+
+    public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult<IEnumerable<IEvent>>(_storage
+            .Where(e => e.Id == aggregateId && e.Version > fromVersion)
+            .OrderBy(e => e.Version)
+            .ToList());
+    }
 }
 ```
 
 **Behavior:**
-- Routes event to all registered handlers
-- Handlers execute in parallel
-- Returns when all handlers complete
+- Routes event to all handlers registered for its runtime type; does nothing if there are none
+- Starts handlers one after another, so a synchronous throw stops later handlers from starting
+- Returns when all handlers complete; `Task.WhenAll` rethrows handler exceptions
 
 ---
 
@@ -425,25 +469,24 @@ Interface for registering message handlers.
 ```csharp
 public interface IHandlerRegistrar
 {
-    void RegisterHandler<T>(Func<T, CancellationToken, Task> handler) where T : IMessage;
+    void RegisterHandler<T>(Func<T, CancellationToken, Task> handler) where T : class, IMessage;
 }
 ```
 
 **Usage (Manual Registration):**
 ```csharp
-var registrar = serviceProvider.GetService<IHandlerRegistrar>();
+var registrar = app.Services.GetRequiredService<IHandlerRegistrar>();
+// Resolve handlers from the current request scope (RequestServiceProvider as in Sample/CQRSWeb/Program.cs)
+var services = new RequestServiceProvider(app.Services);
 
-registrar.RegisterHandler<CreateProduct>(async (cmd, token) =>
-{
-    var handler = serviceProvider.GetService<ProductCommandHandler>();
-    await handler.Handle(cmd, token);
-});
+registrar.RegisterHandler<CreateProduct>((cmd, token) =>
+    services.GetRequiredService<ProductCommandHandler>().Handle(cmd));
 ```
 
 **Usage (Automatic Registration):**
 ```csharp
-var routeRegistrar = new RouteRegistrar(serviceProvider);
-routeRegistrar.Register(typeof(ProductCommandHandler).Assembly);
+new RouteRegistrar(new RequestServiceProvider(app.Services))
+    .RegisterInAssemblyOf(typeof(ProductCommandHandler));
 ```
 
 ---
@@ -465,9 +508,10 @@ public abstract class AggregateRoot
     protected void ApplyChange(IEvent @event);
     protected virtual void ApplyEvent(IEvent @event);
 
-    // Internal methods (used by Repository)
-    internal IEnumerable<IEvent> FlushUncommittedChanges();
-    internal void LoadFromHistory(IEnumerable<IEvent> history);
+    // Used by the repositories, public so custom repositories and tests can use them
+    public IEvent[] GetUncommittedChanges();
+    public IEvent[] FlushUncommittedChanges();
+    public void LoadFromHistory(IEnumerable<IEvent> history);
 }
 ```
 
@@ -488,7 +532,7 @@ public class Product : AggregateRoot
             throw new ArgumentException("Price cannot be negative");
 
         // Apply and record event
-        ApplyChange(new ProductPriceChanged(Id, newPrice));
+        ApplyChange(new ProductPriceChanged { Id = Id, NewPrice = newPrice });
     }
 }
 ```
@@ -496,14 +540,15 @@ public class Product : AggregateRoot
 **Behavior:**
 1. Calls `ApplyEvent()` to update internal state
 2. Adds event to uncommitted changes list
-3. Increments version
+
+`Version` is not changed here. When the aggregate is saved, `FlushUncommittedChanges()` sets each event's `Id` (if empty), `Version` and `TimeStamp`, and increases the aggregate's `Version`.
 
 #### ApplyEvent(IEvent @event)
 
 Virtual method that applies an event to aggregate state. Uses convention-based routing by default.
 
 **Default Behavior:**
-Searches for method with signature: `Apply(EventType @event)`
+Searches for a method (any visibility) with signature: `Apply(EventType @event)`. If none is found, the event is ignored.
 
 **Example:**
 ```csharp
@@ -548,7 +593,7 @@ protected override void ApplyEvent(IEvent @event)
 
 **Constructor Requirements:**
 - Public/protected constructor for creating new aggregates
-- Private parameterless constructor for rehydration
+- Parameterless constructor (public or private) for rehydration
 
 ```csharp
 public class Product : AggregateRoot
@@ -557,7 +602,7 @@ public class Product : AggregateRoot
     public Product(Guid id, string name, decimal price)
     {
         Id = id;
-        ApplyChange(new ProductCreated(id, name, price));
+        ApplyChange(new ProductCreated { Id = id, Name = name, Price = price });
     }
 
     // Required for rehydration
@@ -574,15 +619,15 @@ public class Product : AggregateRoot
 Base class for aggregates that support snapshotting.
 
 ```csharp
-public abstract class SnapshotAggregateRoot<TSnapshot> : AggregateRoot
-    where TSnapshot : Snapshot
+public abstract class SnapshotAggregateRoot<T> : AggregateRoot
+    where T : Snapshot
 {
-    protected abstract TSnapshot CreateSnapshot();
-    protected abstract void RestoreFromSnapshot(TSnapshot snapshot);
+    protected abstract T CreateSnapshot();
+    protected abstract void RestoreFromSnapshot(T snapshot);
 
-    // Internal methods (used by SnapshotRepository)
-    internal TSnapshot GetSnapshot();
-    internal void Restore(TSnapshot snapshot);
+    // Used by SnapshotRepository
+    public T GetSnapshot();          // CreateSnapshot() with Id set
+    public void Restore(T snapshot); // Sets Id and Version, then RestoreFromSnapshot()
 }
 ```
 
@@ -602,10 +647,9 @@ public class Product : SnapshotAggregateRoot<ProductSnapshot>
 
     protected override ProductSnapshot CreateSnapshot()
     {
+        // Id and Version are set by the framework
         return new ProductSnapshot
         {
-            Id = Id,
-            Version = Version,
             Name = _name,
             Price = _price,
             Discontinued = _discontinued
@@ -614,7 +658,7 @@ public class Product : SnapshotAggregateRoot<ProductSnapshot>
 }
 ```
 
-#### RestoreFromSnapshot(TSnapshot snapshot)
+#### RestoreFromSnapshot(T snapshot)
 
 Restores aggregate state from a snapshot.
 
@@ -688,12 +732,11 @@ Saves an aggregate by persisting its uncommitted events.
 
 **Parameters:**
 - `aggregate`: The aggregate to save
-- `expectedVersion`: Expected version for optimistic concurrency (optional)
+- `expectedVersion`: Expected version for optimistic concurrency (optional). If `null`, there is no check: events saved since the aggregate was loaded are applied to it first, then the new events are appended
 - `cancellationToken`: Cancellation token
 
 **Throws:**
-- `ConcurrencyException`: If expectedVersion doesn't match current version
-- `AggregateNotFoundException`: If aggregate not found when expectedVersion specified
+- `ConcurrencyException`: If the event store has events after `expectedVersion`. This check is not atomic, so the event store must also reject duplicate (Id, Version) events (see [IEventStore](#ieventstore))
 
 **Example:**
 ```csharp
@@ -735,13 +778,16 @@ Default implementation of `IRepository`.
 ```csharp
 public class Repository : IRepository
 {
-    public Repository(IEventStore eventStore, IEventPublisher publisher = null)
+    public Repository(IEventStore eventStore);
+
+    [Obsolete("The eventstore should publish events after saving")]
+    public Repository(IEventStore eventStore, IEventPublisher publisher);
 }
 ```
 
 **Constructor Parameters:**
 - `eventStore`: Event store for loading/saving events
-- `publisher`: Optional event publisher (deprecated - use event store to publish)
+- `publisher`: Event publisher that gets every saved event (obsolete - publish from the event store instead; must not be null)
 
 **Usage:**
 ```csharp
@@ -770,7 +816,7 @@ public interface ISession
 
 #### Add<T>(T aggregate, CancellationToken)
 
-Adds a new aggregate to be tracked by the session.
+Adds a new aggregate to be tracked by the session. Throws `ConcurrencyException` if a different instance with the same Id is already tracked.
 
 **Example:**
 ```csharp
@@ -792,7 +838,8 @@ Gets an aggregate, either from the session tracking or from the repository.
 The aggregate
 
 **Throws:**
-- `ConcurrencyException`: If expectedVersion doesn't match
+- `ConcurrencyException`: If expectedVersion doesn't match the aggregate's version
+- `AggregateNotFoundException`: If the repository finds no events for the aggregate
 
 **Example:**
 ```csharp
@@ -803,7 +850,7 @@ await _session.Commit();
 
 #### Commit(CancellationToken)
 
-Saves all tracked aggregates to the repository.
+Stops tracking all aggregates, then saves each of them to the repository in turn. This is not atomic: if one save fails, aggregates saved before it stay saved.
 
 **Example:**
 ```csharp
@@ -813,7 +860,7 @@ product.ChangePrice(150m);
 var category = await _session.Get<Category>(categoryId);
 category.AddProduct(productId);
 
-// Saves both aggregates
+// Saves both aggregates, one after the other
 await _session.Commit();
 ```
 
@@ -838,10 +885,10 @@ services.AddScoped<ISession, Session>();
 ```
 
 **Behavior:**
-- Tracks aggregates in memory during transaction
+- Unit of work (not a transaction): tracks aggregates in memory until `Commit`
 - Prevents duplicate loads of same aggregate
-- Saves all tracked aggregates on commit
-- Maintains original version for concurrency checking
+- Saves all tracked aggregates on commit, one at a time
+- Passes the version each aggregate had when it was added or loaded as `expectedVersion` (0 for a new aggregate)
 
 ---
 
@@ -867,6 +914,8 @@ public interface IEventStore
 
 Persists events and publishes them.
 
+**Concurrency:** `Repository`'s `ConcurrencyException` check (reading events after `expectedVersion` before saving) is check-then-act, not atomic. Your event store's `Save` must itself reject an event whose (aggregate Id, Version) already exists, e.g. with a unique index or primary key on `(AggregateId, Version)`. Otherwise two concurrent writers can both succeed.
+
 **Best Practice Implementation:**
 ```csharp
 public class SqlEventStore : IEventStore
@@ -876,25 +925,31 @@ public class SqlEventStore : IEventStore
 
     public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken)
     {
-        using var transaction = _connection.BeginTransaction();
-
-        try
+        var saved = events.ToList();
+        using (var transaction = _connection.BeginTransaction())
         {
-            foreach (var @event in events)
+            try
             {
-                // Save event to database
-                await SaveEventToDatabase(@event);
+                foreach (var @event in saved)
+                {
+                    // Save event to database. A unique key on (AggregateId, Version)
+                    // makes a concurrent duplicate fail here and roll back
+                    await SaveEventToDatabase(@event, transaction);
+                }
 
-                // Publish after save
-                await _publisher.Publish(@event, cancellationToken);
+                transaction.Commit();
             }
-
-            transaction.Commit();
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
-        catch
+
+        // Publish only after the events are committed
+        foreach (var @event in saved)
         {
-            transaction.Rollback();
-            throw;
+            await _publisher.Publish(@event, cancellationToken);
         }
     }
 }
@@ -906,7 +961,7 @@ Retrieves events for an aggregate starting from a specific version.
 
 **Parameters:**
 - `aggregateId`: The aggregate identifier
-- `fromVersion`: Starting version (exclusive - events after this version)
+- `fromVersion`: Starting version (exclusive - events after this version). `-1` means from the start; `Repository.Get` passes `-1`
 - `cancellationToken`: Cancellation token
 
 **Returns:**
@@ -1024,24 +1079,17 @@ Default implementation that snapshots every 100 events.
 ```csharp
 public class DefaultSnapshotStrategy : ISnapshotStrategy
 {
-    private const int SnapshotInterval = 100;
+    public DefaultSnapshotStrategy();                // Every 100 events
+    public DefaultSnapshotStrategy(ushort interval); // Every `interval` events; throws ArgumentOutOfRangeException if 0
 
-    public bool IsSnapshotable(Type aggregateType)
-    {
-        return aggregateType.GetInterfaces().Any(i =>
-            i.IsGenericType &&
-            i.GetGenericTypeDefinition() == typeof(ISnapshotAggregate<>));
-    }
-
-    public bool ShouldMakeSnapShot(AggregateRoot aggregate)
-    {
-        if (!IsSnapshotable(aggregate.GetType())) return false;
-
-        var i = aggregate.Version;
-        return i >= SnapshotInterval && i % SnapshotInterval == 0;
-    }
+    public bool IsSnapshotable(Type aggregateType);
+    public bool ShouldMakeSnapShot(AggregateRoot aggregate);
 }
 ```
+
+**Behavior:**
+- `IsSnapshotable`: true if the type derives from `SnapshotAggregateRoot<>`
+- `ShouldMakeSnapShot`: true if the version plus the uncommitted changes crosses a multiple of the interval. It is called before saving, while the new events are still uncommitted
 
 **Custom Strategy Example:**
 ```csharp
@@ -1049,14 +1097,23 @@ public class CustomSnapshotStrategy : ISnapshotStrategy
 {
     public bool IsSnapshotable(Type aggregateType)
     {
-        return typeof(ISnapshotAggregate<>).IsAssignableFrom(aggregateType);
+        // SnapshotRepository calls GetSnapshot/Restore, so the type must derive from SnapshotAggregateRoot<>
+        for (var type = aggregateType.BaseType; type != null; type = type.BaseType)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(SnapshotAggregateRoot<>))
+                return true;
+        }
+        return false;
     }
 
     public bool ShouldMakeSnapShot(AggregateRoot aggregate)
     {
-        // Snapshot after 50 events, then every 100
-        if (aggregate.Version == 50) return true;
-        return aggregate.Version >= 100 && aggregate.Version % 100 == 0;
+        if (!IsSnapshotable(aggregate.GetType())) return false;
+
+        // Snapshot at version 50, then every 100
+        var from = aggregate.Version;
+        var to = from + aggregate.GetUncommittedChanges().Length;
+        return (from < 50 && to >= 50) || to / 100 > from / 100;
     }
 }
 ```
@@ -1091,8 +1148,8 @@ services.AddScoped<IRepository>(sp =>
 ```
 
 **Behavior:**
-- **Get**: Tries to load from snapshot, then applies events after snapshot version
-- **Save**: Saves aggregate, then checks if snapshot should be created
+- **Get**: If the type is snapshotable and a snapshot exists, restores it and applies the events after the snapshot version; otherwise loads through the inner repository
+- **Save**: Decides before saving whether a snapshot is due (see `ISnapshotStrategy.ShouldMakeSnapShot`), saves the events through the inner repository, and only after that succeeds saves a snapshot of the aggregate's state after the save (with the cancellation token)
 
 ---
 
@@ -1107,10 +1164,10 @@ Interface for cache implementations.
 ```csharp
 public interface ICache
 {
-    bool IsTracked(Guid id);
-    void Set(Guid id, AggregateRoot aggregate);
-    AggregateRoot Get(Guid id);
-    void Remove(Guid id);
+    Task<bool> IsTracked(Guid id);
+    Task Set(Guid id, AggregateRoot aggregate);
+    Task<AggregateRoot?> Get(Guid id);
+    Task Remove(Guid id);
     void RegisterEvictionCallback(Action<Guid> action);
 }
 ```
@@ -1121,7 +1178,7 @@ public interface ICache
 
 **Namespace:** `CQRSlite.Caching`
 
-Default in-memory cache implementation using `Microsoft.Extensions.Caching.Memory`.
+Default in-memory cache implementation using `Microsoft.Extensions.Caching.Memory`. Entries have a 15-minute sliding expiration.
 
 ```csharp
 public class MemoryCache : ICache
@@ -1161,10 +1218,9 @@ services.AddScoped<IRepository>(sp =>
 ```
 
 **Behavior:**
-- **Get**: Checks cache first, applies new events if cached
-- **Save**: Invalidates cache
+- **Get**: Returns the cached instance, updated with any newer events from the event store. If the cached instance still has uncommitted changes (e.g. an earlier command changed it and never committed), or events were skipped, it is discarded and the aggregate is reloaded from the repository
+- **Save**: Puts the aggregate in the cache, and removes it if saving throws
 - Thread-safe per-aggregate using semaphores
-- Detects and handles skipped events
 
 ---
 
@@ -1201,22 +1257,27 @@ Automatic handler registration via reflection.
 ```csharp
 public class RouteRegistrar
 {
-    public RouteRegistrar(IServiceProvider serviceProvider)
+    public RouteRegistrar(IServiceProvider serviceLocator);
 
-    public void Register(Assembly assembly)
-    public void Register(params Type[] typesFromAssemblies)
+    // Scan the assemblies of the given types for handlers
+    public void RegisterInAssemblyOf(params Type[] typesFromAssemblyContainingMessages);
+
+    // Register the given handler types
+    public void RegisterHandlers(params Type[] handlers);
 }
 ```
 
+`IHandlerRegistrar` must be resolvable from the service provider. Each handler is resolved from it every time a message is routed, so handlers must be registered in DI, and in ASP.NET Core the provider should resolve from the current request scope (see `RequestServiceProvider` in Sample/CQRSWeb/Program.cs) so scoped services like `ISession` aren't resolved from the root provider.
+
 **Usage:**
 ```csharp
-var registrar = new RouteRegistrar(serviceProvider);
+var registrar = new RouteRegistrar(new RequestServiceProvider(app.Services));
 
-// Register all handlers from assembly
-registrar.Register(typeof(ProductCommandHandler).Assembly);
+// Register all handlers in the assembly containing ProductCommandHandler
+registrar.RegisterInAssemblyOf(typeof(ProductCommandHandler));
 
-// Register specific types
-registrar.Register(typeof(ProductCommandHandler), typeof(ProductEventHandler));
+// Or register specific handler types
+registrar.RegisterHandlers(typeof(ProductCommandHandler), typeof(ProductEventHandler));
 ```
 
 ---
@@ -1232,9 +1293,7 @@ Thrown when optimistic concurrency check fails.
 ```csharp
 public class ConcurrencyException : Exception
 {
-    public Guid Id { get; }
-    public int ExpectedVersion { get; }
-    public int ActualVersion { get; }
+    public ConcurrencyException(Guid id); // Message names the aggregate id
 }
 ```
 
@@ -1247,7 +1306,7 @@ try
 catch (ConcurrencyException ex)
 {
     // Handle conflict - retry, merge, or inform user
-    Console.WriteLine($"Concurrency conflict: Expected v{ex.ExpectedVersion}, was v{ex.ActualVersion}");
+    Console.WriteLine($"Concurrency conflict: {ex.Message}");
 }
 ```
 
@@ -1262,8 +1321,7 @@ Thrown when aggregate cannot be found.
 ```csharp
 public class AggregateNotFoundException : Exception
 {
-    public Guid Id { get; }
-    public Type Type { get; }
+    public AggregateNotFoundException(Type t, Guid id); // Message names the type and id
 }
 ```
 
@@ -1275,7 +1333,7 @@ try
 }
 catch (AggregateNotFoundException ex)
 {
-    return NotFound($"Product {ex.Id} not found");
+    return NotFound(ex.Message);
 }
 ```
 
@@ -1298,7 +1356,7 @@ Thrown when aggregate lacks required parameterless constructor for rehydration.
 ```csharp
 public class MissingParameterLessConstructorException : Exception
 {
-    public Type AggregateType { get; }
+    public MissingParameterLessConstructorException(Type type);
 }
 ```
 
@@ -1310,6 +1368,30 @@ public class Product : AggregateRoot
     private Product() { } // Required for rehydration
 }
 ```
+
+---
+
+### EventIdIncorrectException
+
+**Namespace:** `CQRSlite.Domain.Exception`
+
+Thrown when an event's Id differs from its aggregate's Id, on save or when loading history.
+
+---
+
+### EventsOutOfOrderException
+
+**Namespace:** `CQRSlite.Domain.Exception`
+
+Thrown when the event store returns events whose versions don't follow on from the aggregate's version.
+
+---
+
+### HandlerNotResolvedException / ResolvedHandlerMethodNotFoundException
+
+**Namespace:** `CQRSlite.Routing.Exception`
+
+Thrown by handlers registered with `RouteRegistrar` when the service provider returns null for `IHandlerRegistrar` or a handler type, or when the handler's `Handle` method can't be invoked. Both derive from `ArgumentNullException`.
 
 ---
 

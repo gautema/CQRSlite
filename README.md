@@ -73,7 +73,7 @@ public class Product : AggregateRoot
     public Product(Guid id, string name, decimal price)
     {
         Id = id;
-        ApplyChange(new ProductCreated(id, name, price));
+        ApplyChange(new ProductCreated { Id = id, Name = name, Price = price });
     }
 
     private Product() { } // Required for rehydration
@@ -93,6 +93,11 @@ public class ProductCommandHandler : ICommandHandler<CreateProduct>
 {
     private readonly ISession _session;
 
+    public ProductCommandHandler(ISession session)
+    {
+        _session = session;
+    }
+
     public async Task Handle(CreateProduct message)
     {
         var product = new Product(message.Id, message.Name, message.Price);
@@ -105,22 +110,55 @@ public class ProductCommandHandler : ICommandHandler<CreateProduct>
 4. **Configure services:**
 
 ```csharp
+using CQRSlite.Commands;
+using CQRSlite.Domain;
+using CQRSlite.Events;
+using CQRSlite.Queries;
+using CQRSlite.Routing;
+using ISession = CQRSlite.Domain.ISession; // Avoid clash with Microsoft.AspNetCore.Http.ISession
+
+var builder = WebApplication.CreateBuilder(args);
+
 // Register Router
 var router = new Router();
-services.AddSingleton(router);
-services.AddSingleton<ICommandSender>(router);
-services.AddSingleton<IEventPublisher>(router);
-services.AddSingleton<IHandlerRegistrar>(router);
+builder.Services.AddSingleton(router);
+builder.Services.AddSingleton<ICommandSender>(router);
+builder.Services.AddSingleton<IEventPublisher>(router);
+builder.Services.AddSingleton<IQueryProcessor>(router);
+builder.Services.AddSingleton<IHandlerRegistrar>(router);
 
 // Register core services
-services.AddSingleton<IEventStore, YourEventStore>(); // You must implement this
-services.AddScoped<IRepository>(sp => new Repository(sp.GetService<IEventStore>()));
-services.AddScoped<ISession, Session>();
+builder.Services.AddSingleton<IEventStore, YourEventStore>(); // You must implement this
+builder.Services.AddScoped<IRepository>(sp => new Repository(sp.GetRequiredService<IEventStore>()));
+builder.Services.AddScoped<ISession, Session>();
 
-// Auto-register handlers
-var registrar = new RouteRegistrar(serviceProvider);
-registrar.Register(typeof(ProductCommandHandler).Assembly);
+// Every handler class must be resolvable from DI (the sample scans for them with Scrutor)
+builder.Services.AddTransient<ProductCommandHandler>();
+builder.Services.AddHttpContextAccessor();
+
+var app = builder.Build();
+
+// Route messages to handlers, resolving them from the current request scope
+new RouteRegistrar(new RequestServiceProvider(app.Services))
+    .RegisterInAssemblyOf(typeof(ProductCommandHandler));
+
+app.Run();
+
+/// <summary>
+/// Resolves services from the current request scope when there is one, so scoped
+/// services like ISession are shared between a request and the handlers it triggers.
+/// </summary>
+internal class RequestServiceProvider(IServiceProvider services) : IServiceProvider
+{
+    private readonly IHttpContextAccessor? _contextAccessor = services.GetService<IHttpContextAccessor>();
+
+    public object? GetService(Type serviceType) =>
+        _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
+        services.GetService(serviceType);
+}
 ```
+
+Handlers are resolved when a message is routed, so don't build `RouteRegistrar` on `app.Services` directly: that resolves scoped services such as `ISession` from the root provider.
 
 ## Documentation
 
@@ -145,7 +183,7 @@ Example event stores:
 - Azure Table Storage
 - In-memory (for testing, included in sample)
 
-See [DEVELOPER.md](https://github.com/gautema/cqrslite/blob/master/DEVELOPER.md#implementing-event-store) for implementation guidance.
+See [DEVELOPER.md](https://github.com/gautema/cqrslite/blob/master/DEVELOPER.md#5-implement-event-store) for implementation guidance.
 
 ## Architecture
 
@@ -176,7 +214,7 @@ Contributions are welcome! Please see [DEVELOPER.md](https://github.com/gautema/
 
 ## Version Compatibility
 
-- **netstandard2.0** - Compatible with .NET Framework 4.6.1+ and .NET Core 2.0+
+- **netstandard2.0** - Compatible with .NET Framework 4.6.2+ and .NET Core 2.0+ / .NET 5+
 - **net10.0** - Latest .NET features and performance improvements
 
 ## License

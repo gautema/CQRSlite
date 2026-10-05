@@ -44,6 +44,22 @@ public class ProductCreated : IEvent
     public string Name { get; set; }
     public decimal Price { get; set; }
 }
+
+public class ProductPriceChanged : IEvent
+{
+    public Guid Id { get; set; }
+    public int Version { get; set; }
+    public DateTimeOffset TimeStamp { get; set; }
+
+    public decimal NewPrice { get; set; }
+}
+
+public class ProductDiscontinued : IEvent
+{
+    public Guid Id { get; set; }
+    public int Version { get; set; }
+    public DateTimeOffset TimeStamp { get; set; }
+}
 ```
 
 ### Query
@@ -76,7 +92,7 @@ public class Product : AggregateRoot
     public Product(Guid id, string name, decimal price)
     {
         Id = id;
-        ApplyChange(new ProductCreated(id, name, price));
+        ApplyChange(new ProductCreated { Id = id, Name = name, Price = price });
     }
 
     // Required parameterless constructor for rehydration
@@ -90,7 +106,12 @@ public class Product : AggregateRoot
         if (newPrice < 0)
             throw new ArgumentException("Price cannot be negative");
 
-        ApplyChange(new ProductPriceChanged(Id, newPrice));
+        ApplyChange(new ProductPriceChanged { Id = Id, NewPrice = newPrice });
+    }
+
+    public void Discontinue()
+    {
+        ApplyChange(new ProductDiscontinued { Id = Id });
     }
 
     // Convention-based event application
@@ -130,10 +151,9 @@ public class Product : SnapshotAggregateRoot<ProductSnapshot>
 
     protected override ProductSnapshot CreateSnapshot()
     {
+        // Id and Version are set by the framework
         return new ProductSnapshot
         {
-            Id = Id,
-            Version = Version,
             Name = _name,
             Price = _price,
             Discontinued = _discontinued
@@ -265,6 +285,13 @@ public class ProductQueryHandlers :
 
 ### Minimal Setup
 ```csharp
+using CQRSlite.Commands;
+using CQRSlite.Domain;
+using CQRSlite.Events;
+using CQRSlite.Queries;
+using CQRSlite.Routing;
+using ISession = CQRSlite.Domain.ISession; // Avoid clash with Microsoft.AspNetCore.Http.ISession
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Router (central hub)
@@ -285,15 +312,35 @@ builder.Services.AddScoped<IRepository>(sp =>
 // Session
 builder.Services.AddScoped<ISession, Session>();
 
-// Register your command, event and query handler classes in DI too, e.g.
-// builder.Services.AddTransient<ProductCommandHandlers>();
+// Every handler class must be resolvable from DI (the sample scans for them with Scrutor)
+builder.Services.AddTransient<ProductCommandHandlers>();
+builder.Services.AddTransient<ProductListView>();
+builder.Services.AddTransient<ProductQueryHandlers>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Route messages to handlers. See Sample/CQRSWeb/Program.cs for resolving
-// handlers from the current request scope.
-new RouteRegistrar(app.Services).RegisterInAssemblyOf(typeof(ProductCommandHandlers));
+// Route messages to handlers, resolving them from the current request scope
+new RouteRegistrar(new RequestServiceProvider(app.Services))
+    .RegisterInAssemblyOf(typeof(ProductCommandHandlers));
+
+app.Run();
+
+/// <summary>
+/// Resolves services from the current request scope when there is one, so scoped
+/// services like ISession are shared between a request and the handlers it triggers.
+/// </summary>
+internal class RequestServiceProvider(IServiceProvider services) : IServiceProvider
+{
+    private readonly IHttpContextAccessor? _contextAccessor = services.GetService<IHttpContextAccessor>();
+
+    public object? GetService(Type serviceType) =>
+        _contextAccessor?.HttpContext?.RequestServices.GetService(serviceType) ??
+        services.GetService(serviceType);
+}
 ```
+
+Don't pass `app.Services` to `RouteRegistrar` directly: handlers are resolved per message, and scoped services like `ISession` would come from the root provider.
 
 ### Setup with Caching
 ```csharp
@@ -323,14 +370,20 @@ builder.Services.AddScoped<IRepository>(sp =>
 // Session
 builder.Services.AddScoped<ISession, Session>();
 
-// Register your command, event and query handler classes in DI too, e.g.
-// builder.Services.AddTransient<ProductCommandHandlers>();
+// Every handler class must be resolvable from DI (the sample scans for them with Scrutor)
+builder.Services.AddTransient<ProductCommandHandlers>();
+builder.Services.AddTransient<ProductListView>();
+builder.Services.AddTransient<ProductQueryHandlers>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Route messages to handlers. See Sample/CQRSWeb/Program.cs for resolving
-// handlers from the current request scope.
-new RouteRegistrar(app.Services).RegisterInAssemblyOf(typeof(ProductCommandHandlers));
+// Route messages to handlers, resolving them from the current request scope
+// (usings and RequestServiceProvider as in Minimal Setup)
+new RouteRegistrar(new RequestServiceProvider(app.Services))
+    .RegisterInAssemblyOf(typeof(ProductCommandHandlers));
+
+app.Run();
 ```
 
 ### Setup with Snapshotting and Caching
@@ -369,14 +422,20 @@ builder.Services.AddScoped<IRepository>(sp =>
 // Session
 builder.Services.AddScoped<ISession, Session>();
 
-// Register your command, event and query handler classes in DI too, e.g.
-// builder.Services.AddTransient<ProductCommandHandlers>();
+// Every handler class must be resolvable from DI (the sample scans for them with Scrutor)
+builder.Services.AddTransient<ProductCommandHandlers>();
+builder.Services.AddTransient<ProductListView>();
+builder.Services.AddTransient<ProductQueryHandlers>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Route messages to handlers. See Sample/CQRSWeb/Program.cs for resolving
-// handlers from the current request scope.
-new RouteRegistrar(app.Services).RegisterInAssemblyOf(typeof(ProductCommandHandlers));
+// Route messages to handlers, resolving them from the current request scope
+// (usings and RequestServiceProvider as in Minimal Setup)
+new RouteRegistrar(new RequestServiceProvider(app.Services))
+    .RegisterInAssemblyOf(typeof(ProductCommandHandlers));
+
+app.Run();
 ```
 
 ## Common Scenarios
@@ -417,14 +476,9 @@ public async Task<IActionResult> UpdatePrice(
 
         return Ok();
     }
-    catch (ConcurrencyException ex)
+    catch (ConcurrencyException)
     {
-        return Conflict(new
-        {
-            message = "Product was modified by another user",
-            expectedVersion = ex.ExpectedVersion,
-            actualVersion = ex.ActualVersion
-        });
+        return Conflict(new { message = "Product was modified by another user" });
     }
 }
 ```
@@ -458,7 +512,8 @@ public async Task Handle(TransferInventory command)
     source.Remove(command.Quantity);
     destination.Add(command.Quantity);
 
-    // Commit saves both aggregates
+    // Commit saves both aggregates, one after the other. It is not atomic:
+    // prefer one aggregate per command (see DEVELOPER.md Best Practices)
     await _session.Commit();
 }
 ```
@@ -482,6 +537,8 @@ public async Task Handle(UpdateProduct command)
 ## Event Store Implementation
 
 ### SQL Event Store Example
+The repository's concurrency check is not atomic, so the store must reject an event whose (aggregate Id, Version) already exists. Give the `Events` table a unique key or primary key on `(AggregateId, Version)`.
+
 ```csharp
 public class SqlEventStore : IEventStore
 {
@@ -496,11 +553,12 @@ public class SqlEventStore : IEventStore
 
     public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
     {
+        var saved = events.ToList();
         using var transaction = _connection.BeginTransaction();
 
         try
         {
-            foreach (var @event in events)
+            foreach (var @event in saved)
             {
                 // Serialize and save
                 await _connection.ExecuteAsync(
@@ -515,9 +573,6 @@ public class SqlEventStore : IEventStore
                         @event.TimeStamp
                     },
                     transaction);
-
-                // Publish after save
-                await _publisher.Publish(@event, cancellationToken);
             }
 
             transaction.Commit();
@@ -527,8 +582,15 @@ public class SqlEventStore : IEventStore
             transaction.Rollback();
             throw;
         }
+
+        // Publish only after the events are committed
+        foreach (var @event in saved)
+        {
+            await _publisher.Publish(@event, cancellationToken);
+        }
     }
 
+    // Returns events after fromVersion; -1 means from the start
     public async Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
     {
         var records = await _connection.QueryAsync<EventRecord>(
@@ -558,27 +620,42 @@ public class InMemoryEventStore : IEventStore
 
     public async Task Save(IEnumerable<IEvent> events, CancellationToken cancellationToken = default)
     {
-        foreach (var @event in events)
+        var saved = events.ToList();
+        lock (_events)
         {
-            if (!_events.ContainsKey(@event.Id))
-                _events[@event.Id] = new List<IEvent>();
+            foreach (var @event in saved)
+            {
+                if (!_events.TryGetValue(@event.Id, out var stream))
+                    _events[@event.Id] = stream = new List<IEvent>();
 
-            _events[@event.Id].Add(@event);
+                // Reject a version that is already stored, like a unique index would
+                if (stream.Any(e => e.Version == @event.Version))
+                    throw new ConcurrencyException(@event.Id);
 
+                stream.Add(@event);
+            }
+        }
+
+        foreach (var @event in saved)
+        {
             await _publisher.Publish(@event, cancellationToken);
         }
     }
 
     public Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
     {
-        if (!_events.ContainsKey(aggregateId))
-            return Task.FromResult(Enumerable.Empty<IEvent>());
+        lock (_events)
+        {
+            if (!_events.TryGetValue(aggregateId, out var stream))
+                return Task.FromResult(Enumerable.Empty<IEvent>());
 
-        var events = _events[aggregateId]
-            .Where(e => e.Version > fromVersion)
-            .OrderBy(e => e.Version);
+            var events = stream
+                .Where(e => e.Version > fromVersion)
+                .OrderBy(e => e.Version)
+                .ToList();
 
-        return Task.FromResult(events);
+            return Task.FromResult<IEnumerable<IEvent>>(events);
+        }
     }
 }
 ```
@@ -599,9 +676,7 @@ public async Task<IActionResult> UpdateProduct(UpdateProduct command)
         return Conflict(new
         {
             message = "Resource was modified by another user",
-            resourceId = ex.Id,
-            expectedVersion = ex.ExpectedVersion,
-            actualVersion = ex.ActualVersion
+            detail = ex.Message
         });
     }
 }
@@ -609,16 +684,17 @@ public async Task<IActionResult> UpdateProduct(UpdateProduct command)
 
 ### Handling Aggregate Not Found
 ```csharp
-public async Task<IActionResult> GetProduct(Guid id)
+public async Task<IActionResult> UpdatePrice(UpdateProductPrice command)
 {
     try
     {
-        var result = await _queryProcessor.Query(new GetProduct { Id = id });
-        return Ok(result);
+        await _commandSender.Send(command);
+        return Ok();
     }
     catch (AggregateNotFoundException ex)
     {
-        return NotFound(new { message = $"Product {ex.Id} not found" });
+        // Thrown by the repository when there are no events for the aggregate
+        return NotFound(new { message = ex.Message });
     }
 }
 ```
@@ -647,8 +723,9 @@ public async Task<IActionResult> UpdatePrice(UpdateProductPrice command)
 
 ### Retry on Concurrency Conflict
 ```csharp
-public async Task Handle(UpdateProduct command, int maxRetries = 3)
+public async Task Handle(UpdateProduct command)
 {
+    const int maxRetries = 3;
     for (int attempt = 0; attempt < maxRetries; attempt++)
     {
         try
@@ -661,7 +738,7 @@ public async Task Handle(UpdateProduct command, int maxRetries = 3)
         catch (ConcurrencyException) when (attempt < maxRetries - 1)
         {
             // Retry on conflict
-            await Task.Delay(100 * (attempt + 1)); // Exponential backoff
+            await Task.Delay(100 * (attempt + 1)); // Back off before retrying
         }
     }
 
@@ -716,8 +793,8 @@ public async Task CreateProduct_AddsProductToSession()
     await handler.Handle(command);
 
     // Assert
-    mockSession.Verify(s => s.Add(It.IsAny<Product>()), Times.Once);
-    mockSession.Verify(s => s.Commit(), Times.Once);
+    mockSession.Verify(s => s.Add(It.IsAny<Product>(), It.IsAny<CancellationToken>()), Times.Once);
+    mockSession.Verify(s => s.Commit(It.IsAny<CancellationToken>()), Times.Once);
 }
 ```
 
@@ -764,7 +841,7 @@ public async Task ProductCreated_AddsToReadModel()
 2. **Not committing session** after making changes
 3. **Modifying state without events** in aggregates
 4. **Publishing events before saving** (should be after)
-5. **Using public Apply methods** (should be private)
+5. **Making Apply methods public** (they are found at any visibility; keep them private so state only changes through events)
 6. **Not handling ConcurrencyException** when updating
 7. **Querying from write model** (use read models instead)
 
